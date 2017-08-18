@@ -111,7 +111,7 @@ class ChatService implements YouTubeChatService
                     }
                 }
 
-                if (this.liveChatId.isEmpty())
+                if (this.liveChatId == null || this.liveChatId.isEmpty())
                 {
                     ModLogger.printExceptionMessage("Could not find live chat for " + identity);
                     return;
@@ -230,7 +230,7 @@ class ChatService implements YouTubeChatService
     @Override
     public void deleteMessage(final String messageId, final Runnable onComplete)
     {
-        if (messageId.isEmpty())
+        if (messageId == null || messageId.isEmpty())
         {
             onComplete.run();
             return;
@@ -256,7 +256,7 @@ class ChatService implements YouTubeChatService
     @Override
     public void banUser(final String messageId, final Runnable onComplete, final boolean temporary)
     {
-        if (messageId.isEmpty())
+        if (messageId == null || messageId.isEmpty())
         {
             onComplete.run();
             return;
@@ -291,7 +291,7 @@ class ChatService implements YouTubeChatService
     @Override
     public void addModerator(String messageId, Runnable onComplete)
     {
-        if (messageId.isEmpty())
+        if (messageId == null || messageId.isEmpty())
         {
             onComplete.run();
             return;
