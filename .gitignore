@@ -1,3 +1,33 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# file
+gradle-wrapper.jar
+gradle-wrapper.properties
+gradlew.bat
+gradlew
+README.txt
+CREDITS-fml.txt
+LICENSE-fml.txt
+forge-*.txt
+MinecraftForge*.txt
+Paulscode*.txt
+ccc_at.cfg
+ccl_at.cfg
+nei_at.cfg
+jei_at.cfg
+indicatia_at.cfg
+MANIFEST.MF
+LICENSE-new.txt
+
+# folder
 .gradle
-.idea
-.DS_Store
+.gradle_data
+build
+eclipse
+run
