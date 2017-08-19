@@ -48,7 +48,7 @@ class ChatService implements YouTubeChatService
     private String nextPageToken;
     private Timer pollTimer;
     private long nextPoll;
-    private String channelId;//XXX
+    private String channelId;//TODO
 
     public ChatService()
     {

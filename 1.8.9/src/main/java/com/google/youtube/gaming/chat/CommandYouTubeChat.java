@@ -178,7 +178,7 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
         if (!YouTubeConfiguration.getInstance().getSuperOnly())
         {
             String unicode = author.getIsVerified() ? "\u2713 " : !author.getIsChatOwner() ? YouTubeConfiguration.getInstance().getOwnerUnicode() : author.getIsChatModerator() ? "" : "";//TODO
-            ModLogger.printYTMessage(YouTubeChat.json.text(unicode + author.getDisplayName()).setChatStyle(author.getIsChatOwner() ? YouTubeChat.json.gold() : author.getIsChatModerator() ? YouTubeChat.json.blue() : YouTubeChat.json.gray()).appendSibling(YouTubeChat.json.text(": " + message).setChatStyle(YouTubeChat.json.white().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "ytcaction " + id)).setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white()))))));
+            ModLogger.printYTMessage(YouTubeChat.json.text(unicode + author.getDisplayName()).setChatStyle(author.getIsChatOwner() ? YouTubeChat.json.gold() : author.getIsChatModerator() ? YouTubeChat.json.blue() : YouTubeChat.json.gray()).appendSibling(YouTubeChat.json.text(": " + message).setChatStyle(YouTubeChat.json.white().setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "ytcaction " + id)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white()))))));
         }
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {

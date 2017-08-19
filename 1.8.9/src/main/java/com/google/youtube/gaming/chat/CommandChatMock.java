@@ -26,7 +26,7 @@ import net.minecraft.command.WrongUsageException;
 /**
  * An in-game command that will mock chat messages for testing. Usage:
  *
- * /ytcmock authorId message
+ * /ytcmock <author_id> <message>
  */
 public class CommandChatMock extends ClientCommandBase
 {
