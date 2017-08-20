@@ -16,12 +16,12 @@
 
 package com.google.youtube.gaming.chat;
 
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 
 /**
  *
@@ -31,49 +31,49 @@ import net.minecraft.util.IChatComponent;
  */
 public class JsonUtil
 {
-    public ChatComponentText text(String text)
+    public TextComponentString text(String text)
     {
-        return new ChatComponentText(text);
+        return new TextComponentString(text);
     }
 
-    public ChatStyle style()
+    public Style style()
     {
-        return new ChatStyle();
+        return new Style();
     }
 
-    public ChatStyle white()
+    public Style white()
     {
-        return this.style().setColor(EnumChatFormatting.WHITE);
+        return this.style().setColor(TextFormatting.WHITE);
     }
 
-    public ChatStyle gray()
+    public Style gray()
     {
-        return this.style().setColor(EnumChatFormatting.GRAY);
+        return this.style().setColor(TextFormatting.GRAY);
     }
 
-    public ChatStyle red()
+    public Style red()
     {
-        return this.style().setColor(EnumChatFormatting.RED);
+        return this.style().setColor(TextFormatting.RED);
     }
 
-    public ChatStyle darkRed()
+    public Style darkRed()
     {
-        return this.style().setColor(EnumChatFormatting.DARK_RED);
+        return this.style().setColor(TextFormatting.DARK_RED);
     }
 
-    public ChatStyle green()
+    public Style green()
     {
-        return this.style().setColor(EnumChatFormatting.GREEN);
+        return this.style().setColor(TextFormatting.GREEN);
     }
 
-    public ChatStyle gold()
+    public Style gold()
     {
-        return this.style().setColor(EnumChatFormatting.GOLD);
+        return this.style().setColor(TextFormatting.GOLD);
     }
 
-    public ChatStyle blue()
+    public Style blue()
     {
-        return this.style().setColor(EnumChatFormatting.BLUE);
+        return this.style().setColor(TextFormatting.BLUE);
     }
 
     public ClickEvent click(ClickEvent.Action action, String url)
@@ -81,7 +81,7 @@ public class JsonUtil
         return new ClickEvent(action, url);
     }
 
-    public HoverEvent hover(HoverEvent.Action action, IChatComponent text)
+    public HoverEvent hover(HoverEvent.Action action, ITextComponent text)
     {
         return new HoverEvent(action, text);
     }

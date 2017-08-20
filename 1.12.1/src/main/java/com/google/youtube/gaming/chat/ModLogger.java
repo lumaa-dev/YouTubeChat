@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  *
@@ -67,13 +67,13 @@ public class ModLogger
         ModLogger.LOG.warn(message, obj);
     }
 
-    public static void printYTMessage(IChatComponent component)
+    public static void printYTMessage(ITextComponent component)
     {
-        Minecraft.getMinecraft().thePlayer.addChatMessage(StreamChat.json.text("[YTChat] ").setChatStyle(StreamChat.json.red()).appendSibling(component));
+        Minecraft.getMinecraft().player.sendMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
     }
 
     public static void printExceptionMessage(String message)
     {
-        Minecraft.getMinecraft().thePlayer.addChatMessage(StreamChat.json.text("[YTChatException] ").setChatStyle(StreamChat.json.red()).appendSibling(StreamChat.json.text(message).setChatStyle(StreamChat.json.darkRed())));
+        Minecraft.getMinecraft().player.sendMessage(StreamChat.json.text("[YTChatException] ").setStyle(StreamChat.json.red()).appendSibling(StreamChat.json.text(message).setStyle(StreamChat.json.darkRed())));
     }
 }

@@ -17,8 +17,10 @@
 package com.google.youtube.gaming.chat;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.client.IClientCommand;
 import net.minecraftforge.common.ForgeHooks;
 
 /**
@@ -27,7 +29,7 @@ import net.minecraftforge.common.ForgeHooks;
  * @author SteveKunG
  *
  */
-public abstract class ClientCommandBase extends CommandBase
+public abstract class ClientCommandBase extends CommandBase implements IClientCommand
 {
     @Override
     public int getRequiredPermissionLevel()
@@ -35,9 +37,15 @@ public abstract class ClientCommandBase extends CommandBase
         return 0;
     }
 
-    protected static IChatComponent getChatComponentFromNthArg(String[] args, int index)
+    @Override
+    public boolean allowUsageWithoutPrefix(ICommandSender sender, String message)
     {
-        IChatComponent component = new ChatComponentText("");
+        return false;
+    }
+
+    protected static ITextComponent getChatComponentFromNthArg(String[] args, int index)
+    {
+        ITextComponent component = new TextComponentString("");
 
         for (int i = index; i < args.length; ++i)
         {
@@ -45,7 +53,7 @@ public abstract class ClientCommandBase extends CommandBase
             {
                 component.appendText(" ");
             }
-            IChatComponent component1 = ForgeHooks.newChatWithLinks(args[i]);
+            ITextComponent component1 = ForgeHooks.newChatWithLinks(args[i]);
             component.appendSibling(component1);
         }
         return component;

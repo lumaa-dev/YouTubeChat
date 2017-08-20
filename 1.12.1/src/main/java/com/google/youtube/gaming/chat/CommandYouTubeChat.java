@@ -29,9 +29,10 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
@@ -48,25 +49,25 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ytchat";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return this.getUsage();
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return Arrays.asList("ytc");
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         ConfigManager configuration = ConfigManager.getInstance();
         String clientSecret = configuration.getClientSecret();
@@ -153,7 +154,7 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
                 throw new WrongUsageException("/ytchat post <message>");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(StreamChat.json.text("Message posted").setChatStyle(StreamChat.json.green()));
+            Consumer<String> id = i -> ModLogger.printYTMessage(StreamChat.json.text("Message posted").setStyle(StreamChat.json.green()));
             this.service.postMessage(message, id);
         }
         else
@@ -163,13 +164,13 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "logout", "echo_start", "echo_stop", "post");
         }
-        return super.addTabCompletionOptions(sender, args, pos);
+        return super.getTabCompletions(server, sender, args, pos);
     }
 
     @Override
@@ -178,11 +179,11 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
         if (!ConfigManager.getInstance().getSuperOnly())
         {
             String unicode = author.getIsVerified() ? "\u2713 " : !author.getIsChatOwner() ? ConfigManager.getInstance().getOwnerUnicode() : author.getIsChatModerator() ? "" : "";//TODO
-            ModLogger.printYTMessage(StreamChat.json.text(unicode + author.getDisplayName()).setChatStyle(author.getIsChatOwner() ? StreamChat.json.gold() : author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.gray()).appendSibling(StreamChat.json.text(": " + message).setChatStyle(StreamChat.json.white().setChatClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "ytcaction " + id)).setChatHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setChatStyle(StreamChat.json.white()))))));
+            ModLogger.printYTMessage(StreamChat.json.text(unicode + author.getDisplayName()).setStyle(author.getIsChatOwner() ? StreamChat.json.gold() : author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.gray()).appendSibling(StreamChat.json.text(": " + message).setStyle(StreamChat.json.white().setClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "ytcaction " + id)).setHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setStyle(StreamChat.json.white()))))));
         }
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {
-            ModLogger.printYTMessage(StreamChat.json.text("Received ").setChatStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(superChatDetails.getAmountDisplayString()).setChatStyle(StreamChat.json.gold()).appendSibling(StreamChat.json.text(" from ").setChatStyle(StreamChat.json.green())).appendSibling(StreamChat.json.text(author.getDisplayName()).setChatStyle(author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.white()))));
+            ModLogger.printYTMessage(StreamChat.json.text("Received ").setStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(superChatDetails.getAmountDisplayString()).setStyle(StreamChat.json.gold()).appendSibling(StreamChat.json.text(" from ").setStyle(StreamChat.json.green())).appendSibling(StreamChat.json.text(author.getDisplayName()).setStyle(author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.white()))));
         }
     }
 

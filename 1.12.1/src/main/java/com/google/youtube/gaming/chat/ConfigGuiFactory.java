@@ -34,21 +34,21 @@ public class ConfigGuiFactory implements IModGuiFactory
     public void initialize(Minecraft minecraftInstance) {}
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass()
-    {
-        return GuiStreamChatConfig.class;
-    }
-
-    @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
     {
         return null;
     }
 
     @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
+    public boolean hasConfigGui()
     {
-        return null;
+        return true;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen)
+    {
+        return new GuiStreamChatConfig(parentScreen);
     }
 
     /**

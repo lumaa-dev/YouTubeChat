@@ -81,22 +81,22 @@ public class GuiChatAction extends GuiScreen
         {
             if (button.id == 0)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Message deleted").setChatStyle(StreamChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Message deleted").setStyle(StreamChat.json.green()));
                 this.service.deleteMessage(this.messageId, response);
             }
             if (button.id == 1)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User banned").setChatStyle(StreamChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User banned").setStyle(StreamChat.json.green()));
                 this.service.banUser(this.messageId, response, true);
             }
             if (button.id == 2)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User temporary banned").setChatStyle(StreamChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User temporary banned").setStyle(StreamChat.json.green()));
                 this.service.banUser(this.messageId, response, false);
             }
             if (button.id == 3)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Added moderator").setChatStyle(StreamChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Added moderator").setStyle(StreamChat.json.green()));
                 this.service.addModerator(this.messageId, response);
             }
             this.mc.displayGuiScreen(null);
@@ -107,7 +107,7 @@ public class GuiChatAction extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, "Do an action for this message", this.width / 2, 120, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Do an action for this message", this.width / 2, 120, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

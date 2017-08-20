@@ -22,6 +22,7 @@ import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.server.MinecraftServer;
 
 /**
  * An in-game command that will mock chat messages for testing. Usage:
@@ -38,19 +39,19 @@ public class CommandChatMock extends ClientCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ytcmock";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return this.getUsage();
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 2)
         {

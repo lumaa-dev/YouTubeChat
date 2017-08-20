@@ -130,7 +130,7 @@ class ChatService implements StreamChatService
                 {
                     this.nextPoll = System.currentTimeMillis() + response.getPollingIntervalMillis();
                 }
-                ModLogger.printYTMessage(StreamChat.json.text("Service started").setChatStyle(StreamChat.json.green()));
+                ModLogger.printYTMessage(StreamChat.json.text("Service started").setStyle(StreamChat.json.green()));
             }
             catch (Throwable t)
             {
@@ -151,7 +151,7 @@ class ChatService implements StreamChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setChatStyle(StreamChat.json.white()));
+        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(StreamChat.json.white()));
     }
 
     @Override
@@ -166,7 +166,7 @@ class ChatService implements StreamChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            ModLogger.printYTMessage(StreamChat.json.text("Started receiving live chat message").setChatStyle(StreamChat.json.white()));
+            ModLogger.printYTMessage(StreamChat.json.text("Started receiving live chat message").setStyle(StreamChat.json.white()));
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -181,7 +181,7 @@ class ChatService implements StreamChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            ModLogger.printYTMessage(StreamChat.json.text("Stopped receiving live chat message").setChatStyle(StreamChat.json.white()));
+            ModLogger.printYTMessage(StreamChat.json.text("Stopped receiving live chat message").setStyle(StreamChat.json.white()));
 
             if (this.listeners.size() == 0)
             {
