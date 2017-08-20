@@ -36,7 +36,7 @@ import net.minecraft.client.Minecraft;
  * Manages connection to the YouTube chat service, posting chat messages, deleting chat messages,
  * polling for chat messages and notifying subcribers.
  */
-class ChatService implements YouTubeChatService
+class ChatService implements StreamChatService
 {
     private static final String LIVE_CHAT_FIELDS = "items(authorDetails(channelId,displayName,isChatModerator,isChatOwner,isChatSponsor,isVerified,profileImageUrl),snippet(displayMessage,superChatDetails,publishedAt),id),nextPageToken,pollingIntervalMillis";
     private static final String LIVE_BAN_CHAT_FIELDS = "items(snippet(liveChatId,type,banDurationSeconds),id,kind)";//TODO
@@ -68,10 +68,10 @@ class ChatService implements YouTubeChatService
                 scopes.add(YouTubeScopes.YOUTUBE);
 
                 // Authorize the request
-                Credential credential = Auth.authorize(scopes, clientSecret, YouTubeChat.MODID);
+                Credential credential = Auth.authorize(scopes, clientSecret, StreamChat.MODID);
 
                 // This object is used to make YouTube Data API requests
-                this.youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential).setApplicationName(YouTubeChat.NAME).build();
+                this.youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential).setApplicationName(StreamChat.NAME).build();
 
                 // Get the live chat id
                 String identity;
@@ -130,7 +130,7 @@ class ChatService implements YouTubeChatService
                 {
                     this.nextPoll = System.currentTimeMillis() + response.getPollingIntervalMillis();
                 }
-                ModLogger.printYTMessage(YouTubeChat.json.text("Service started").setChatStyle(YouTubeChat.json.green()));
+                ModLogger.printYTMessage(StreamChat.json.text("Service started").setChatStyle(StreamChat.json.green()));
             }
             catch (Throwable t)
             {
@@ -151,7 +151,7 @@ class ChatService implements YouTubeChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        ModLogger.printYTMessage(YouTubeChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setChatStyle(YouTubeChat.json.white()));
+        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setChatStyle(StreamChat.json.white()));
     }
 
     @Override
@@ -166,7 +166,7 @@ class ChatService implements YouTubeChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            ModLogger.printYTMessage(YouTubeChat.json.text("Started receiving live chat message").setChatStyle(YouTubeChat.json.white()));
+            ModLogger.printYTMessage(StreamChat.json.text("Started receiving live chat message").setChatStyle(StreamChat.json.white()));
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -181,7 +181,7 @@ class ChatService implements YouTubeChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            ModLogger.printYTMessage(YouTubeChat.json.text("Stopped receiving live chat message").setChatStyle(YouTubeChat.json.white()));
+            ModLogger.printYTMessage(StreamChat.json.text("Stopped receiving live chat message").setChatStyle(StreamChat.json.white()));
 
             if (this.listeners.size() == 0)
             {

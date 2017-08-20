@@ -23,9 +23,9 @@ import net.minecraftforge.common.config.Configuration;
 /**
  * Configuration settings for YouTube Chat.
  */
-public class YouTubeConfiguration
+public class ConfigManager
 {
-    private static YouTubeConfiguration instance;
+    private static ConfigManager instance;
     private static Configuration config;
     private String clientSecret;
     private String videoId;
@@ -34,15 +34,15 @@ public class YouTubeConfiguration
 
     public static void initialize(File path)
     {
-        instance = new YouTubeConfiguration(path);
+        instance = new ConfigManager(path);
     }
 
-    public static YouTubeConfiguration getInstance()
+    public static ConfigManager getInstance()
     {
         return instance;
     }
 
-    private YouTubeConfiguration(File path)
+    private ConfigManager(File path)
     {
         config = new Configuration(path);
         config.load();

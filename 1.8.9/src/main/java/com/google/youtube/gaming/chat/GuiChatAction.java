@@ -81,22 +81,22 @@ public class GuiChatAction extends GuiScreen
         {
             if (button.id == 0)
             {
-                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("Message deleted").setChatStyle(YouTubeChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Message deleted").setChatStyle(StreamChat.json.green()));
                 this.service.deleteMessage(this.messageId, response);
             }
             if (button.id == 1)
             {
-                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User banned").setChatStyle(YouTubeChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User banned").setChatStyle(StreamChat.json.green()));
                 this.service.banUser(this.messageId, response, true);
             }
             if (button.id == 2)
             {
-                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User temporary banned").setChatStyle(YouTubeChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User temporary banned").setChatStyle(StreamChat.json.green()));
                 this.service.banUser(this.messageId, response, false);
             }
             if (button.id == 3)
             {
-                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("Added moderator").setChatStyle(YouTubeChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Added moderator").setChatStyle(StreamChat.json.green()));
                 this.service.addModerator(this.messageId, response);
             }
             this.mc.displayGuiScreen(null);

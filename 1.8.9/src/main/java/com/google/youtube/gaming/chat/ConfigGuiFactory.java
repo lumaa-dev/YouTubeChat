@@ -20,12 +20,15 @@ import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.client.config.GuiConfig;
 
 /**
  * Configuration factory for YouTube Chat.
  */
-public class YouTubeConfigurationGuiFactory implements IModGuiFactory
+public class ConfigGuiFactory implements IModGuiFactory
 {
     @Override
     public void initialize(Minecraft minecraftInstance) {}
@@ -33,7 +36,7 @@ public class YouTubeConfigurationGuiFactory implements IModGuiFactory
     @Override
     public Class<? extends GuiScreen> mainConfigGuiClass()
     {
-        return YouTubeConfigurationGui.class;
+        return GuiStreamChatConfig.class;
     }
 
     @Override
@@ -46,5 +49,22 @@ public class YouTubeConfigurationGuiFactory implements IModGuiFactory
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {
         return null;
+    }
+
+    /**
+     * Gui configuration for YouTube Chat.
+     */
+    public class GuiStreamChatConfig extends GuiConfig
+    {
+        public GuiStreamChatConfig(GuiScreen parentScreen)
+        {
+            super(parentScreen, new ConfigElement(ConfigManager.getInstance().getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), StreamChat.MODID, false, false, "YouTube Chat Configuration");
+        }
+
+        @Override
+        public void onGuiClosed()
+        {
+            ConfigManager.getInstance().reset();
+        }
     }
 }
