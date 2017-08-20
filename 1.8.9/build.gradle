@@ -14,7 +14,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 version = "1.3.0-1.8.9"
 group = "com.google.youtube.gaming.chat"
-archivesBaseName = "ytchat"
+archivesBaseName = "StreamChat"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
@@ -30,8 +30,8 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: 'M:/Minecraft Modding Workspace/youtube-chat-for-minecraft/.dependencies_1.7', include: '*.jar')
-    embed fileTree(dir: 'M:/Minecraft Modding Workspace/youtube-chat-for-minecraft/.dependencies_1.7', include: '*.jar')
+    compile fileTree(dir: 'M:/Modding/StreamChat/.dependencies_1.7', include: '*.jar')
+    embed fileTree(dir: 'M:/Modding/StreamChat/.dependencies_1.7', include: '*.jar')
 }
 
 jar {
