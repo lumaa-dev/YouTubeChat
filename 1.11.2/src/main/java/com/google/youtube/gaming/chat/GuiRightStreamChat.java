@@ -90,13 +90,13 @@ public class GuiRightStreamChat extends Gui
                             {
                                 int j2 = -i1 * 9;
                                 String s = chatline.getChatComponent().getFormattedText();
-                                int stringWidth = this.mc.fontRenderer.getStringWidth(s) + 4;
+                                int stringWidth = this.mc.fontRendererObj.getStringWidth(s) + 4;
                                 GlStateManager.pushMatrix();
                                 GlStateManager.translate(res.getScaledWidth() / 2 - 310, 0.0F, 0.0F);
                                 drawRect(-2, j2 - 9, 0 + k + 4, j2, l1 / 2 << 24);
                                 GlStateManager.popMatrix();
                                 GlStateManager.enableBlend();
-                                this.mc.fontRenderer.drawStringWithShadow(s, res.getScaledWidth() / 2 - stringWidth, j2 - 8, 16777215 + (l1 << 24));
+                                this.mc.fontRendererObj.drawStringWithShadow(s, res.getScaledWidth() / 2 - stringWidth, j2 - 8, 16777215 + (l1 << 24));
                                 GlStateManager.disableAlpha();
                                 GlStateManager.disableBlend();
                             }
@@ -132,7 +132,7 @@ public class GuiRightStreamChat extends Gui
         }
 
         int i = MathHelper.floor(this.getChatWidth() / this.getChatScale());
-        List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponent, i, this.mc.fontRenderer, false, false);
+        List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponent, i, this.mc.fontRendererObj, false, false);
 
         for (ITextComponent itextcomponent : list)
         {
@@ -176,9 +176,9 @@ public class GuiRightStreamChat extends Gui
             {
                 int l = Math.min(this.getLineCount(), this.drawnChatLines.size());
 
-                if (j <= MathHelper.floor(this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRenderer.FONT_HEIGHT * l + l)
+                if (j <= MathHelper.floor(this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRendererObj.FONT_HEIGHT * l + l)
                 {
-                    int i1 = k / this.mc.fontRenderer.FONT_HEIGHT;
+                    int i1 = k / this.mc.fontRendererObj.FONT_HEIGHT;
 
                     if (i1 >= 0 && i1 < this.drawnChatLines.size())
                     {
@@ -189,7 +189,7 @@ public class GuiRightStreamChat extends Gui
                         {
                             if (itextcomponent instanceof TextComponentString)
                             {
-                                j1 += this.mc.fontRenderer.getStringWidth(GuiUtilRenderComponents.removeTextColorsIfConfigured(((TextComponentString)itextcomponent).getText(), false));
+                                j1 += this.mc.fontRendererObj.getStringWidth(GuiUtilRenderComponents.removeTextColorsIfConfigured(((TextComponentString)itextcomponent).getText(), false));
 
                                 if (j1 > j)
                                 {

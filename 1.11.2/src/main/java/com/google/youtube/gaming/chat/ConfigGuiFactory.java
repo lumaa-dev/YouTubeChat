@@ -51,6 +51,18 @@ public class ConfigGuiFactory implements IModGuiFactory
         return new GuiStreamChatConfig(parentScreen);
     }
 
+    @Override
+    public Class<? extends GuiScreen> mainConfigGuiClass()
+    {
+        return GuiStreamChatConfig.class;
+    }
+
+    @Override
+    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
+    {
+        return null;
+    }
+
     /**
      * Gui configuration for YouTube Chat.
      */

@@ -118,7 +118,7 @@ public class GuiChatAction extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRenderer, "Do an action for this message", this.width / 2, 120, 16777215);
+        this.drawCenteredString(this.fontRendererObj, "Do an action for this message", this.width / 2, 120, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

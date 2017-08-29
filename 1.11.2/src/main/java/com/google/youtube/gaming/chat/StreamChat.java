@@ -37,12 +37,12 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
  *
  * YouTubeChatService youTubeChatService = YouTubeChat.getService();
  */
-@Mod(modid = StreamChat.MODID, name = StreamChat.NAME, version = StreamChat.VERSION, clientSideOnly = true, guiFactory = StreamChat.GUI_FACTORY, acceptedMinecraftVersions = "[1.12,1.12.1]")
+@Mod(modid = StreamChat.MODID, name = StreamChat.NAME, version = StreamChat.VERSION, clientSideOnly = true, guiFactory = StreamChat.GUI_FACTORY)
 public class StreamChat
 {
     public static final String MODID = "stream_chat";
     public static final String NAME = "Stream Chat";
-    public static final String VERSION = "1.3.1-1.12.1";
+    public static final String VERSION = "1.3.1-1.11.2";
     public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
     private static StreamChatService service;
     public static final JsonUtil json = new JsonUtil();
