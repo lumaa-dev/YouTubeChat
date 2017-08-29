@@ -67,9 +67,16 @@ public class ModLogger
         ModLogger.LOG.warn(message, obj);
     }
 
-    public static void printYTMessage(ITextComponent component)
+    public static void printYTMessage(ITextComponent component, boolean isRight)
     {
-        Minecraft.getMinecraft().player.sendMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
+        if (isRight)
+        {
+            StreamChat.rightStreamGui.printChatMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
+        }
+        else
+        {
+            Minecraft.getMinecraft().player.sendMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
+        }
     }
 
     public static void printExceptionMessage(String message)

@@ -30,7 +30,9 @@ public class ConfigManager
     private String clientSecret;
     private String videoId;
     private String ownerUnicodeIcon;
+    private String moderatorUnicodeIcon;
     private boolean superOnly;
+    private boolean streamChatRightSide;
 
     public static void initialize(File path)
     {
@@ -60,6 +62,8 @@ public class ConfigManager
         this.videoId = config.get(Configuration.CATEGORY_GENERAL, "Video ID", "", "The id of the live video").getString();
         this.superOnly = config.get(Configuration.CATEGORY_GENERAL, "Show Super Chat Only", false, "Receive super chats only").getBoolean();
         this.ownerUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Channel Owner Icon (Unicode)", "", "Put your fancy unicode, it will display in front of your channel").getString();
+        this.moderatorUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Moderator Icon (Unicode)", "", "Put your fancy unicode, it will display in front of moderator channel").getString();
+        this.streamChatRightSide = config.get(Configuration.CATEGORY_GENERAL, "Display Stream Chat on Right Side", false, "Move Stream Chat into Right Side of the screen").getBoolean();
     }
 
     public void reset()
@@ -71,14 +75,14 @@ public class ConfigManager
         this.addGeneralConfig();
     }
 
-    public String getVideoId()
-    {
-        return this.videoId;
-    }
-
     public Configuration getConfig()
     {
         return config;
+    }
+
+    public String getVideoId()
+    {
+        return this.videoId;
     }
 
     public String getClientSecret()
@@ -94,5 +98,15 @@ public class ConfigManager
     public String getOwnerUnicode()
     {
         return this.ownerUnicodeIcon;
+    }
+
+    public String getModeratorUnicode()
+    {
+        return this.moderatorUnicodeIcon;
+    }
+
+    public boolean getRightSideChat()
+    {
+        return this.streamChatRightSide;
     }
 }
