@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 /**
@@ -46,6 +47,9 @@ public class StreamChat
     private static StreamChatService service;
     public static final JsonUtil json = new JsonUtil();
     public static GuiRightStreamChat rightStreamGui;
+    private static boolean onDisconnected;
+    private static boolean onConnected;
+    private int ticks = 40;
 
     public static synchronized StreamChatService getService()
     {
@@ -72,19 +76,42 @@ public class StreamChat
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
         StreamChat.rightStreamGui = new GuiRightStreamChat(Minecraft.getMinecraft());
-
-        if (CommandYouTubeChat.isReceivedChat)
-        {
-            StreamChat.service.subscribe(StreamChatReceiver.getInstance());
-        }
+        onConnected = true;
     }
 
     @SubscribeEvent
     public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
+        onDisconnected = true;
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
         if (CommandYouTubeChat.isReceivedChat)
         {
-            StreamChat.service.unsubscribe(StreamChatReceiver.getInstance());
+            if (onConnected && this.ticks > 0)
+            {
+                this.ticks--;
+
+                if (this.ticks == 0)
+                {
+                    StreamChat.service.subscribe(StreamChatReceiver.getInstance());
+                    onConnected = false;
+                    this.ticks = 40;
+                }
+            }
+            if (onDisconnected && this.ticks > 0)
+            {
+                this.ticks--;
+
+                if (this.ticks == 0)
+                {
+                    StreamChat.service.unsubscribe(StreamChatReceiver.getInstance());
+                    onDisconnected = false;
+                    this.ticks = 40;
+                }
+            }
         }
     }
 

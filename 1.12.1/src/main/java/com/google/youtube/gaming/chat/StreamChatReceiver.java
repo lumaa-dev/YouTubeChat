@@ -24,11 +24,11 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
 /**
-*
-* The class that handled for YouTubeChatMessageListener interface.
-* @author SteveKunG
-*
-*/
+ *
+ * The class that handled for YouTubeChatMessageListener interface.
+ * @author SteveKunG
+ *
+ */
 public class StreamChatReceiver implements YouTubeChatMessageListener
 {
     private static StreamChatReceiver instance;

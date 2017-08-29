@@ -151,7 +151,7 @@ class ChatService implements StreamChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(StreamChat.json.white()), ConfigManager.getInstance().getRightSideChat());
+        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
     }
 
     @Override
