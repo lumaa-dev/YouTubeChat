@@ -29,13 +29,13 @@ import net.minecraft.server.MinecraftServer;
 public class CommandClearRightChat extends ClientCommandBase
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return "ytcclear";
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public String getCommandUsage(ICommandSender sender)
     {
         return "/ytcclear";
     }

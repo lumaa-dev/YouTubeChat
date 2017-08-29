@@ -75,18 +75,18 @@ public class ModLogger
         }
         else
         {
-            if (Minecraft.getMinecraft().player != null)
+            if (Minecraft.getMinecraft().thePlayer != null)
             {
-                Minecraft.getMinecraft().player.sendMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
+                Minecraft.getMinecraft().thePlayer.addChatMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
             }
         }
     }
 
     public static void printExceptionMessage(String message)
     {
-        if (Minecraft.getMinecraft().player != null)
+        if (Minecraft.getMinecraft().thePlayer != null)
         {
-            Minecraft.getMinecraft().player.sendMessage(StreamChat.json.text("[YTChatException] ").setStyle(StreamChat.json.red()).appendSibling(StreamChat.json.text(message).setStyle(StreamChat.json.darkRed())));
+            Minecraft.getMinecraft().thePlayer.addChatMessage(StreamChat.json.text("[YTChatException] ").setStyle(StreamChat.json.red()).appendSibling(StreamChat.json.text(message).setStyle(StreamChat.json.darkRed())));
         }
     }
 }

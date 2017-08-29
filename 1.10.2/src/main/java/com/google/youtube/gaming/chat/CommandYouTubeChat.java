@@ -44,19 +44,19 @@ public class CommandYouTubeChat extends ClientCommandBase
     }
 
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return "ytchat";
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public String getCommandUsage(ICommandSender sender)
     {
         return this.getUsage();
     }
 
     @Override
-    public List<String> getAliases()
+    public List<String> getCommandAliases()
     {
         return Arrays.asList("ytc");
     }
@@ -175,13 +175,13 @@ public class CommandYouTubeChat extends ClientCommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "logout", "echo_start", "echo_stop", "post");
         }
-        return super.getTabCompletions(server, sender, args, pos);
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 
     private String getUsage()

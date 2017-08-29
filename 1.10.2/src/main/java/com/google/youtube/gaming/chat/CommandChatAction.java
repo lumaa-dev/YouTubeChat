@@ -41,19 +41,19 @@ public class CommandChatAction extends ClientCommandBase
     }
 
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return "ytchataction";
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public String getCommandUsage(ICommandSender sender)
     {
-        return this.getName();
+        return this.getCommandName();
     }
 
     @Override
-    public List<String> getAliases()
+    public List<String> getCommandAliases()
     {
         return Arrays.asList("ytcaction");
     }
