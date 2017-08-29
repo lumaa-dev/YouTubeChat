@@ -101,10 +101,7 @@ class ChatService implements StreamChatService
                     for (LiveBroadcast broadcast : broadcastListResponse.getItems())
                     {
                         this.liveChatId = broadcast.getSnippet().getLiveChatId();
-
-                        System.out.println(broadcast.getSnippet().getChannelId());
                         ChatService.channelOwnerId = broadcast.getSnippet().getChannelId();
-                        System.out.println(ChatService.channelOwnerId);
 
                         if (this.liveChatId != null && !this.liveChatId.isEmpty())
                         {

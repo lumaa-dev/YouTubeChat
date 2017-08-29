@@ -15,7 +15,7 @@ archivesBaseName = "StreamChat"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    version = "1.12.1-14.22.0.2459"
+    version = "1.12.1-14.22.0.2463"
     runDir = "run"
     mappings = "snapshot_20170624"
     makeObfSourceJar = false
