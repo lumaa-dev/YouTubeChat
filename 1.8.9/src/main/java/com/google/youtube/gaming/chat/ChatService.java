@@ -39,7 +39,6 @@ import net.minecraft.client.Minecraft;
 class ChatService implements StreamChatService
 {
     private static final String LIVE_CHAT_FIELDS = "items(authorDetails(channelId,displayName,isChatModerator,isChatOwner,isChatSponsor,isVerified,profileImageUrl),snippet(displayMessage,superChatDetails,publishedAt),id),nextPageToken,pollingIntervalMillis";
-    private static final String LIVE_BAN_CHAT_FIELDS = "items(snippet(liveChatId,type,banDurationSeconds),id,kind)";//TODO
     protected ExecutorService executor;
     private YouTube youtube;
     private String liveChatId;
@@ -48,7 +47,7 @@ class ChatService implements StreamChatService
     private String nextPageToken;
     private Timer pollTimer;
     private long nextPoll;
-    private String channelId;//TODO
+    public static String channelOwnerId = "";
 
     public ChatService()
     {
@@ -96,12 +95,13 @@ class ChatService implements StreamChatService
                 else
                 {
                     identity = "current user";
-                    YouTube.LiveBroadcasts.List broadcastList = this.youtube.liveBroadcasts().list("snippet").setFields("items/snippet/liveChatId").setBroadcastType("all").setBroadcastStatus("active");
+                    YouTube.LiveBroadcasts.List broadcastList = this.youtube.liveBroadcasts().list("snippet").setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
                     LiveBroadcastListResponse broadcastListResponse = broadcastList.execute();
 
                     for (LiveBroadcast broadcast : broadcastListResponse.getItems())
                     {
                         this.liveChatId = broadcast.getSnippet().getLiveChatId();
+                        ChatService.channelOwnerId = broadcast.getSnippet().getChannelId();
 
                         if (this.liveChatId != null && !this.liveChatId.isEmpty())
                         {
@@ -130,7 +130,7 @@ class ChatService implements StreamChatService
                 {
                     this.nextPoll = System.currentTimeMillis() + response.getPollingIntervalMillis();
                 }
-                ModLogger.printYTMessage(StreamChat.json.text("Service started").setChatStyle(StreamChat.json.green()));
+                ModLogger.printYTMessage(StreamChat.json.text("Service started").setChatStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
             }
             catch (Throwable t)
             {
@@ -151,7 +151,7 @@ class ChatService implements StreamChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setChatStyle(StreamChat.json.white()));
+        ModLogger.printYTMessage(StreamChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setChatStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
     }
 
     @Override
@@ -166,7 +166,7 @@ class ChatService implements StreamChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            ModLogger.printYTMessage(StreamChat.json.text("Started receiving live chat message").setChatStyle(StreamChat.json.white()));
+            ModLogger.printYTMessage(StreamChat.json.text("Started receiving live chat message").setChatStyle(StreamChat.json.white()), ConfigManager.getInstance().getRightSideChat());
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -181,7 +181,7 @@ class ChatService implements StreamChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            ModLogger.printYTMessage(StreamChat.json.text("Stopped receiving live chat message").setChatStyle(StreamChat.json.white()));
+            ModLogger.printYTMessage(StreamChat.json.text("Stopped receiving live chat message").setChatStyle(StreamChat.json.white()), ConfigManager.getInstance().getRightSideChat());
 
             if (this.listeners.size() == 0)
             {
@@ -254,9 +254,9 @@ class ChatService implements StreamChatService
     }
 
     @Override
-    public void banUser(final String messageId, final Runnable onComplete, final boolean temporary)
+    public void banUser(final String channelId, final Runnable onComplete, final boolean temporary)
     {
-        if (messageId == null || messageId.isEmpty())
+        if (channelId == null || channelId.isEmpty())
         {
             onComplete.run();
             return;
@@ -268,14 +268,14 @@ class ChatService implements StreamChatService
             {
                 LiveChatBan liveChatBan = new LiveChatBan();
                 LiveChatBanSnippet snippet = new LiveChatBanSnippet();
+                ChannelProfileDetails details = new ChannelProfileDetails();
                 snippet.setType(temporary ? "temporary" : "permanent");
                 snippet.setLiveChatId(this.liveChatId);
                 snippet.setBanDurationSeconds(BigInteger.valueOf(300));
-                liveChatBan.setKind("youtube#liveChatBan");
-                liveChatBan.setId(this.channelId);
+                details.setChannelId(channelId);
+                snippet.setBannedUserDetails(details);
                 liveChatBan.setSnippet(snippet);
-
-                YouTube.LiveChatBans.Insert liveChatBanInsert = this.youtube.liveChatBans().insert("snippet", liveChatBan).setFields(LIVE_BAN_CHAT_FIELDS);
+                YouTube.LiveChatBans.Insert liveChatBanInsert = this.youtube.liveChatBans().insert("snippet", liveChatBan);
                 liveChatBanInsert.execute();
                 onComplete.run();
             }
@@ -289,9 +289,9 @@ class ChatService implements StreamChatService
     }
 
     @Override
-    public void addModerator(String messageId, Runnable onComplete)
+    public void addModerator(String channelId, Runnable onComplete)
     {
-        if (messageId == null || messageId.isEmpty())
+        if (channelId == null || channelId.isEmpty())
         {
             onComplete.run();
             return;
@@ -303,11 +303,12 @@ class ChatService implements StreamChatService
             {
                 LiveChatModerator liveChatMod = new LiveChatModerator();
                 LiveChatModeratorSnippet snippet = new LiveChatModeratorSnippet();
+                ChannelProfileDetails details = new ChannelProfileDetails();
                 snippet.setLiveChatId(this.liveChatId);
-                liveChatMod.setKind("youtube#liveChatModerator");
-                liveChatMod.setId(messageId);
+                details.setChannelId(channelId);
+                snippet.setModeratorDetails(details);
                 liveChatMod.setSnippet(snippet);
-                YouTube.LiveChatModerators.Insert liveChatModInsert = this.youtube.liveChatModerators().insert("snippet", liveChatMod).setFields(LIVE_BAN_CHAT_FIELDS);
+                YouTube.LiveChatModerators.Insert liveChatModInsert = this.youtube.liveChatModerators().insert("snippet", liveChatMod);
                 liveChatModInsert.execute();
                 onComplete.run();
             }
@@ -350,7 +351,6 @@ class ChatService implements StreamChatService
                         LiveChatMessage message = messages.get(i);
                         LiveChatMessageSnippet snippet = message.getSnippet();
                         ChatService.this.broadcastMessage(message.getAuthorDetails(), snippet.getSuperChatDetails(), message.getId(), snippet.getDisplayMessage());
-                        ChatService.this.channelId = message.getAuthorDetails().getChannelId();
                     }
                     ChatService.this.poll(response.getPollingIntervalMillis());
                 }
@@ -367,7 +367,7 @@ class ChatService implements StreamChatService
     {
         for (YouTubeChatMessageListener listener : new ArrayList<>(this.listeners))
         {
-            listener.onMessageReceived(author, details, id , message);
+            listener.onMessageReceived(author, details, id, message);
         }
     }
 

@@ -44,12 +44,16 @@ public class GuiChatAction extends GuiScreen
     private GuiButton cancelButton;
     private ChatService service;
     private String messageId;
+    private String channelId;
+    private String displayName;
 
-    GuiChatAction(ChatService service, String messageId)
+    GuiChatAction(ChatService service, String messageId, String channelId, String displayName)
     {
         this.mc = Minecraft.getMinecraft();
         this.service = service;
         this.messageId = messageId;
+        this.channelId = channelId;
+        this.displayName = displayName;
     }
 
     public void display()
@@ -68,10 +72,17 @@ public class GuiChatAction extends GuiScreen
     public void initGui()
     {
         this.buttonList.add(this.deleteButton = new GuiButton(0, this.width / 2 - 170, this.height / 5 + 96, 80, 20, "Delete"));
-        this.buttonList.add(this.banButton = new GuiButton(1, this.width / 2 - 83, this.height / 5 + 96, 80, 20, "Ban WIP"));
-        this.buttonList.add(this.temporaryBanButton = new GuiButton(2, this.width / 2 + 4, this.height / 5 + 96, 80, 20, "Temporary Ban WIP"));
-        this.buttonList.add(this.addModerator = new GuiButton(3, this.width / 2 + 90, this.height / 5 + 96, 80, 20, "Add Moderator WIP"));
+        this.buttonList.add(this.banButton = new GuiButton(1, this.width / 2 - 83, this.height / 5 + 96, 80, 20, "Ban"));
+        this.buttonList.add(this.temporaryBanButton = new GuiButton(2, this.width / 2 + 4, this.height / 5 + 96, 80, 20, "Temporary Ban"));
+        this.buttonList.add(this.addModerator = new GuiButton(3, this.width / 2 + 90, this.height / 5 + 96, 80, 20, "Add Moderator"));
         this.buttonList.add(this.cancelButton = new GuiButton(4, this.width / 2 - 100, this.height / 5 + 120, I18n.format("gui.cancel")));
+
+        if (ChatService.channelOwnerId.equals(this.channelId))
+        {
+            this.banButton.enabled = false;
+            this.temporaryBanButton.enabled = false;
+            this.addModerator.enabled = false;
+        }
     }
 
     @Override
@@ -81,23 +92,23 @@ public class GuiChatAction extends GuiScreen
         {
             if (button.id == 0)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Message deleted").setChatStyle(StreamChat.json.green()));
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Message deleted!").setChatStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
                 this.service.deleteMessage(this.messageId, response);
             }
             if (button.id == 1)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User banned").setChatStyle(StreamChat.json.green()));
-                this.service.banUser(this.messageId, response, true);
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User ").setChatStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(this.displayName + " ").setChatStyle(StreamChat.json.darkRed()).appendSibling(StreamChat.json.text("was banned!").setChatStyle(StreamChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
+                this.service.banUser(this.channelId, response, false);
             }
             if (button.id == 2)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User temporary banned").setChatStyle(StreamChat.json.green()));
-                this.service.banUser(this.messageId, response, false);
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User ").setChatStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(this.displayName + " ").setChatStyle(StreamChat.json.darkRed()).appendSibling(StreamChat.json.text("was temporary banned!").setChatStyle(StreamChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
+                this.service.banUser(this.channelId, response, true);
             }
             if (button.id == 3)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Added moderator").setChatStyle(StreamChat.json.green()));
-                this.service.addModerator(this.messageId, response);
+                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Added ").setChatStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(this.displayName + " ").setChatStyle(StreamChat.json.blue()).appendSibling(StreamChat.json.text("to moderator!").setChatStyle(StreamChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
+                this.service.addModerator(this.channelId, response);
             }
             this.mc.displayGuiScreen(null);
         }

@@ -70,19 +70,19 @@ public interface StreamChatService
     void deleteMessage(String messageId, Runnable onComplete);
 
     /**
-     * Ban a user from the live chat stream.
+     * Bans a user from the live chat stream.
      *
-     * @param messageId The message id to ban.
+     * @param channelId The channel id to ban.
      * @param onComplete Callback when the operation is complete.
-     * @param temporary Temporary ban user from chat (5 min).
+     * @param temporary Temporary ban user from chat (5 min). If not user will permanently banned from channel.
      */
-    void banUser(String messageId, Runnable onComplete, boolean temporary);
+    void banUser(String channelId, Runnable onComplete, boolean temporary);
 
     /**
-     * Add moderator from the live chat stream.
+     * Adds moderator from the live chat stream.
      *
-     * @param messageId The message id to add.
+     * @param channelId The channel id to add.
      * @param onComplete Callback when the operation is complete.
      */
-    void addModerator(String messageId, Runnable onComplete);
+    void addModerator(String channelId, Runnable onComplete);
 }

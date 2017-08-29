@@ -21,16 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
-import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.google.youtube.gaming.chat.StreamChatService.YouTubeChatMessageListener;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
 import net.minecraft.util.BlockPos;
 
 /**
@@ -38,9 +32,10 @@ import net.minecraft.util.BlockPos;
  *
  * /ytchat <start|stop|logout|echo_start|echo_stop|post>
  */
-public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChatMessageListener
+public class CommandYouTubeChat extends ClientCommandBase
 {
     private ChatService service;
+    static boolean isReceivedChat;
 
     public CommandYouTubeChat(ChatService service)
     {
@@ -85,7 +80,14 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is already initialized");
             }
+
             this.service.start(configuration.getVideoId(), clientSecret);
+
+            if (ConfigManager.getInstance().getAutoReceiveChat())
+            {
+                CommandYouTubeChat.isReceivedChat = true;
+                this.service.subscribe(StreamChatReceiver.getInstance());
+            }
         }
         else if (args[0].equalsIgnoreCase("stop"))
         {
@@ -97,7 +99,14 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is not initialized");
             }
+
             this.service.stop(false);
+
+            if (ConfigManager.getInstance().getAutoReceiveChat())
+            {
+                CommandYouTubeChat.isReceivedChat = false;
+                this.service.unsubscribe(StreamChatReceiver.getInstance());
+            }
         }
         else if (args[0].equalsIgnoreCase("logout"))
         {
@@ -132,7 +141,8 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is already start receiving live chat message");
             }
-            this.service.subscribe(this);
+            CommandYouTubeChat.isReceivedChat = true;
+            this.service.subscribe(StreamChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("echo_stop"))
         {
@@ -144,7 +154,8 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is stop receiving live chat message");
             }
-            this.service.unsubscribe(this);
+            CommandYouTubeChat.isReceivedChat = false;
+            this.service.unsubscribe(StreamChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("post"))
         {
@@ -153,7 +164,7 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
                 throw new WrongUsageException("/ytchat post <message>");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(StreamChat.json.text("Message posted").setChatStyle(StreamChat.json.green()));
+            Consumer<String> id = i -> ModLogger.printYTMessage(StreamChat.json.text("Message posted").setChatStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
             this.service.postMessage(message, id);
         }
         else
@@ -170,20 +181,6 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "logout", "echo_start", "echo_stop", "post");
         }
         return super.addTabCompletionOptions(sender, args, pos);
-    }
-
-    @Override
-    public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
-    {
-        if (!ConfigManager.getInstance().getSuperOnly())
-        {
-            String unicode = author.getIsVerified() ? "\u2713 " : !author.getIsChatOwner() ? ConfigManager.getInstance().getOwnerUnicode() : author.getIsChatModerator() ? "" : "";//TODO
-            ModLogger.printYTMessage(StreamChat.json.text(unicode + author.getDisplayName()).setChatStyle(author.getIsChatOwner() ? StreamChat.json.gold() : author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.gray()).appendSibling(StreamChat.json.text(": " + message).setChatStyle(StreamChat.json.white().setChatClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "ytcaction " + id)).setChatHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setChatStyle(StreamChat.json.white()))))));
-        }
-        if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
-        {
-            ModLogger.printYTMessage(StreamChat.json.text("Received ").setChatStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(superChatDetails.getAmountDisplayString()).setChatStyle(StreamChat.json.gold()).appendSibling(StreamChat.json.text(" from ").setChatStyle(StreamChat.json.green())).appendSibling(StreamChat.json.text(author.getDisplayName()).setChatStyle(author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.white()))));
-        }
     }
 
     private String getUsage()

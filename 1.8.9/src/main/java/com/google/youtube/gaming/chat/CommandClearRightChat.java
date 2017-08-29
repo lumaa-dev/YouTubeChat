@@ -16,59 +16,33 @@
 
 package com.google.youtube.gaming.chat;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 
 /**
+ * An command that will clear chat messages on right side on the screen. Usage:
  *
- * Do an action with current chat message. [Delete, Ban, Temporary ban, Add moderator]
- * Usage: /ytchataction <message_id> <channel_id>
+ * /ytcclear
  * @author SteveKunG
- *
  */
-public class CommandChatAction extends ClientCommandBase
+public class CommandClearRightChat extends ClientCommandBase
 {
-    private ChatService service;
-
-    public CommandChatAction(ChatService service)
-    {
-        this.service = service;
-    }
-
     @Override
     public String getCommandName()
     {
-        return "ytchataction";
+        return "ytcclear";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return this.getCommandName();
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return Arrays.asList("ytcaction");
+        return "/ytcclear";
     }
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-        if (args.length == 0)
-        {
-            throw new WrongUsageException(this.getUsage());
-        }
-        new GuiChatAction(this.service, args[0], args[1], ClientCommandBase.getChatComponentFromNthArg(args, 2).createCopy().getUnformattedText()).display();
-    }
-
-    private String getUsage()
-    {
-        return "/ytchataction <message_id> <channel_id>";
+        StreamChat.rightStreamGui.clearChatMessages();
+        ModLogger.printYTMessage(StreamChat.json.text("Clear Stream Chat message (Right Side)").setChatStyle(StreamChat.json.white()), ConfigManager.getInstance().getRightSideChat());
     }
 }

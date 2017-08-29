@@ -18,11 +18,19 @@ package com.google.youtube.gaming.chat;
 
 import java.util.Arrays;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 /**
  * Main entry point for YouTube Chat. Provides the chat service API to other mods, e.g.
@@ -34,10 +42,14 @@ public class StreamChat
 {
     public static final String MODID = "stream_chat";
     public static final String NAME = "Stream Chat";
-    public static final String VERSION = "1.3.0-1.8.9";
+    public static final String VERSION = "1.3.1-1.8.9";
     public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
     private static StreamChatService service;
     public static final JsonUtil json = new JsonUtil();
+    public static GuiRightStreamChat rightStreamGui;
+    private static boolean onDisconnected;
+    private static boolean onConnected;
+    private int ticks = 40;
 
     public static synchronized StreamChatService getService()
     {
@@ -55,8 +67,70 @@ public class StreamChat
         ConfigManager.initialize(event.getSuggestedConfigurationFile());
         ChatService service = (ChatService) StreamChat.getService();
         ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
-        ClientCommandHandler.instance.registerCommand(new CommandChatMock(service));
+        ClientCommandHandler.instance.registerCommand(new CommandClearRightChat());
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
+    {
+        StreamChat.rightStreamGui = new GuiRightStreamChat(Minecraft.getMinecraft());
+        onConnected = true;
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+    {
+        onDisconnected = true;
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if (CommandYouTubeChat.isReceivedChat)
+        {
+            if (onConnected && this.ticks > 0)
+            {
+                this.ticks--;
+
+                if (this.ticks == 0)
+                {
+                    StreamChat.service.subscribe(StreamChatReceiver.getInstance());
+                    onConnected = false;
+                    this.ticks = 40;
+                }
+            }
+            if (onDisconnected && this.ticks > 0)
+            {
+                this.ticks--;
+
+                if (this.ticks == 0)
+                {
+                    StreamChat.service.unsubscribe(StreamChatReceiver.getInstance());
+                    onDisconnected = false;
+                    this.ticks = 40;
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPreInfoRender(RenderGameOverlayEvent.Pre event)
+    {
+        if (event.type == RenderGameOverlayEvent.ElementType.TEXT)
+        {
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+            int width = res.getScaledWidth();
+            int height = res.getScaledHeight();
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+            GlStateManager.disableAlpha();
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(width / 2, height - 48, 0.0F);
+            StreamChat.rightStreamGui.drawChat(Minecraft.getMinecraft().ingameGUI.getUpdateCounter());
+            GlStateManager.popMatrix();
+        }
     }
 
     private static void initModInfo(ModMetadata info)
