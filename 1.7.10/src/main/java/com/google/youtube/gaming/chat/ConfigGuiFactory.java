@@ -18,12 +18,12 @@ package com.google.youtube.gaming.chat;
 
 import java.util.Set;
 
+import cpw.mods.fml.client.IModGuiFactory;
+import cpw.mods.fml.client.config.GuiConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.IModGuiFactory;
-import net.minecraftforge.fml.client.config.GuiConfig;
 
 /**
  * Configuration factory for YouTube Chat.
@@ -54,11 +54,11 @@ public class ConfigGuiFactory implements IModGuiFactory
     /**
      * Gui configuration for YouTube Chat.
      */
-    public class GuiStreamChatConfig extends GuiConfig
+    public static class GuiStreamChatConfig extends GuiConfig
     {
         public GuiStreamChatConfig(GuiScreen parentScreen)
         {
-            super(parentScreen, new ConfigElement(ConfigManager.getInstance().getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), StreamChat.MODID, false, false, "YouTube Chat Configuration");
+            super(parentScreen, new ConfigElement<>(ConfigManager.getInstance().getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), StreamChat.MODID, false, false, "YouTube Chat Configuration");
         }
 
         @Override

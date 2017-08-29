@@ -18,31 +18,34 @@ package com.google.youtube.gaming.chat;
 
 import java.util.Arrays;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.ModMetadata;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 /**
  * Main entry point for YouTube Chat. Provides the chat service API to other mods, e.g.
  *
  * YouTubeChatService youTubeChatService = YouTubeChat.getService();
  */
-@Mod(modid = StreamChat.MODID, name = StreamChat.NAME, version = StreamChat.VERSION, clientSideOnly = true, guiFactory = StreamChat.GUI_FACTORY)
+@Mod(modid = StreamChat.MODID, name = StreamChat.NAME, version = StreamChat.VERSION, guiFactory = StreamChat.GUI_FACTORY)
 public class StreamChat
 {
     public static final String MODID = "stream_chat";
     public static final String NAME = "Stream Chat";
-    public static final String VERSION = "1.3.1-1.8.9";
+    public static final String VERSION = "1.3.1-1.7.10";
     public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
     private static StreamChatService service;
     public static final JsonUtil json = new JsonUtil();
@@ -70,6 +73,7 @@ public class StreamChat
         ClientCommandHandler.instance.registerCommand(new CommandClearRightChat());
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     @SubscribeEvent
@@ -120,16 +124,16 @@ public class StreamChat
     {
         if (event.type == RenderGameOverlayEvent.ElementType.TEXT)
         {
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.disableAlpha();
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(width / 2, height - 48, 0.0F);
+            GL11.glEnable(GL11.GL_BLEND);
+            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(width / 2, height - 48, 0.0F);
             StreamChat.rightStreamGui.drawChat(Minecraft.getMinecraft().ingameGUI.getUpdateCounter());
-            GlStateManager.popMatrix();
+            GL11.glPopMatrix();
         }
     }
 

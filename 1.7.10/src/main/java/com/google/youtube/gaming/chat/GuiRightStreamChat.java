@@ -22,15 +22,19 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Lists;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  *
@@ -52,7 +56,7 @@ public class GuiRightStreamChat extends Gui
 
     void drawChat(int updateCounter)
     {
-        ScaledResolution res = new ScaledResolution(this.mc);
+        ScaledResolution res = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
 
         if (this.mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN)
         {
@@ -64,9 +68,9 @@ public class GuiRightStreamChat extends Gui
             {
                 float f1 = this.getChatScale();
                 int k = MathHelper.ceiling_float_int(this.getChatWidth() / f1);
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(2.0F, 8.0F, 0.0F);
-                GlStateManager.scale(f1, f1, 1.0F);
+                GL11.glPushMatrix();
+                GL11.glTranslatef(2.0F, 8.0F, 0.0F);
+                GL11.glScalef(f1, f1, 1.0F);
 
                 for (int i1 = 0; i1 < this.drawnChatLines.size() && i1 < i; ++i1)
                 {
@@ -89,21 +93,21 @@ public class GuiRightStreamChat extends Gui
                             if (l1 > 3)
                             {
                                 int j2 = -i1 * 9;
-                                String s = chatline.getChatComponent().getFormattedText();
-                                int stringWidth = this.mc.fontRendererObj.getStringWidth(s) + 4;
-                                GlStateManager.pushMatrix();
-                                GlStateManager.translate(res.getScaledWidth() / 2 - 310, 0.0F, 0.0F);
+                                String s = chatline.func_151461_a().getFormattedText();
+                                int stringWidth = this.mc.fontRenderer.getStringWidth(s) + 4;
+                                GL11.glPushMatrix();
+                                GL11.glTranslatef(res.getScaledWidth() / 2 - 310, 0.0F, 0.0F);
                                 drawRect(-2, j2 - 9, 0 + k + 4, j2, l1 / 2 << 24);
-                                GlStateManager.popMatrix();
-                                GlStateManager.enableBlend();
-                                this.mc.fontRendererObj.drawStringWithShadow(s, res.getScaledWidth() / 2 - stringWidth, j2 - 8, 16777215 + (l1 << 24));
-                                GlStateManager.disableAlpha();
-                                GlStateManager.disableBlend();
+                                GL11.glPopMatrix();
+                                GL11.glEnable(GL11.GL_BLEND);
+                                this.mc.fontRenderer.drawStringWithShadow(s, res.getScaledWidth() / 2 - stringWidth, j2 - 8, 16777215 + (l1 << 24));
+                                GL11.glDisable(GL11.GL_ALPHA_TEST);
+                                GL11.glDisable(GL11.GL_BLEND);
                             }
                         }
                     }
                 }
-                GlStateManager.popMatrix();
+                GL11.glPopMatrix();
             }
         }
     }
@@ -131,12 +135,56 @@ public class GuiRightStreamChat extends Gui
             this.deleteChatLine(chatLineId);
         }
 
-        int i = MathHelper.floor_float(this.getChatWidth() / this.getChatScale());
-        List<IChatComponent> list = GuiUtilRenderComponents.func_178908_a(chatComponent, i, this.mc.fontRendererObj, false, false);
+        int k = MathHelper.floor_float(this.getChatWidth() / this.getChatScale());
+        int l = 0;
+        List<IChatComponent> arraylist1 = Lists.newArrayList(chatComponent);
 
-        for (IChatComponent itextcomponent : list)
+        for (int i1 = 0; i1 < arraylist1.size(); ++i1)
         {
-            this.drawnChatLines.add(0, new ChatLine(updateCounter, itextcomponent, chatLineId));
+            IChatComponent ichatcomponent1 = arraylist1.get(i1);
+            String s = this.func_146235_b(ichatcomponent1.getChatStyle().getFormattingCode() + ichatcomponent1.getUnformattedTextForChat());
+            int j1 = this.mc.fontRenderer.getStringWidth(s);
+            ChatComponentText chatcomponenttext1 = new ChatComponentText(s);
+            chatcomponenttext1.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
+            boolean flag1 = false;
+
+            if (l + j1 > k)
+            {
+                String s1 = this.mc.fontRenderer.trimStringToWidth(s, k - l, false);
+                String s2 = s1.length() < s.length() ? s.substring(s1.length()) : null;
+
+                if (s2 != null && s2.length() > 0)
+                {
+                    int k1 = s1.lastIndexOf(" ");
+
+                    if (k1 >= 0 && this.mc.fontRenderer.getStringWidth(s.substring(0, k1)) > 0)
+                    {
+                        s1 = s.substring(0, k1);
+                        s2 = s.substring(k1);
+                    }
+                    ChatComponentText chatcomponenttext2 = new ChatComponentText(s2);
+                    chatcomponenttext2.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
+                    arraylist1.add(i1 + 1, chatcomponenttext2);
+                }
+                j1 = this.mc.fontRenderer.getStringWidth(s1);
+                chatcomponenttext1 = new ChatComponentText(s1);
+                chatcomponenttext1.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
+                flag1 = true;
+            }
+
+            if (l + j1 <= k)
+            {
+                l += j1;
+            }
+            else
+            {
+                flag1 = true;
+            }
+
+            if (flag1)
+            {
+                l = 0;
+            }
         }
 
         while (this.drawnChatLines.size() > 100)
@@ -164,7 +212,7 @@ public class GuiRightStreamChat extends Gui
         }
         else
         {
-            ScaledResolution scaledresolution = new ScaledResolution(this.mc);
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
             int i = scaledresolution.getScaleFactor();
             float f = this.getChatScale();
             int j = mouseX / i - 2;
@@ -176,24 +224,27 @@ public class GuiRightStreamChat extends Gui
             {
                 int l = Math.min(this.getLineCount(), this.drawnChatLines.size());
 
-                if (j <= MathHelper.floor_float(this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRendererObj.FONT_HEIGHT * l + l)
+                if (j <= MathHelper.floor_float(this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRenderer.FONT_HEIGHT * l + l)
                 {
-                    int i1 = k / this.mc.fontRendererObj.FONT_HEIGHT;
+                    int i1 = k / this.mc.fontRenderer.FONT_HEIGHT;
 
                     if (i1 >= 0 && i1 < this.drawnChatLines.size())
                     {
                         ChatLine chatline = this.drawnChatLines.get(i1);
-                        int j1 = 0;
+                        int l1 = 0;
+                        Iterator iterator = chatline.func_151461_a().iterator();
 
-                        for (IChatComponent itextcomponent : chatline.getChatComponent())
+                        while (iterator.hasNext())
                         {
-                            if (itextcomponent instanceof ChatComponentText)
-                            {
-                                j1 += this.mc.fontRendererObj.getStringWidth(GuiUtilRenderComponents.func_178909_a(((ChatComponentText)itextcomponent).getChatComponentText_TextValue(), false));
+                            IChatComponent ichatcomponent = (IChatComponent)iterator.next();
 
-                                if (j1 > j)
+                            if (ichatcomponent instanceof ChatComponentText)
+                            {
+                                l1 += this.mc.fontRenderer.getStringWidth(this.func_146235_b(((ChatComponentText)ichatcomponent).getChatComponentText_TextValue()));
+
+                                if (l1 > l)
                                 {
-                                    return itextcomponent;
+                                    return ichatcomponent;
                                 }
                             }
                         }
@@ -247,12 +298,12 @@ public class GuiRightStreamChat extends Gui
 
     private int getChatWidth()
     {
-        return GuiNewChat.calculateChatboxWidth(this.mc.gameSettings.chatWidth);
+        return GuiNewChat.func_146233_a(this.mc.gameSettings.chatWidth);
     }
 
     private int getChatHeight()
     {
-        return GuiNewChat.calculateChatboxHeight(this.getChatOpen() ? this.mc.gameSettings.chatHeightFocused : this.mc.gameSettings.chatHeightUnfocused);
+        return GuiNewChat.func_146243_b(this.getChatOpen() ? this.mc.gameSettings.chatHeightFocused : this.mc.gameSettings.chatHeightUnfocused);
     }
 
     private float getChatScale()
@@ -263,5 +314,10 @@ public class GuiRightStreamChat extends Gui
     private int getLineCount()
     {
         return this.getChatHeight() / 9;
+    }
+
+    private String func_146235_b(String text)
+    {
+        return Minecraft.getMinecraft().gameSettings.chatColours ? text : EnumChatFormatting.getTextWithoutFormattingCodes(text);
     }
 }

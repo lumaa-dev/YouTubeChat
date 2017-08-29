@@ -25,7 +25,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.BlockPos;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
@@ -174,13 +173,13 @@ public class CommandYouTubeChat extends ClientCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
         {
             return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "logout", "echo_start", "echo_stop", "post");
         }
-        return super.addTabCompletionOptions(sender, args, pos);
+        return super.addTabCompletionOptions(sender, args);
     }
 
     private String getUsage()
