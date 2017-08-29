@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+version = "1.3.1-1.7.10"
+group = "com.google.youtube.gaming.chat"
+archivesBaseName = "StreamChat"
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+minecraft {
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "run"
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+dependencies {
+    compile fileTree(dir: 'M:/Modding/StreamChat/.dependencies', include: '*.jar')
+    embed fileTree(dir: 'M:/Modding/StreamChat/.dependencies', include: '*.jar')
+}
+
+jar {
+    from configurations.embed.collect {
+        exclude 'META-INF/LICENSE*'
+        exclude 'META-INF/NOTICE*'
+        it.isDirectory() ? it : zipTree(it)
+    }
+}
