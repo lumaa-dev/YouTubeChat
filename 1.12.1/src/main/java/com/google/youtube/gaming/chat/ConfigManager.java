@@ -33,6 +33,7 @@ public class ConfigManager
     private String moderatorUnicodeIcon;
     private boolean superOnly;
     private boolean streamChatRightSide;
+    private boolean autoReceiveChat;
 
     public static void initialize(File path)
     {
@@ -64,6 +65,7 @@ public class ConfigManager
         this.ownerUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Channel Owner Icon (Unicode)", "", "Put your fancy unicode, it will display in front of your channel").getString();
         this.moderatorUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Moderator Icon (Unicode)", "", "Put your fancy unicode, it will display in front of moderator channel").getString();
         this.streamChatRightSide = config.get(Configuration.CATEGORY_GENERAL, "Display Stream Chat on Right Side", false, "Move Stream Chat into Right Side of the screen").getBoolean();
+        this.autoReceiveChat = config.get(Configuration.CATEGORY_GENERAL, "Automatic Receive Chat", false, "When you starting service, This will automatically subscribe stream chat service").getBoolean();
     }
 
     public void reset()
@@ -108,5 +110,10 @@ public class ConfigManager
     public boolean getRightSideChat()
     {
         return this.streamChatRightSide;
+    }
+
+    public boolean getAutoReceiveChat()
+    {
+        return this.autoReceiveChat;
     }
 }

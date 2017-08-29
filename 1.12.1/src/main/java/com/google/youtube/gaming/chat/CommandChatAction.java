@@ -65,7 +65,7 @@ public class CommandChatAction extends ClientCommandBase
         {
             throw new WrongUsageException(this.getUsage());
         }
-        new GuiChatAction(this.service, args[0], args[1], args[2]).display();
+        new GuiChatAction(this.service, args[0], args[1], ClientCommandBase.getChatComponentFromNthArg(args, 2).createCopy().getUnformattedText()).display();
     }
 
     private String getUsage()

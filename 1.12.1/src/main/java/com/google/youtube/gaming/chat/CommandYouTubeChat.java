@@ -21,27 +21,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
-import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.google.youtube.gaming.chat.StreamChatService.YouTubeChatMessageListener;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
  *
  * /ytchat <start|stop|logout|echo_start|echo_stop|post>
  */
-public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChatMessageListener
+public class CommandYouTubeChat extends ClientCommandBase
 {
     private ChatService service;
+    static boolean isReceivedChat;
 
     public CommandYouTubeChat(ChatService service)
     {
@@ -86,7 +81,14 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is already initialized");
             }
+
             this.service.start(configuration.getVideoId(), clientSecret);
+
+            if (ConfigManager.getInstance().getAutoReceiveChat())
+            {
+                CommandYouTubeChat.isReceivedChat = true;
+                this.service.subscribe(StreamChatReceiver.getInstance());
+            }
         }
         else if (args[0].equalsIgnoreCase("stop"))
         {
@@ -98,7 +100,14 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is not initialized");
             }
+
             this.service.stop(false);
+
+            if (ConfigManager.getInstance().getAutoReceiveChat())
+            {
+                CommandYouTubeChat.isReceivedChat = false;
+                this.service.unsubscribe(StreamChatReceiver.getInstance());
+            }
         }
         else if (args[0].equalsIgnoreCase("logout"))
         {
@@ -133,7 +142,8 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is already start receiving live chat message");
             }
-            this.service.subscribe(this);
+            CommandYouTubeChat.isReceivedChat = true;
+            this.service.subscribe(StreamChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("echo_stop"))
         {
@@ -145,7 +155,8 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
             {
                 throw new CommandException("Service is stop receiving live chat message");
             }
-            this.service.unsubscribe(this);
+            CommandYouTubeChat.isReceivedChat = false;
+            this.service.unsubscribe(StreamChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("post"))
         {
@@ -173,54 +184,8 @@ public class CommandYouTubeChat extends ClientCommandBase implements YouTubeChat
         return super.getTabCompletions(server, sender, args, pos);
     }
 
-    @Override
-    public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
-    {
-        if (!ConfigManager.getInstance().getSuperOnly())
-        {
-            String unicode = "";
-
-            if (author.getIsChatOwner())
-            {
-                unicode = this.getUnicode(ConfigManager.getInstance().getOwnerUnicode());
-            }
-            if (author.getIsVerified())
-            {
-                unicode = "\u2713 ";
-            }
-            if (author.getIsChatModerator())
-            {
-                unicode = this.getUnicode(ConfigManager.getInstance().getModeratorUnicode());
-            }
-            if (author.getIsVerified() && author.getIsChatModerator())
-            {
-                unicode = "\u2713 " + this.getUnicode(ConfigManager.getInstance().getModeratorUnicode());
-            }
-            ModLogger.printYTMessage(StreamChat.json.text(unicode + author.getDisplayName()).setStyle(author.getIsChatOwner() ? StreamChat.json.gold() : author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.gray()).appendSibling(StreamChat.json.text(": " + message).setStyle(StreamChat.json.white().setClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + author.getDisplayName())).setHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setStyle(StreamChat.json.white()))))), ConfigManager.getInstance().getRightSideChat());
-        }
-        if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
-        {
-            ModLogger.printYTMessage(StreamChat.json.text("Received ").setStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(superChatDetails.getAmountDisplayString()).setStyle(StreamChat.json.gold()).appendSibling(StreamChat.json.text(" from ").setStyle(StreamChat.json.green())).appendSibling(StreamChat.json.text(author.getDisplayName()).setStyle(author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.white()))), ConfigManager.getInstance().getRightSideChat());
-        }
-    }
-
     private String getUsage()
     {
         return "/ytchat <start|stop|logout|echo_start|echo_stop|post>";
-    }
-
-    private String getUnicode(String raw)
-    {
-        String unicode = "";
-        String str = raw.split(" ")[0];
-        str = str.replace("\\", "");
-        String[] arr = str.split("u");
-
-        for (int i = 1; i < arr.length; i++)
-        {
-            int hexVal = Integer.parseInt(arr[i], 16);
-            unicode += (char)hexVal + " ";
-        }
-        return unicode;
     }
 }

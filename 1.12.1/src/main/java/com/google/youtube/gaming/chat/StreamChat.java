@@ -72,6 +72,20 @@ public class StreamChat
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
         StreamChat.rightStreamGui = new GuiRightStreamChat(Minecraft.getMinecraft());
+
+        if (CommandYouTubeChat.isReceivedChat)
+        {
+            StreamChat.service.subscribe(StreamChatReceiver.getInstance());
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+    {
+        if (CommandYouTubeChat.isReceivedChat)
+        {
+            StreamChat.service.unsubscribe(StreamChatReceiver.getInstance());
+        }
     }
 
     @SubscribeEvent
