@@ -54,7 +54,7 @@ public class ConfigGuiFactory implements IModGuiFactory
     /**
      * Gui configuration for YouTube Chat.
      */
-    public class GuiStreamChatConfig extends GuiConfig
+    public static class GuiStreamChatConfig extends GuiConfig
     {
         public GuiStreamChatConfig(GuiScreen parentScreen)
         {
