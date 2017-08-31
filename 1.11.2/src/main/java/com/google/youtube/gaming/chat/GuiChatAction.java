@@ -92,22 +92,22 @@ public class GuiChatAction extends GuiScreen
         {
             if (button.id == 0)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Message deleted!").setStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
+                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("Message deleted!").setStyle(YouTubeChat.json.green()), ConfigManager.getInstance().getRightSideChat());
                 this.service.deleteMessage(this.messageId, response);
             }
             if (button.id == 1)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User ").setStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(this.displayName + " ").setStyle(StreamChat.json.darkRed()).appendSibling(StreamChat.json.text("was banned!").setStyle(StreamChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
+                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(this.displayName + " ").setStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was banned!").setStyle(YouTubeChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
                 this.service.banUser(this.channelId, response, false);
             }
             if (button.id == 2)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("User ").setStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(this.displayName + " ").setStyle(StreamChat.json.darkRed()).appendSibling(StreamChat.json.text("was temporary banned!").setStyle(StreamChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
+                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(this.displayName + " ").setStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was temporary banned!").setStyle(YouTubeChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
                 this.service.banUser(this.channelId, response, true);
             }
             if (button.id == 3)
             {
-                Runnable response = () -> ModLogger.printYTMessage(StreamChat.json.text("Added ").setStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(this.displayName + " ").setStyle(StreamChat.json.blue()).appendSibling(StreamChat.json.text("to moderator!").setStyle(StreamChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
+                Runnable response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("Added ").setStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(this.displayName + " ").setStyle(YouTubeChat.json.blue()).appendSibling(YouTubeChat.json.text("to moderator!").setStyle(YouTubeChat.json.green()))), ConfigManager.getInstance().getRightSideChat());
                 this.service.addModerator(this.channelId, response);
             }
             this.mc.displayGuiScreen(null);
