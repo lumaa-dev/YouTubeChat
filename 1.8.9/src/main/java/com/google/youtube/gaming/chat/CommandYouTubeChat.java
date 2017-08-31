@@ -86,7 +86,7 @@ public class CommandYouTubeChat extends ClientCommandBase
             if (ConfigManager.getInstance().getAutoReceiveChat())
             {
                 CommandYouTubeChat.isReceivedChat = true;
-                this.service.subscribe(StreamChatReceiver.getInstance());
+                this.service.subscribe(YouTubeChatReceiver.getInstance());
             }
         }
         else if (args[0].equalsIgnoreCase("stop"))
@@ -105,7 +105,7 @@ public class CommandYouTubeChat extends ClientCommandBase
             if (ConfigManager.getInstance().getAutoReceiveChat())
             {
                 CommandYouTubeChat.isReceivedChat = false;
-                this.service.unsubscribe(StreamChatReceiver.getInstance());
+                this.service.unsubscribe(YouTubeChatReceiver.getInstance());
             }
         }
         else if (args[0].equalsIgnoreCase("logout"))
@@ -123,7 +123,7 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             try
             {
-                Auth.clearCredentials();
+                Authentication.clearCredentials();
             }
             catch (IOException e)
             {
@@ -142,7 +142,7 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is already start receiving live chat message");
             }
             CommandYouTubeChat.isReceivedChat = true;
-            this.service.subscribe(StreamChatReceiver.getInstance());
+            this.service.subscribe(YouTubeChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("echo_stop"))
         {
@@ -155,7 +155,7 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is stop receiving live chat message");
             }
             CommandYouTubeChat.isReceivedChat = false;
-            this.service.unsubscribe(StreamChatReceiver.getInstance());
+            this.service.unsubscribe(YouTubeChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("post"))
         {
@@ -164,7 +164,7 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new WrongUsageException("/ytchat post <message>");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(StreamChat.json.text("Message posted").setChatStyle(StreamChat.json.green()), ConfigManager.getInstance().getRightSideChat());
+            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setChatStyle(YouTubeChat.json.green()), ConfigManager.getInstance().getRightSideChat());
             this.service.postMessage(message, id);
         }
         else
