@@ -42,7 +42,7 @@ public class CommandClearRightChat extends ClientCommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-        StreamChat.rightStreamGui.clearChatMessages();
-        ModLogger.printYTMessage(StreamChat.json.text("Clear Stream Chat message (Right Side)").setChatStyle(StreamChat.json.white()), ConfigManager.getInstance().getRightSideChat());
+        YouTubeChat.rightStreamGui.clearChatMessages();
+        ModLogger.printYTMessage(YouTubeChat.json.text("Clear Stream Chat message (Right Side)").setChatStyle(YouTubeChat.json.white()), ConfigManager.getInstance().getRightSideChat());
     }
 }
