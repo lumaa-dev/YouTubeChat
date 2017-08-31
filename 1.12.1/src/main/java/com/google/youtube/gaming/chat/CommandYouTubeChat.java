@@ -17,7 +17,6 @@
 package com.google.youtube.gaming.chat;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -31,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
  *
- * /ytchat <start|stop|logout|echo_start|echo_stop|post>
+ * /ytc <start|stop|logout|echo_start|echo_stop|post>
  */
 public class CommandYouTubeChat extends ClientCommandBase
 {
@@ -46,7 +45,7 @@ public class CommandYouTubeChat extends ClientCommandBase
     @Override
     public String getName()
     {
-        return "ytchat";
+        return "ytc";
     }
 
     @Override
@@ -56,27 +55,21 @@ public class CommandYouTubeChat extends ClientCommandBase
     }
 
     @Override
-    public List<String> getAliases()
-    {
-        return Arrays.asList("ytc");
-    }
-
-    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         ConfigManager configuration = ConfigManager.getInstance();
         String clientSecret = configuration.getClientSecret();
 
+        if (clientSecret.isEmpty())
+        {
+            throw new CommandException("No client secret configurated");
+        }
         if (args.length == 0)
         {
             throw new WrongUsageException(this.getUsage());
         }
         if (args[0].equalsIgnoreCase("start"))
         {
-            if (clientSecret.isEmpty())
-            {
-                throw new CommandException("No client secret configurated");
-            }
             if (this.service.executor != null)
             {
                 throw new CommandException("Service is already initialized");
@@ -84,7 +77,7 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             this.service.start(configuration.getVideoId(), clientSecret);
 
-            if (ConfigManager.getInstance().getAutoReceiveChat())
+            if (configuration.getAutoReceiveChat())
             {
                 CommandYouTubeChat.isReceivedChat = true;
                 this.service.subscribe(YouTubeChatReceiver.getInstance());
@@ -92,10 +85,6 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         else if (args[0].equalsIgnoreCase("stop"))
         {
-            if (clientSecret.isEmpty())
-            {
-                throw new CommandException("No client secret configurated");
-            }
             if (this.service.executor == null)
             {
                 throw new CommandException("Service is not initialized");
@@ -103,7 +92,7 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             this.service.stop(false);
 
-            if (ConfigManager.getInstance().getAutoReceiveChat())
+            if (configuration.getAutoReceiveChat())
             {
                 CommandYouTubeChat.isReceivedChat = false;
                 this.service.unsubscribe(YouTubeChatReceiver.getInstance());
@@ -111,10 +100,6 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         else if (args[0].equalsIgnoreCase("logout"))
         {
-            if (clientSecret.isEmpty())
-            {
-                throw new CommandException("No client secret configurated");
-            }
             if (this.service.executor == null)
             {
                 throw new CommandException("Service is not initialized");
@@ -162,10 +147,14 @@ public class CommandYouTubeChat extends ClientCommandBase
         {
             if (args.length == 1)
             {
-                throw new WrongUsageException("/ytchat post <message>");
+                throw new WrongUsageException("/ytc post <message>");
+            }
+            if (this.service.executor == null)
+            {
+                throw new CommandException("Service is not initialized");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()), ConfigManager.getInstance().getRightSideChat());
+            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()), configuration.getRightSideChat());
             this.service.postMessage(message, id);
         }
         else
@@ -186,6 +175,6 @@ public class CommandYouTubeChat extends ClientCommandBase
 
     private String getUsage()
     {
-        return "/ytchat <start|stop|logout|echo_start|echo_stop|post>";
+        return "/ytc <start|stop|logout|echo_start|echo_stop|post>";
     }
 }

@@ -67,7 +67,6 @@ public class YouTubeChat
         ConfigManager.initialize(event.getSuggestedConfigurationFile());
         ChatService service = (ChatService) YouTubeChat.getService();
         ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
-        ClientCommandHandler.instance.registerCommand(new CommandClearRightChat());
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -83,6 +82,7 @@ public class YouTubeChat
     public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         onDisconnected = true;
+        YouTubeChat.rightStreamGui.clearChatMessages();
     }
 
     @SubscribeEvent
