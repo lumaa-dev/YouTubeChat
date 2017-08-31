@@ -43,7 +43,7 @@ public class CommandClearRightChat extends ClientCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        StreamChat.rightStreamGui.clearChatMessages();
-        ModLogger.printYTMessage(StreamChat.json.text("Clear Stream Chat message (Right Side)").setStyle(StreamChat.json.white()), ConfigManager.getInstance().getRightSideChat());
+        YouTubeChat.rightStreamGui.clearChatMessages();
+        ModLogger.printYTMessage(YouTubeChat.json.text("Clear Stream Chat message (Right Side)").setStyle(YouTubeChat.json.white()), ConfigManager.getInstance().getRightSideChat());
     }
 }
