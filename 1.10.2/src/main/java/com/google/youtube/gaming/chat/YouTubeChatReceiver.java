@@ -18,7 +18,7 @@ package com.google.youtube.gaming.chat;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.google.youtube.gaming.chat.StreamChatService.YouTubeChatMessageListener;
+import com.google.youtube.gaming.chat.YouTubeChatService.YouTubeChatMessageListener;
 
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
@@ -29,15 +29,15 @@ import net.minecraft.util.text.event.HoverEvent;
  * @author SteveKunG
  *
  */
-public class StreamChatReceiver implements YouTubeChatMessageListener
+public class YouTubeChatReceiver implements YouTubeChatMessageListener
 {
-    private static StreamChatReceiver instance;
+    private static YouTubeChatReceiver instance;
 
-    public static StreamChatReceiver getInstance()
+    public static YouTubeChatReceiver getInstance()
     {
         if (instance == null)
         {
-            instance = new StreamChatReceiver();
+            instance = new YouTubeChatReceiver();
         }
         return instance;
     }
@@ -66,11 +66,11 @@ public class StreamChatReceiver implements YouTubeChatMessageListener
             {
                 unicode = "\u2713 " + this.getUnicode(ConfigManager.getInstance().getModeratorUnicode());
             }
-            ModLogger.printYTMessage(StreamChat.json.text(unicode + userDisplayName).setStyle(author.getIsChatOwner() ? StreamChat.json.gold().setClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setStyle(StreamChat.json.white()))) : author.getIsChatModerator() ? StreamChat.json.blue().setClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setStyle(StreamChat.json.white()))) : StreamChat.json.gray().setClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setStyle(StreamChat.json.white())))).appendSibling(StreamChat.json.text(": " + message).setStyle(StreamChat.json.white().setClickEvent(StreamChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(StreamChat.json.hover(HoverEvent.Action.SHOW_TEXT, StreamChat.json.text("Click to do action this message").setStyle(StreamChat.json.white()))))), ConfigManager.getInstance().getRightSideChat());
+            ModLogger.printYTMessage(YouTubeChat.json.text(unicode + userDisplayName).setStyle(author.getIsChatOwner() ? YouTubeChat.json.gold().setClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setStyle(YouTubeChat.json.white()))) : author.getIsChatModerator() ? YouTubeChat.json.blue().setClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setStyle(YouTubeChat.json.white()))) : YouTubeChat.json.gray().setClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setStyle(YouTubeChat.json.white())))).appendSibling(YouTubeChat.json.text(": " + message).setStyle(YouTubeChat.json.white().setClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setStyle(YouTubeChat.json.white()))))), ConfigManager.getInstance().getRightSideChat());
         }
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {
-            ModLogger.printYTMessage(StreamChat.json.text("Received ").setStyle(StreamChat.json.green()).appendSibling(StreamChat.json.text(superChatDetails.getAmountDisplayString()).setStyle(StreamChat.json.gold()).appendSibling(StreamChat.json.text(" from ").setStyle(StreamChat.json.green())).appendSibling(StreamChat.json.text(author.getDisplayName()).setStyle(author.getIsChatModerator() ? StreamChat.json.blue() : StreamChat.json.white()))), ConfigManager.getInstance().getRightSideChat());
+            ModLogger.printYTMessage(YouTubeChat.json.text("Received ").setStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(superChatDetails.getAmountDisplayString()).setStyle(YouTubeChat.json.gold()).appendSibling(YouTubeChat.json.text(" from ").setStyle(YouTubeChat.json.green())).appendSibling(YouTubeChat.json.text(author.getDisplayName()).setStyle(author.getIsChatModerator() ? YouTubeChat.json.blue() : YouTubeChat.json.white()))), ConfigManager.getInstance().getRightSideChat());
         }
     }
 

@@ -39,7 +39,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 /**
  * Contains methods for authorizing a user and caching credentials.
  */
-public class Auth
+public class Authentication
 {
     /** Define a global instance of the HTTP transport. */
     public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
@@ -66,7 +66,7 @@ public class Auth
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
         // This creates the credentials datastore at ~/.oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(Auth.getCredentialsDirectory()));
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(Authentication.getCredentialsDirectory()));
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
@@ -77,7 +77,7 @@ public class Auth
 
     public static void clearCredentials() throws IOException
     {
-        File directory = new File(Auth.getCredentialsDirectory());
+        File directory = new File(Authentication.getCredentialsDirectory());
 
         if (directory.exists())
         {

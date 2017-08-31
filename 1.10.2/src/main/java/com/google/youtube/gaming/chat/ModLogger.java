@@ -71,13 +71,13 @@ public class ModLogger
     {
         if (isRight)
         {
-            StreamChat.rightStreamGui.printChatMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
+            YouTubeChat.rightStreamGui.printChatMessage(YouTubeChat.json.text("[YTChat] ").setStyle(YouTubeChat.json.red()).appendSibling(component));
         }
         else
         {
             if (Minecraft.getMinecraft().thePlayer != null)
             {
-                Minecraft.getMinecraft().thePlayer.addChatMessage(StreamChat.json.text("[YTChat] ").setStyle(StreamChat.json.red()).appendSibling(component));
+                Minecraft.getMinecraft().thePlayer.addChatMessage(YouTubeChat.json.text("[YTChat] ").setStyle(YouTubeChat.json.red()).appendSibling(component));
             }
         }
     }
@@ -86,7 +86,7 @@ public class ModLogger
     {
         if (Minecraft.getMinecraft().thePlayer != null)
         {
-            Minecraft.getMinecraft().thePlayer.addChatMessage(StreamChat.json.text("[YTChatException] ").setStyle(StreamChat.json.red()).appendSibling(StreamChat.json.text(message).setStyle(StreamChat.json.darkRed())));
+            Minecraft.getMinecraft().thePlayer.addChatMessage(YouTubeChat.json.text("[YTChatException] ").setStyle(YouTubeChat.json.red()).appendSibling(YouTubeChat.json.text(message).setStyle(YouTubeChat.json.darkRed())));
         }
     }
 }
