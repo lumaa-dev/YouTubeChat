@@ -13,20 +13,10 @@ services. This is not an official Google product.
 
 ## Workspace setup
 
-Clone this repository, and open a terminal to the root directory. Navigate to
-[http://files.minecraftforge.net](http://files.minecraftforge.net) and pick
-the latest or recommened MDK version. Update the mdkVersion definition in
-setup.gradle, then run the installMdk task:
-
-  ```
-  ./gradlew -b setup.gradle
-  ```
-
-Next, setup the decompiled workspace and save the build dependencies:
+Clone this repository, and open a terminal to the root directory, then run the gradlew setupDecompWorkspace task:
 
   ```
   ./gradlew setupDecompWorkspace
-  ./gradlew saveDependencies
   ```
 
 Build the jar:
@@ -35,7 +25,7 @@ Build the jar:
   ./gradlew build
   ```
 
-A single .jar file will be output to build/libs, e.g. ytchat-1.0.0.jar.
+A single .jar file will be output to build/libs, e.g. YouTubeChat-modversion-mcversion.jar.
 
 
 # Intellij Idea Setup
@@ -82,17 +72,12 @@ followed by *Other* for the Application type.
 4.  Download the client ID JSON by clicking the following icon for your
   project: ![Download json](download_json.png)
 
-5.  Run the YouTube Chat jar from a terminal to obtain authorization credentials,
-pasting the downloaded json when prompted:
+5.  Run Minecraft and Copy all text in downloaded JSON into Client Secret in YouTubeChat Config GUI.
+
+6.  Note: Except for 1.12 version! You need to login/logout manually by using command line.
 
 ```
-java -jar ytchat-1.0.3.jar login
-```
-
-If you want to clear your credentials or sign in as a different user, run logout:
-
-```
-java -jar ytchat-1.0.3.jar logout
+java -jar YouTubeChat-modversion-1.12.1.jar login/logout
 ```
 
 Credentials are saved to ~/.oauth-credentials.
@@ -126,12 +111,6 @@ the signed in user.
    for troubleshooting.
 *  **echo_stop**: Stops echoing chat messages into Minecraft chat.
 *  **post**: Post message into Live Stream Chat.
-
-```
-/ytcmock <mock author id/name> <mock input>
-```
-
-Provides mock input for testing without a YouTube live chat connection.
 
 ## API
 
