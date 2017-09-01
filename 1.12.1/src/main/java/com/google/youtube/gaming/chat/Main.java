@@ -58,7 +58,7 @@ public class Main
 
             if (!file.exists())
             {
-                System.out.println("[YTChat] Couldn't found client_secret.json!");
+                System.out.println("[YTChat] Couldn't find client_secret.json!");
                 return;
             }
 
