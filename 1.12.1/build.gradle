@@ -15,7 +15,7 @@ archivesBaseName = "YouTubeChat"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    version = "1.12.1-14.22.0.2463"
+    version = "1.12.1-14.22.0.2467"
     runDir = "run"
     mappings = "snapshot_20170624"
     makeObfSourceJar = false
@@ -27,8 +27,8 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: 'M:/Modding/StreamChat/.dependencies', include: '*.jar')
-    embed fileTree(dir: 'M:/Modding/StreamChat/.dependencies', include: '*.jar')
+    compile fileTree(dir: 'M:/Modding/YouTubeChat/.dependencies', include: '*.jar')
+    embed fileTree(dir: 'M:/Modding/YouTubeChat/.dependencies', include: '*.jar')
 }
 
 jar {

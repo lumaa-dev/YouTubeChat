@@ -32,8 +32,8 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: 'M:/Modding/StreamChat/.dependencies', include: '*.jar')
-    embed fileTree(dir: 'M:/Modding/StreamChat/.dependencies', include: '*.jar')
+    compile fileTree(dir: 'M:/Modding/YouTubeChat/.dependencies', include: '*.jar')
+    embed fileTree(dir: 'M:/Modding/YouTubeChat/.dependencies', include: '*.jar')
 }
 
 jar {
