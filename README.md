@@ -99,7 +99,7 @@ Credentials are saved to ~/.oauth-credentials.
 
 ## Configuration
 
-![Configuration](configuration.png)
+![Configuration](http://i.imgur.com/NgQoDeY.png)
 
 1.  With YouTube Chat installed, open Minecraft with the forge profile.
 2.  At the Minecraft main menu, select *Mods*.
