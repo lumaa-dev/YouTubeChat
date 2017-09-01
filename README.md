@@ -8,7 +8,7 @@ services. This is not an official Google product.
 *  Broadcasts live chat messages to multiple clients from a single network
   connection
 *  Provides author details (channelId, displayName, isChatModerator, isChatOwner
-   isChatSponser, profileImageUrl) and SuperChat details
+   isChatSponser, profileImageUrl, isVerified) and SuperChat details
 *  In-game configuration
 
 ## Workspace setup
@@ -106,24 +106,26 @@ Credentials are saved to ~/.oauth-credentials.
 3.  Select *YouTube Chat*, and click *Config*. There are 2 settings:
   *  **Client Secret**: *(Required)* The client secret json downloaded from the
   Google API Console
-  *  **videoId**: *(Optional)* A videoId associated with the live broadcast to
+  *  **Video ID**: *(Optional)* A videoId associated with the live broadcast to
   connect to. If blank, will attempt to connect to the signed in user's live
   broadcast *(a Google sign-in dialog will appear when starting YouTube Chat)*.
+  *  **Super Chat Only**: *(Optional)* Receive super chats only.
 
 ## Runtime Usage
 
 YouTube Chat supports the following commands in Minecraft:
 
 ```
-/ytchat [start|stop|logout|echoStart|echoStop]
+/ytc [start|stop|logout|echo_start|echo_stop|post]
 ```
 *  **start**: Starts the YouTube Chat service, connecting to the live chat of
 the signed in user.
 *  **stop**: Stops the YouTube Chat service.
 *  **logout**: Stops the YouTube Chat service and clears saved credentials.
-*  **echoStart**: Starts echoing chat messages into Minecraft chat,
+*  **echo_start**: Starts echoing chat messages into Minecraft chat,
    for troubleshooting.
-*  **echoStop**: Stops echoing chat messages into Minecraft chat.
+*  **echo_stop**: Stops echoing chat messages into Minecraft chat.
+*  **post**: Post message into Live Stream Chat.
 
 ```
 /ytcmock <mock author id/name> <mock input>
@@ -137,12 +139,12 @@ To use YouTube Chat, copy the jar into the libs folder of your Forge directory.
 Regenerate the project with gradle, or manually add a dependency to the jar in
 the project settings.
 
-Add ytchat to the dependencies field in mcmod.info, e.g.:
+Add "youtube_chat" to the dependencies field in mcmod.info, e.g.:
 
   ```
-  "dependencies": ["ytchat"]
+  "dependencies": ["youtube_chat"]
   ```
-Get an instance of the [YouTubeChatService](https://github.com/youtube/youtube-chat-for-minecraft/blob/master/src/main/java/com/google/youtube/gaming/chat/YouTubeChatService.java)
+Get an instance of the [YouTubeChatService](https://github.com/SteveKunG/YouTubeChat/blob/master/1.12.1/src/main/java/com/google/youtube/gaming/chat/YouTubeChatService.java)
 interface:
 
   ```java
