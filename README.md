@@ -7,7 +7,7 @@ services. This is not an official Google product.
 
 *  Broadcasts live chat messages to multiple clients from a single network
   connection
-*  Provides author details (channelId, displayName, isChatModerator, isChatOwner
+*  Provides author details (channelId, displayName, isChatModerator, isChatOwner,
    isChatSponser, profileImageUrl, isVerified) and SuperChat details
 *  In-game configuration
 
@@ -27,6 +27,12 @@ Build the jar:
 
 A single .jar file will be output to build/libs, e.g. YouTubeChat-modversion-mcversion.jar.
 
+# Eclipse Setup
+1. Run the following gradle task:
+
+  ```
+  ./gradlew eclipse
+  ```
 
 # Intellij Idea Setup
 
