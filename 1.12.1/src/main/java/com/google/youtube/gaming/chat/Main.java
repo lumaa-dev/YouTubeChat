@@ -17,10 +17,12 @@
 package com.google.youtube.gaming.chat;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import com.google.api.services.youtube.YouTubeScopes;
 
@@ -34,21 +36,40 @@ public class Main
             return;
         }
 
+        List<String> scopes = new ArrayList<>();
+        scopes.add(YouTubeScopes.YOUTUBE_FORCE_SSL);
+        scopes.add(YouTubeScopes.YOUTUBE);
+
         switch (args[0])
         {
         case "login":
             System.out.print("[YTChat] Paste the client ID JSON from the Google API console: ");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String clientSecret = reader.readLine();
-            List<String> scopes = new ArrayList<>();
-            scopes.add(YouTubeScopes.YOUTUBE_FORCE_SSL);
-            scopes.add(YouTubeScopes.YOUTUBE);
             Authentication.authorize(scopes, clientSecret, YouTubeChat.MODID);
             System.out.println("[YTChat] Login successfully!");
             break;
         case "logout":
             Authentication.clearCredentials();
             System.out.println("[YTChat] Logout successfully!");
+            break;
+        case "loginfile":
+            File file = new File("client_secret.json");
+
+            if (!file.exists())
+            {
+                System.out.println("[YTChat] Couldn't found client_secret.json!");
+                return;
+            }
+
+            Scanner scanner = new Scanner(file);
+
+            while (scanner.hasNextLine())
+            {
+                clientSecret = scanner.nextLine();
+                Authentication.authorize(scopes, clientSecret, YouTubeChat.MODID);
+                System.out.println("[YTChat] Login successfully!");
+            }
             break;
         default:
             Main.showUsage();
@@ -58,6 +79,6 @@ public class Main
 
     private static void showUsage()
     {
-        System.out.println("[YTChat] Supported arguments: <login|logout>");
+        System.out.println("[YTChat] Supported arguments: <login|logout|loginfile>");
     }
 }
