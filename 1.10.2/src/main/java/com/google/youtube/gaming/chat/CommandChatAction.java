@@ -16,9 +16,6 @@
 
 package com.google.youtube.gaming.chat;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -43,19 +40,13 @@ public class CommandChatAction extends ClientCommandBase
     @Override
     public String getCommandName()
     {
-        return "ytchataction";
+        return "ytcaction";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return this.getCommandName();
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return Arrays.asList("ytcaction");
     }
 
     @Override
@@ -70,6 +61,6 @@ public class CommandChatAction extends ClientCommandBase
 
     private String getUsage()
     {
-        return "/ytchataction <message_id> <channel_id>";
+        return "/ytcaction <message_id> <channel_id>";
     }
 }
