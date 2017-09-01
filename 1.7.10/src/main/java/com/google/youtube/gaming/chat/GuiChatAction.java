@@ -57,6 +57,10 @@ public class GuiChatAction extends GuiScreen
 
     public void display()
     {
+        if (this.service.executor == null)
+        {
+            return;
+        }
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
     }
