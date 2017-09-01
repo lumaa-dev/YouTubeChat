@@ -16,9 +16,6 @@
 
 package com.google.youtube.gaming.chat;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -27,7 +24,7 @@ import net.minecraft.server.MinecraftServer;
 /**
  *
  * Do an action with current chat message. [Delete, Ban, Temporary ban, Add moderator]
- * Usage: /ytchataction <message_id> <channel_id>
+ * Usage: /ytcaction <message_id> <channel_id>
  * @author SteveKunG
  *
  */
@@ -43,19 +40,13 @@ public class CommandChatAction extends ClientCommandBase
     @Override
     public String getName()
     {
-        return "ytchataction";
+        return "ytcaction";
     }
 
     @Override
     public String getUsage(ICommandSender sender)
     {
         return this.getName();
-    }
-
-    @Override
-    public List<String> getAliases()
-    {
-        return Arrays.asList("ytcaction");
     }
 
     @Override
@@ -70,6 +61,6 @@ public class CommandChatAction extends ClientCommandBase
 
     private String getUsage()
     {
-        return "/ytchataction <message_id> <channel_id>";
+        return "/ytcaction <message_id> <channel_id>";
     }
 }
