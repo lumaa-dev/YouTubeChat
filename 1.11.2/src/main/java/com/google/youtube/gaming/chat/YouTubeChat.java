@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.ModMetadata;
@@ -69,6 +70,15 @@ public class YouTubeChat
         ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent event)
+    {
+        if (event.getModID().equalsIgnoreCase(YouTubeChat.MODID))
+        {
+            ConfigManager.syncConfig(false);
+        }
     }
 
     @SubscribeEvent
