@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -67,12 +68,21 @@ public class YouTubeChat
     public void preInit(FMLPreInitializationEvent event)
     {
         YouTubeChat.initModInfo(event.getModMetadata());
-        ConfigManager.initialize(event.getSuggestedConfigurationFile());
+        ConfigManager.init(event.getSuggestedConfigurationFile());
         ChatService service = (ChatService) YouTubeChat.getService();
         ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent event)
+    {
+        if (event.modID.equalsIgnoreCase(YouTubeChat.MODID))
+        {
+            ConfigManager.syncConfig(false);
+        }
     }
 
     @SubscribeEvent
