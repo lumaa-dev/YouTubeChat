@@ -64,7 +64,7 @@ public class YouTubeChat
     public void preInit(FMLPreInitializationEvent event)
     {
         YouTubeChat.initModInfo(event.getModMetadata());
-        ConfigManager.initialize(event.getSuggestedConfigurationFile());
+        ConfigManager.init(event.getSuggestedConfigurationFile());
         ChatService service = (ChatService) YouTubeChat.getService();
         ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));

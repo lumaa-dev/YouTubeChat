@@ -57,8 +57,7 @@ public class CommandYouTubeChat extends ClientCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        ConfigManager configuration = ConfigManager.getInstance();
-        String clientSecret = configuration.getClientSecret();
+        String clientSecret = ConfigManager.clientSecret;
 
         if (clientSecret.isEmpty())
         {
@@ -75,9 +74,9 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is already initialized");
             }
 
-            this.service.start(configuration.getVideoId(), clientSecret);
+            this.service.start(ConfigManager.liveVideoId, clientSecret);
 
-            if (configuration.getAutoReceiveChat())
+            if (ConfigManager.autoReceiveChat)
             {
                 CommandYouTubeChat.isReceivedChat = true;
                 this.service.subscribe(YouTubeChatReceiver.getInstance());
@@ -92,7 +91,7 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             this.service.stop(false);
 
-            if (configuration.getAutoReceiveChat())
+            if (ConfigManager.autoReceiveChat)
             {
                 CommandYouTubeChat.isReceivedChat = false;
                 this.service.unsubscribe(YouTubeChatReceiver.getInstance());
@@ -156,7 +155,7 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is not initialized");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()), configuration.getRightSideChat());
+            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()));
             this.service.postMessage(message, id);
         }
         else

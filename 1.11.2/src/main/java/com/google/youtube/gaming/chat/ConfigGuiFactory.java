@@ -70,13 +70,7 @@ public class ConfigGuiFactory implements IModGuiFactory
     {
         public GuiStreamChatConfig(GuiScreen parentScreen)
         {
-            super(parentScreen, new ConfigElement(ConfigManager.getInstance().getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), YouTubeChat.MODID, false, false, "YouTube Chat Configuration");
-        }
-
-        @Override
-        public void onGuiClosed()
-        {
-            ConfigManager.getInstance().reset();
+            super(parentScreen, new ConfigElement(ConfigManager.getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), YouTubeChat.MODID, false, false, "YouTube Chat Configuration");
         }
     }
 }
