@@ -46,7 +46,7 @@ public class YouTubeChat
 {
     public static final String MODID = "youtube_chat";
     public static final String NAME = "YouTube Chat";
-    public static final String VERSION = "1.3.1-1.7.10";
+    public static final String VERSION = "1.3.2-1.7.10";
     public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
     private static YouTubeChatService service;
     public static final JsonUtil json = new JsonUtil();
