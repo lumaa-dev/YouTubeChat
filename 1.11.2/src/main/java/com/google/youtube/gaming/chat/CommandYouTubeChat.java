@@ -106,6 +106,8 @@ public class CommandYouTubeChat extends ClientCommandBase
             }
 
             this.service.stop(true);
+            CommandYouTubeChat.isReceivedChat = false;
+            this.service.unsubscribe(YouTubeChatReceiver.getInstance());
 
             try
             {
