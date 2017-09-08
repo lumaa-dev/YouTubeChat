@@ -155,7 +155,7 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is not initialized");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()), ConfigManager.displayChatRightSide);
+            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()));
             this.service.postMessage(message, id);
         }
         else
