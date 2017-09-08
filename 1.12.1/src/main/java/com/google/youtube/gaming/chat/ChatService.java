@@ -130,7 +130,7 @@ class ChatService implements YouTubeChatService
                 {
                     this.nextPoll = System.currentTimeMillis() + response.getPollingIntervalMillis();
                 }
-                ModLogger.printYTMessage(YouTubeChat.json.text("Service started").setStyle(YouTubeChat.json.green()), ConfigManager.getInstance().getRightSideChat());
+                ModLogger.printYTMessage(YouTubeChat.json.text("Service started").setStyle(YouTubeChat.json.green()), ConfigManager.displayChatRightSide);
             }
             catch (Throwable t)
             {
@@ -151,7 +151,7 @@ class ChatService implements YouTubeChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        ModLogger.printYTMessage(YouTubeChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(YouTubeChat.json.green()), ConfigManager.getInstance().getRightSideChat());
+        ModLogger.printYTMessage(YouTubeChat.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(YouTubeChat.json.green()), ConfigManager.displayChatRightSide);
     }
 
     @Override
@@ -166,7 +166,7 @@ class ChatService implements YouTubeChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            ModLogger.printYTMessage(YouTubeChat.json.text("Started receiving live chat message").setStyle(YouTubeChat.json.white()), ConfigManager.getInstance().getRightSideChat());
+            ModLogger.printYTMessage(YouTubeChat.json.text("Started receiving live chat message").setStyle(YouTubeChat.json.white()), ConfigManager.displayChatRightSide);
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -181,7 +181,7 @@ class ChatService implements YouTubeChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            ModLogger.printYTMessage(YouTubeChat.json.text("Stopped receiving live chat message").setStyle(YouTubeChat.json.white()), ConfigManager.getInstance().getRightSideChat());
+            ModLogger.printYTMessage(YouTubeChat.json.text("Stopped receiving live chat message").setStyle(YouTubeChat.json.white()), ConfigManager.displayChatRightSide);
 
             if (this.listeners.size() == 0)
             {

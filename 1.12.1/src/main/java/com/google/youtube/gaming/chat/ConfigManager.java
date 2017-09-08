@@ -17,110 +17,120 @@
 package com.google.youtube.gaming.chat;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 /**
  * Configuration settings for YouTube Chat.
  */
 public class ConfigManager
 {
-    private static ConfigManager instance;
     private static Configuration config;
-    private String clientSecret;
-    private String videoId;
-    private String ownerUnicodeIcon;
-    private String moderatorUnicodeIcon;
-    private String rudeWordList;
-    private boolean superOnly;
-    private boolean streamChatRightSide;
-    private boolean autoReceiveChat;
 
-    public static void initialize(File path)
+    public static String clientSecret;
+    public static String liveVideoId;
+    public static String ownerUnicodeIcon;
+    public static String moderatorUnicodeIcon;
+    public static String rudeWordList;
+    public static String rudeWordAction;
+
+    public static boolean showSuperChatOnly;
+    public static boolean displayChatRightSide;
+    public static boolean autoReceiveChat;
+
+    public static void init(File file)
     {
-        instance = new ConfigManager(path);
+        ConfigManager.config = new Configuration(file);
+        ConfigManager.syncConfig(true);
     }
 
-    public static ConfigManager getInstance()
+    public static void syncConfig(boolean load)
     {
-        return instance;
-    }
-
-    private ConfigManager(File path)
-    {
-        config = new Configuration(path);
-        config.load();
-        this.addGeneralConfig();
-
-        if (config.hasChanged())
+        if (!ConfigManager.config.isChild)
         {
-            config.save();
+            if (load)
+            {
+                ConfigManager.config.load();
+            }
+        }
+
+        ConfigManager.config.setCategoryPropertyOrder(Configuration.CATEGORY_GENERAL, ConfigManager.addGeneralSetting());
+
+        if (ConfigManager.config.hasChanged())
+        {
+            ConfigManager.config.save();
         }
     }
 
-    private void addGeneralConfig()
+    private static List<String> addGeneralSetting()
     {
-        this.clientSecret = config.get(Configuration.CATEGORY_GENERAL, "Client Secret", "", "The client secret from Google API console").getString();
-        this.videoId = config.get(Configuration.CATEGORY_GENERAL, "Video ID", "", "The id of the live video").getString();
-        this.superOnly = config.get(Configuration.CATEGORY_GENERAL, "Show Super Chat Only", false, "Receive super chats only").getBoolean();
-        this.ownerUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Channel Owner Icon (Unicode)", "", "Put your fancy unicode, it will display in front of your channel").getString();
-        this.moderatorUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Moderator Icon (Unicode)", "", "Put your fancy unicode, it will display in front of moderator channel").getString();
-        this.rudeWordList = config.get(Configuration.CATEGORY_GENERAL, "Rude Word List", "", "Put the list of rude word, this will be automatically do an action with message when received. split by \",\"").getString();
-        this.streamChatRightSide = config.get(Configuration.CATEGORY_GENERAL, "Display Stream Chat on Right Side", false, "Move Stream Chat into Right Side of the screen").getBoolean();
-        this.autoReceiveChat = config.get(Configuration.CATEGORY_GENERAL, "Automatic Receive Chat", false, "When you starting service, This will automatically subscribe stream chat service").getBoolean();
+        Property prop;
+        List<String> propOrder = new ArrayList<>();
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Client Secret", "");
+        prop.setComment("The client secret from Google API console");
+        ConfigManager.clientSecret = prop.getString();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Video ID", "");
+        prop.setComment("The ID of the live video");
+        ConfigManager.liveVideoId = prop.getString();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Channel Owner Icon (Unicode)", "");
+        prop.setComment("Put your fancy unicode, it will display in front of your channel");
+        ConfigManager.ownerUnicodeIcon = prop.getString();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Moderator Icon (Unicode)", "");
+        prop.setComment("Put your fancy unicode, it will display in front of moderator channel");
+        ConfigManager.moderatorUnicodeIcon = prop.getString();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Rude Word List", "");
+        prop.setComment("Put the list of rude word, this will be automatically do an action with message when received. split by \",\"");
+        ConfigManager.rudeWordList = prop.getString();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Rude Word Action", "delete");
+        prop.setComment("If the message contain rude word, this will does an action with selected action");
+        prop.setValidValues(new String[] { "delete", "ban", "temporary_ban" });
+        ConfigManager.rudeWordAction = prop.getString();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Show Super Chat Only", false);
+        prop.setComment("Display super chats only");
+        ConfigManager.showSuperChatOnly = prop.getBoolean();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Display YouTube Chat on Right Side", false);
+        prop.setComment("Move only YouTube Chat into Right Side of the screen");
+        ConfigManager.displayChatRightSide = prop.getBoolean();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Automatic Receive Chat", false);
+        prop.setComment("When you starting service, This will automatically subscribe YouTube Chat Service");
+        ConfigManager.autoReceiveChat = prop.getBoolean();
+        propOrder.add(prop.getName());
+
+        return propOrder;
     }
 
-    public void reset()
+    public static Property getProperty(String category, String name, boolean defaultValue)
     {
-        if (config != null)
-        {
-            config.save();
-        }
-        this.addGeneralConfig();
+        return ConfigManager.config.get(category, name, defaultValue);
     }
 
-    public Configuration getConfig()
+    public static Property getProperty(String category, String name, String defaultValue)
     {
-        return config;
+        return ConfigManager.config.get(category, name, defaultValue);
     }
 
-    public String getVideoId()
+    public static Configuration getConfig()
     {
-        return this.videoId;
-    }
-
-    public String getClientSecret()
-    {
-        return this.clientSecret;
-    }
-
-    public boolean getSuperOnly()
-    {
-        return this.superOnly;
-    }
-
-    public String getOwnerUnicode()
-    {
-        return this.ownerUnicodeIcon;
-    }
-
-    public String getModeratorUnicode()
-    {
-        return this.moderatorUnicodeIcon;
-    }
-
-    public boolean getRightSideChat()
-    {
-        return this.streamChatRightSide;
-    }
-
-    public boolean getAutoReceiveChat()
-    {
-        return this.autoReceiveChat;
-    }
-
-    public String getRudeWordList()
-    {
-        return this.rudeWordList;
+        return ConfigManager.config;
     }
 }
