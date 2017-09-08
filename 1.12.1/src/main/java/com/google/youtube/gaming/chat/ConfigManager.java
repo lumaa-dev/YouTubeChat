@@ -31,6 +31,7 @@ public class ConfigManager
     private String videoId;
     private String ownerUnicodeIcon;
     private String moderatorUnicodeIcon;
+    private String rudeWordList;
     private boolean superOnly;
     private boolean streamChatRightSide;
     private boolean autoReceiveChat;
@@ -64,6 +65,7 @@ public class ConfigManager
         this.superOnly = config.get(Configuration.CATEGORY_GENERAL, "Show Super Chat Only", false, "Receive super chats only").getBoolean();
         this.ownerUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Channel Owner Icon (Unicode)", "", "Put your fancy unicode, it will display in front of your channel").getString();
         this.moderatorUnicodeIcon = config.get(Configuration.CATEGORY_GENERAL, "Moderator Icon (Unicode)", "", "Put your fancy unicode, it will display in front of moderator channel").getString();
+        this.rudeWordList = config.get(Configuration.CATEGORY_GENERAL, "Rude Word List", "", "Put the list of rude word, this will be automatically do an action with message when received. split by \",\"").getString();
         this.streamChatRightSide = config.get(Configuration.CATEGORY_GENERAL, "Display Stream Chat on Right Side", false, "Move Stream Chat into Right Side of the screen").getBoolean();
         this.autoReceiveChat = config.get(Configuration.CATEGORY_GENERAL, "Automatic Receive Chat", false, "When you starting service, This will automatically subscribe stream chat service").getBoolean();
     }
@@ -115,5 +117,10 @@ public class ConfigManager
     public boolean getAutoReceiveChat()
     {
         return this.autoReceiveChat;
+    }
+
+    public String getRudeWordList()
+    {
+        return this.rudeWordList;
     }
 }
