@@ -16,10 +16,8 @@
 
 package com.google.youtube.gaming.chat;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -43,17 +41,6 @@ public class Main
         switch (args[0])
         {
         case "login":
-            System.out.print("[YTChat] Paste the client ID JSON from the Google API console: ");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String clientSecret = reader.readLine();
-            Authentication.authorize(scopes, clientSecret, YouTubeChat.MODID);
-            System.out.println("[YTChat] Login successfully!");
-            break;
-        case "logout":
-            Authentication.clearCredentials();
-            System.out.println("[YTChat] Logout successfully!");
-            break;
-        case "loginfile":
             File file = new File("client_secret.json");
 
             if (!file.exists())
@@ -66,10 +53,14 @@ public class Main
 
             while (scanner.hasNextLine())
             {
-                clientSecret = scanner.nextLine();
+                String clientSecret = scanner.nextLine();
                 Authentication.authorize(scopes, clientSecret, YouTubeChat.MODID);
                 System.out.println("[YTChat] Login successfully!");
             }
+            break;
+        case "logout":
+            Authentication.clearCredentials();
+            System.out.println("[YTChat] Logout successfully!");
             break;
         default:
             Main.showUsage();
@@ -79,6 +70,6 @@ public class Main
 
     private static void showUsage()
     {
-        System.out.println("[YTChat] Supported arguments: <login|logout|loginfile>");
+        System.out.println("[YTChat] Supported arguments: <login|logout>");
     }
 }

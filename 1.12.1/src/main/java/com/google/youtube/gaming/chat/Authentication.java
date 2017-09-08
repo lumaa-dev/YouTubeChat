@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
-
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.StoredCredential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -81,12 +79,33 @@ public class Authentication
 
         if (directory.exists())
         {
-            FileUtils.deleteDirectory(directory);
+            Authentication.deleteDirectory(directory);
         }
     }
 
     private static String getCredentialsDirectory()
     {
         return System.getProperty("user.home") + "\\" + CREDENTIALS_DIRECTORY;
+    }
+
+    private static boolean deleteDirectory(File path)
+    {
+        if (path.exists())
+        {
+            File[] files = path.listFiles();
+
+            for (File file : files)
+            {
+                if (file.isDirectory())
+                {
+                    Authentication.deleteDirectory(file);
+                }
+                else
+                {
+                    file.delete();
+                }
+            }
+        }
+        return path.delete();
     }
 }
