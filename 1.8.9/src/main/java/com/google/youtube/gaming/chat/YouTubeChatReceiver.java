@@ -22,6 +22,7 @@ import com.google.youtube.gaming.chat.YouTubeChatService.YouTubeChatMessageListe
 
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatStyle;
 
 /**
  *
@@ -45,14 +46,14 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
     @Override
     public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
     {
-        if (!ConfigManager.getInstance().getSuperOnly())
+        if (!ConfigManager.showSuperChatOnly)
         {
             String unicode = "";
             String userDisplayName = author.getDisplayName();
 
             if (author.getIsChatOwner())
             {
-                unicode = this.getUnicode(ConfigManager.getInstance().getOwnerUnicode());
+                unicode = this.getUnicode(ConfigManager.ownerUnicodeIcon);
             }
             if (author.getIsVerified())
             {
@@ -60,17 +61,41 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
             }
             if (author.getIsChatModerator())
             {
-                unicode = this.getUnicode(ConfigManager.getInstance().getModeratorUnicode());
+                unicode = this.getUnicode(ConfigManager.moderatorUnicodeIcon);
             }
             if (author.getIsVerified() && author.getIsChatModerator())
             {
-                unicode = "\u2713 " + this.getUnicode(ConfigManager.getInstance().getModeratorUnicode());
+                unicode = "\u2713 " + this.getUnicode(ConfigManager.moderatorUnicodeIcon);
             }
-            ModLogger.printYTMessage(YouTubeChat.json.text(unicode + userDisplayName).setChatStyle(author.getIsChatOwner() ? YouTubeChat.json.gold().setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white()))) : author.getIsChatModerator() ? YouTubeChat.json.blue().setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white()))) : YouTubeChat.json.gray().setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white())))).appendSibling(YouTubeChat.json.text(": " + message).setChatStyle(YouTubeChat.json.white().setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white()))))), ConfigManager.getInstance().getRightSideChat());
+            for (String word : ConfigManager.rudeWordList.split(","))
+            {
+                if (message.contains(word) && !author.getIsChatOwner() && !author.getIsVerified() && !author.getIsChatModerator())
+                {
+                    Runnable response;
+
+                    switch (ConfigManager.rudeWordAction)
+                    {
+                    case "delete":
+                        response = () -> {};
+                        YouTubeChat.getService().deleteMessage(id, response);
+                        break;
+                    case "ban":
+                        response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(userDisplayName + " ").setChatStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was automatically banned!").setChatStyle(YouTubeChat.json.green()))));
+                        YouTubeChat.getService().banUser(author.getChannelId(), response, false);
+                        break;
+                    case "temporary_ban":
+                        response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(userDisplayName + " ").setChatStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was automatically temporary banned!").setChatStyle(YouTubeChat.json.green()))));
+                        YouTubeChat.getService().banUser(author.getChannelId(), response, false);
+                        break;
+                    }
+                }
+            }
+            ChatStyle color = author.getIsChatOwner() ? YouTubeChat.json.gold() : author.getIsChatModerator() ? YouTubeChat.json.blue() : YouTubeChat.json.gray();
+            ModLogger.printYTMessage(YouTubeChat.json.text(unicode + userDisplayName).setChatStyle(color.setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white())))).appendSibling(YouTubeChat.json.text(": " + message).setChatStyle(YouTubeChat.json.white().setChatClickEvent(YouTubeChat.json.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setChatHoverEvent(YouTubeChat.json.hover(HoverEvent.Action.SHOW_TEXT, YouTubeChat.json.text("Click to do action this message").setChatStyle(YouTubeChat.json.white()))))));
         }
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {
-            ModLogger.printYTMessage(YouTubeChat.json.text("Received ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(superChatDetails.getAmountDisplayString()).setChatStyle(YouTubeChat.json.gold()).appendSibling(YouTubeChat.json.text(" from ").setChatStyle(YouTubeChat.json.green())).appendSibling(YouTubeChat.json.text(author.getDisplayName()).setChatStyle(author.getIsChatModerator() ? YouTubeChat.json.blue() : YouTubeChat.json.white()))), ConfigManager.getInstance().getRightSideChat());
+            ModLogger.printYTMessage(YouTubeChat.json.text("Received ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(superChatDetails.getAmountDisplayString()).setChatStyle(YouTubeChat.json.gold()).appendSibling(YouTubeChat.json.text(" from ").setChatStyle(YouTubeChat.json.green())).appendSibling(YouTubeChat.json.text(author.getDisplayName()).setChatStyle(author.getIsChatModerator() ? YouTubeChat.json.blue() : YouTubeChat.json.white()))));
         }
     }
 

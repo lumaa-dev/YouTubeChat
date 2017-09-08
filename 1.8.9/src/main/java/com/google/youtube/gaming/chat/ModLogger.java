@@ -67,9 +67,9 @@ public class ModLogger
         ModLogger.LOG.warn(message, obj);
     }
 
-    public static void printYTMessage(IChatComponent component, boolean isRight)
+    public static void printYTMessage(IChatComponent component)
     {
-        if (isRight)
+        if (ConfigManager.displayChatRightSide)
         {
             YouTubeChat.rightStreamGui.printChatMessage(YouTubeChat.json.text("[YTChat] ").setChatStyle(YouTubeChat.json.red()).appendSibling(component));
         }
