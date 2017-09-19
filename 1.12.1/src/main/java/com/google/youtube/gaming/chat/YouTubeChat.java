@@ -38,12 +38,12 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
  *
  * YouTubeChatService youTubeChatService = YouTubeChat.getService();
  */
-@Mod(modid = YouTubeChat.MODID, name = YouTubeChat.NAME, version = YouTubeChat.VERSION, clientSideOnly = true, guiFactory = YouTubeChat.GUI_FACTORY, acceptedMinecraftVersions = "[1.12,1.12.1]")
+@Mod(modid = YouTubeChat.MODID, name = YouTubeChat.NAME, version = YouTubeChat.VERSION, clientSideOnly = true, guiFactory = YouTubeChat.GUI_FACTORY, acceptedMinecraftVersions = "[1.12,1.12.1,1.12.2]")
 public class YouTubeChat
 {
     public static final String MODID = "youtube_chat";
     public static final String NAME = "YouTube Chat";
-    public static final String VERSION = "1.3.2-1.12.1";
+    public static final String VERSION = "1.3.2-1.12.2";
     public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
     private static YouTubeChatService service;
     public static final JsonUtil json = new JsonUtil();
