@@ -83,7 +83,7 @@ followed by *Other* for the Application type.
 6.  Note: Except for 1.12 version! You need to login/logout manually by using command line.
 
 ```
-java -jar YouTubeChat-modversion-1.12.1.jar login/logout
+java -jar YouTubeChat-modversion-1.12.x.jar login/logout
 ```
 
 Credentials are saved to ~/.oauth-credentials.
@@ -129,7 +129,7 @@ Add "youtube_chat" to the dependencies field in mcmod.info, e.g.:
   ```
   "dependencies": ["youtube_chat"]
   ```
-Get an instance of the [YouTubeChatService](https://github.com/SteveKunG/YouTubeChat/blob/master/1.12.1/src/main/java/com/google/youtube/gaming/chat/YouTubeChatService.java)
+Get an instance of the [YouTubeChatService](https://github.com/SteveKunG/YouTubeChat/blob/master/1.12.2/src/main/java/com/google/youtube/gaming/chat/YouTubeChatService.java)
 interface:
 
   ```java
