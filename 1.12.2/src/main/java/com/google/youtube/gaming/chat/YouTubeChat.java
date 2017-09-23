@@ -38,7 +38,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
  *
  * YouTubeChatService youTubeChatService = YouTubeChat.getService();
  */
-@Mod(modid = YouTubeChat.MODID, name = YouTubeChat.NAME, version = YouTubeChat.VERSION, clientSideOnly = true, guiFactory = YouTubeChat.GUI_FACTORY, acceptedMinecraftVersions = "[1.12,1.12.1,1.12.2]")
+@Mod(modid = YouTubeChat.MODID, name = YouTubeChat.NAME, version = YouTubeChat.VERSION, clientSideOnly = true, guiFactory = YouTubeChat.GUI_FACTORY, acceptedMinecraftVersions = "[1.12]")
 public class YouTubeChat
 {
     public static final String MODID = "youtube_chat";
