@@ -9,13 +9,13 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-version = "1.3.2-1.10.2"
+version = "1.3.3-1.10.2"
 group = "com.google.youtube.gaming.chat"
 archivesBaseName = "YouTubeChat"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    version = "1.10.2-12.18.3.2422"
+    version = "1.10.2-12.18.3.2488"
     runDir = "run"
     mappings = "snapshot_20161111"
     makeObfSourceJar = false
