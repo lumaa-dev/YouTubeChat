@@ -67,26 +67,29 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
             {
                 unicode = "\u2713 " + this.getUnicode(ConfigManager.moderatorUnicodeIcon);
             }
-            for (String word : ConfigManager.rudeWordList.split(","))
+            if (!ConfigManager.rudeWordList.isEmpty())
             {
-                if (message.contains(word) && !author.getIsChatOwner() && !author.getIsVerified() && !author.getIsChatModerator())
+                for (String word : ConfigManager.rudeWordList.split(","))
                 {
-                    Runnable response;
-
-                    switch (ConfigManager.rudeWordAction)
+                    if (message.contains(word) && !author.getIsChatOwner() && !author.getIsVerified() && !author.getIsChatModerator())
                     {
-                    case "delete":
-                        response = () -> {};
-                        YouTubeChat.getService().deleteMessage(id, response);
-                        break;
-                    case "ban":
-                        response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(userDisplayName + " ").setChatStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was automatically banned!").setChatStyle(YouTubeChat.json.green()))));
-                        YouTubeChat.getService().banUser(author.getChannelId(), response, false);
-                        break;
-                    case "temporary_ban":
-                        response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(userDisplayName + " ").setChatStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was automatically temporary banned!").setChatStyle(YouTubeChat.json.green()))));
-                        YouTubeChat.getService().banUser(author.getChannelId(), response, false);
-                        break;
+                        Runnable response;
+
+                        switch (ConfigManager.rudeWordAction)
+                        {
+                        case "delete":
+                            response = () -> {};
+                            YouTubeChat.getService().deleteMessage(id, response);
+                            break;
+                        case "ban":
+                            response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(userDisplayName + " ").setChatStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was automatically banned!").setChatStyle(YouTubeChat.json.green()))));
+                            YouTubeChat.getService().banUser(author.getChannelId(), response, false);
+                            break;
+                        case "temporary_ban":
+                            response = () -> ModLogger.printYTMessage(YouTubeChat.json.text("User ").setChatStyle(YouTubeChat.json.green()).appendSibling(YouTubeChat.json.text(userDisplayName + " ").setChatStyle(YouTubeChat.json.darkRed()).appendSibling(YouTubeChat.json.text("was automatically temporary banned!").setChatStyle(YouTubeChat.json.green()))));
+                            YouTubeChat.getService().banUser(author.getChannelId(), response, false);
+                            break;
+                        }
                     }
                 }
             }
