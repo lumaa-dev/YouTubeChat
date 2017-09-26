@@ -23,6 +23,7 @@ import com.google.youtube.gaming.chat.YouTubeChatService.YouTubeChatMessageListe
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 
 /**
  *
@@ -46,6 +47,10 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
     @Override
     public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
     {
+        if (ConfigManager.removeColorFormatting)
+        {
+            message = EnumChatFormatting.getTextWithoutFormattingCodes(message);
+        }
         if (!ConfigManager.showSuperChatOnly)
         {
             String unicode = "";

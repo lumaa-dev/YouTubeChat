@@ -40,6 +40,7 @@ public class ConfigManager
     public static boolean showSuperChatOnly;
     public static boolean displayChatRightSide;
     public static boolean autoReceiveChat;
+    public static boolean removeColorFormatting;
 
     public static void init(File file)
     {
@@ -114,6 +115,11 @@ public class ConfigManager
         prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Automatic Receive Chat", false);
         prop.comment = "When you starting service, This will automatically subscribe YouTube Chat Service";
         ConfigManager.autoReceiveChat = prop.getBoolean();
+        propOrder.add(prop.getName());
+
+        prop = ConfigManager.getProperty(Configuration.CATEGORY_GENERAL, "Remove Minecraft Color Code from Chat", true);
+        prop.comment = "This will remove '\u00a7' color code from the chat";
+        ConfigManager.removeColorFormatting = prop.getBoolean();
         propOrder.add(prop.getName());
 
         return propOrder;

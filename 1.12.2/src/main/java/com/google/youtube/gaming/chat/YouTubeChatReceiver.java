@@ -21,6 +21,7 @@ import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
 import com.google.youtube.gaming.chat.YouTubeChatService.YouTubeChatMessageListener;
 
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
@@ -46,6 +47,10 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
     @Override
     public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
     {
+        if (ConfigManager.removeColorFormatting)
+        {
+            message = TextFormatting.getTextWithoutFormattingCodes(message);
+        }
         if (!ConfigManager.showSuperChatOnly)
         {
             String unicode = "";
