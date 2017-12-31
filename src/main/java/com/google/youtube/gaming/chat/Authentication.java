@@ -34,6 +34,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
+import net.minecraft.util.Util;
+
 /**
  * Contains methods for authorizing a user and caching credentials.
  */
@@ -85,7 +87,7 @@ public class Authentication
 
     private static String getCredentialsDirectory()
     {
-        return System.getProperty("user.home") + "\\" + CREDENTIALS_DIRECTORY;
+        return Util.getOSType() == Util.EnumOS.OSX ? System.getProperty("user.home") + File.separator + CREDENTIALS_DIRECTORY : System.getProperty("user.home") + "\\" + CREDENTIALS_DIRECTORY;
     }
 
     private static boolean deleteDirectory(File path)
