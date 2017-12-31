@@ -87,7 +87,7 @@ public class Authentication
 
     private static String getCredentialsDirectory()
     {
-        return Util.getOSType() == Util.EnumOS.OSX ? System.getProperty("user.home") + File.separator + CREDENTIALS_DIRECTORY : System.getProperty("user.home") + "\\" + CREDENTIALS_DIRECTORY;
+        return System.getProperty("user.home") + (Util.getOSType() == Util.EnumOS.OSX ? File.separator : "\\") + CREDENTIALS_DIRECTORY;
     }
 
     private static boolean deleteDirectory(File path)
