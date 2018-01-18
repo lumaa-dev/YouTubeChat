@@ -29,6 +29,7 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeScopes;
 import com.google.api.services.youtube.model.*;
+import com.google.common.base.Strings;
 
 import net.minecraft.client.Minecraft;
 
@@ -48,13 +49,14 @@ class ChatService implements YouTubeChatService
     private Timer pollTimer;
     private long nextPoll;
     public static String channelOwnerId = "";
+    public static String currentLoginProfile = "";
 
     public ChatService()
     {
         this.listeners = new ArrayList<>();
     }
 
-    public void start(final String videoId, final String clientSecret)
+    public void start(final String videoId, final String clientSecret, final String defaultAuthName)
     {
         this.executor = Executors.newCachedThreadPool();
         this.executor.execute(() ->
@@ -67,7 +69,9 @@ class ChatService implements YouTubeChatService
                 scopes.add(YouTubeScopes.YOUTUBE);
 
                 // Authorize the request
-                Credential credential = Authentication.authorize(scopes, clientSecret, YouTubeChat.MODID);
+                String fileName = Strings.isNullOrEmpty(defaultAuthName) ? YouTubeChat.MODID : defaultAuthName;
+                Credential credential = Authentication.authorize(scopes, clientSecret, fileName);
+                ChatService.currentLoginProfile = fileName;
 
                 // This object is used to make YouTube Data API requests
                 this.youtube = new YouTube.Builder(Authentication.HTTP_TRANSPORT, Authentication.JSON_FACTORY, credential).setApplicationName(YouTubeChat.NAME).build();
