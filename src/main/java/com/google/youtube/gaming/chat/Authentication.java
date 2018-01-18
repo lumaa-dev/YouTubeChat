@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
-
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.StoredCredential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -51,7 +49,7 @@ public class Authentication
      * This is the directory that will be used under the user's home directory where OAuth tokens will
      * be stored.
      */
-    private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
+    public static final String CREDENTIALS_DIRECTORY = ".ytc-oauth-credentials";
 
     /**
      * Authorizes the installed application to access user's protected data.
@@ -65,8 +63,8 @@ public class Authentication
         // Load client secrets
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
-        // This creates the credentials datastore at ~/.oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(Authentication.getCredentialsDirectory()));
+        // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(YouTubeChat.configDirectory);
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
@@ -75,18 +73,31 @@ public class Authentication
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
     }
 
-    public static void clearCredentials() throws IOException
+    public static void clearCurrentCredentials() throws IOException
     {
-        File directory = new File(Authentication.getCredentialsDirectory());
+        File file = new File(YouTubeChat.configDirectory, ChatService.currentLoginProfile);
 
-        if (directory.exists())
+        if (file.delete())
         {
-            FileUtils.deleteDirectory(directory);
+            ModLogger.printYTMessage(YouTubeChat.json.text("Profile " + file.getName() + " have been deleted!").setChatStyle(YouTubeChat.json.green()));
+        }
+        else
+        {
+            ModLogger.printExceptionMessage("Cannot delete file or file not found!");
         }
     }
 
-    private static String getCredentialsDirectory()
+    public static void clearCredentials(String fileName) throws IOException
     {
-        return System.getProperty("user.home") + "\\" + CREDENTIALS_DIRECTORY;
+        File file = new File(YouTubeChat.configDirectory, fileName);
+
+        if (file.delete())
+        {
+            ModLogger.printYTMessage(YouTubeChat.json.text("Profile " + file.getName() + " have been deleted!").setChatStyle(YouTubeChat.json.green()));
+        }
+        else
+        {
+            ModLogger.printExceptionMessage("Cannot delete file or file not found!");
+        }
     }
 }

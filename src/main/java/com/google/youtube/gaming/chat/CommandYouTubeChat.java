@@ -16,7 +16,9 @@
 
 package com.google.youtube.gaming.chat;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -25,6 +27,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IChatComponent;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
@@ -73,7 +76,17 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is already initialized");
             }
 
-            this.service.start(ConfigManager.liveVideoId, clientSecret);
+            IChatComponent component = ClientCommandBase.getChatComponentFromNthArg(args, 1);
+            String profile = component.createCopy().getUnformattedText();
+
+            if (profile.isEmpty())
+            {
+                this.service.start(ConfigManager.liveVideoId, clientSecret, null);
+            }
+            else
+            {
+                this.service.start(ConfigManager.liveVideoId, clientSecret, profile);
+            }
 
             if (ConfigManager.autoReceiveChat)
             {
@@ -96,18 +109,45 @@ public class CommandYouTubeChat extends ClientCommandBase
                 this.service.unsubscribe(YouTubeChatReceiver.getInstance());
             }
         }
-        else if (args[0].equalsIgnoreCase("logout"))
+        else if (args[0].equalsIgnoreCase("list"))
         {
-            if (this.service.executor == null)
+            if (!YouTubeChat.configDirectory.exists())
             {
-                throw new CommandException("Service is not initialized");
+                ModLogger.printExceptionMessage("Folder doesn't exist!");
+                return;
             }
 
-            this.service.stop(true);
+            ModLogger.printYTMessage(YouTubeChat.json.text("Current login profiles list").setChatStyle(YouTubeChat.json.white()));
+
+            if (YouTubeChat.configDirectory.listFiles().length < 1)
+            {
+                sender.addChatMessage(YouTubeChat.json.text("- Empty login profiles!").setChatStyle(YouTubeChat.json.red()));
+            }
+            for (File file : YouTubeChat.configDirectory.listFiles())
+            {
+                sender.addChatMessage(YouTubeChat.json.text("- ").appendSibling(YouTubeChat.json.text(file.getName()).setChatStyle(YouTubeChat.json.gold())));
+            }
+        }
+        else if (args[0].equalsIgnoreCase("logout"))
+        {
+            if (this.service.executor != null)
+            {
+                this.service.stop(true);
+            }
+
+            IChatComponent component = ClientCommandBase.getChatComponentFromNthArg(args, 1);
+            String profile = component.createCopy().getUnformattedText();
 
             try
             {
-                Authentication.clearCredentials();
+                if (profile.isEmpty())
+                {
+                    Authentication.clearCurrentCredentials();
+                }
+                else
+                {
+                    Authentication.clearCredentials(profile);
+                }
             }
             catch (IOException e)
             {
@@ -166,13 +206,29 @@ public class CommandYouTubeChat extends ClientCommandBase
     {
         if (args.length == 1)
         {
-            return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "logout", "echo_start", "echo_stop", "post");
+            return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "list", "logout", "echo_start", "echo_stop", "post");
+        }
+        if (args.length == 2)
+        {
+            if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("logout"))
+            {
+                if (YouTubeChat.configDirectory.exists())
+                {
+                    List<String> list = new LinkedList<>();
+
+                    for (File file : YouTubeChat.configDirectory.listFiles())
+                    {
+                        list.add(file.getName());
+                    }
+                    return CommandBase.getListOfStringsMatchingLastWord(args, list);
+                }
+            }
         }
         return super.addTabCompletionOptions(sender, args, pos);
     }
 
     private String getUsage()
     {
-        return "/ytc <start|stop|logout|echo_start|echo_stop|post>";
+        return "/ytc <start|stop|list|logout|echo_start|echo_stop|post>";
     }
 }
