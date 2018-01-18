@@ -54,12 +54,12 @@ public class Main
             while (scanner.hasNextLine())
             {
                 String clientSecret = scanner.nextLine();
-                Authentication.authorize(scopes, clientSecret, YouTubeChat.MODID);
+                Authentication.authorize(scopes, clientSecret, args[1]);
                 System.out.println("[YTChat] Login successfully!");
             }
             break;
         case "logout":
-            Authentication.clearCurrentCredentials();
+            Authentication.clearCurrentCredentialsTemp(args[1]);
             System.out.println("[YTChat] Logout successfully!");
             break;
         default:
