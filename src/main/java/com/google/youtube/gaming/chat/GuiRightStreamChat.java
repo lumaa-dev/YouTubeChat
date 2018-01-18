@@ -17,14 +17,13 @@
 package com.google.youtube.gaming.chat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -137,7 +136,7 @@ public class GuiRightStreamChat extends Gui
 
         int k = MathHelper.floor_float(this.getChatWidth() / this.getChatScale());
         int l = 0;
-        List<IChatComponent> arraylist1 = Lists.newArrayList(chatComponent);
+        List<IChatComponent> arraylist1 = new ArrayList<>(Arrays.asList(chatComponent));
 
         for (int i1 = 0; i1 < arraylist1.size(); ++i1)
         {
