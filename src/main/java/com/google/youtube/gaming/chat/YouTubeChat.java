@@ -16,6 +16,7 @@
 
 package com.google.youtube.gaming.chat;
 
+import java.io.File;
 import java.util.Arrays;
 
 import net.minecraft.client.Minecraft;
@@ -43,7 +44,7 @@ public class YouTubeChat
 {
     public static final String MODID = "youtube_chat";
     public static final String NAME = "YouTube Chat";
-    public static final String VERSION = "1.3.3-1.12.2";
+    public static final String VERSION = "1.3.4-1.12.2";
     public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
     private static YouTubeChatService service;
     public static final JsonUtil json = new JsonUtil();
@@ -51,6 +52,7 @@ public class YouTubeChat
     private static boolean onDisconnected;
     private static boolean onConnected;
     private int ticks = 40;
+    public static File configDirectory;
 
     public static synchronized YouTubeChatService getService()
     {
@@ -64,6 +66,7 @@ public class YouTubeChat
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        YouTubeChat.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
         YouTubeChat.initModInfo(event.getModMetadata());
         ConfigManager.init(event.getSuggestedConfigurationFile());
         ChatService service = (ChatService) YouTubeChat.getService();

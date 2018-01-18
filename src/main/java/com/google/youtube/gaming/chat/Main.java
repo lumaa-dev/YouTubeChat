@@ -59,7 +59,7 @@ public class Main
             }
             break;
         case "logout":
-            Authentication.clearCredentials();
+            Authentication.clearCurrentCredentials();
             System.out.println("[YTChat] Logout successfully!");
             break;
         default:
