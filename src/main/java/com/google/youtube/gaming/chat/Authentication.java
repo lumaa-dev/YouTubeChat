@@ -60,33 +60,17 @@ public class Authentication
      */
     public static Credential authorize(Collection<String> scopes, String clientSecret, String credentialDatastore) throws IOException
     {
-        File file = new File(Authentication.CREDENTIALS_DIRECTORY);
-
         // Load client secrets
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(file);
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(YouTubeChat.configDirectory);
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
 
         // authorize
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
-    }
-
-    public static void clearCurrentCredentialsTemp(String fileName) throws IOException
-    {
-        File file = new File(Authentication.CREDENTIALS_DIRECTORY, fileName);
-
-        if (file.delete())
-        {
-            System.out.println("[YTChat] Profile " + file.getName() + " have been deleted!");
-        }
-        else
-        {
-            System.out.println("[YTChat] Cannot delete file or file not found!");
-        }
     }
 
     public static void clearCurrentCredentials() throws IOException
