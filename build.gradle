@@ -37,10 +37,13 @@ dependencies {
 }
 
 shadowJar {
-    relocate "org.apache", "com.google.youtube.gaming.chat.relocate.org.apache"
+    relocate "org.apache.commons.codec", "com.google.youtube.gaming.chat.relocate.org.apache.commons.codec"
+    relocate "org.apache.commons.logging", "com.google.youtube.gaming.chat.relocate.org.apache.commons.logging"
+    relocate "org.apache.http", "com.google.youtube.gaming.chat.relocate.org.apache.http"
     relocate "org.codehaus", "com.google.youtube.gaming.chat.relocate.org.codehaus"
     relocate "org.mortbay", "com.google.youtube.gaming.chat.relocate.org.mortbay"
-    relocate "javax", "com.google.youtube.gaming.chat.relocate.javax"
+    relocate "javax.annotation", "com.google.youtube.gaming.chat.relocate.javax.annotation"
+    relocate "javax.servlet", "com.google.youtube.gaming.chat.relocate.javax.servlet"
     relocate "com.google.api", "com.google.youtube.gaming.chat.relocate.com.google.api"
     relocate "com.google.common", "com.google.youtube.gaming.chat.relocate.com.google.common"
     relocate "com.google.errorprone", "com.google.youtube.gaming.chat.relocate.com.google.errorprone"
