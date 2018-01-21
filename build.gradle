@@ -5,13 +5,19 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven {
+            name = "shadow"
+            url = "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
 version = "1.3.4-1.8.9"
 group = "com.google.youtube.gaming.chat"
 archivesBaseName = "YouTubeChat"
@@ -31,7 +37,31 @@ configurations {
 
 dependencies {
     compile fileTree(dir: 'M:/Modding/YouTubeChat/1.8.9/.dependencies', include: '*.jar')
-    embed fileTree(dir: 'M:/Modding/YouTubeChat/1.8.9/.dependencies', include: '*.jar')
+}
+
+shadowJar {
+    relocate "org.apache.commons.codec", "com.google.youtube.gaming.chat.relocate.org.apache.commons.codec"
+    relocate "org.apache.commons.logging", "com.google.youtube.gaming.chat.relocate.org.apache.commons.logging"
+    relocate "org.apache.http", "com.google.youtube.gaming.chat.relocate.org.apache.http"
+    relocate "org.codehaus", "com.google.youtube.gaming.chat.relocate.org.codehaus"
+    relocate "org.mortbay", "com.google.youtube.gaming.chat.relocate.org.mortbay"
+    relocate "javax.annotation", "com.google.youtube.gaming.chat.relocate.javax.annotation"
+    relocate "javax.servlet", "com.google.youtube.gaming.chat.relocate.javax.servlet"
+    relocate "com.google.api", "com.google.youtube.gaming.chat.relocate.com.google.api"
+    relocate "com.google.common", "com.google.youtube.gaming.chat.relocate.com.google.common"
+    relocate "com.google.errorprone", "com.google.youtube.gaming.chat.relocate.com.google.errorprone"
+    relocate "com.google.j2objc", "com.google.youtube.gaming.chat.relocate.com.google.j2objc"
+    relocate "com.google.thirdparty", "com.google.youtube.gaming.chat.relocate.com.google.thirdparty"
+    relocate "com.fasterxml", "com.google.youtube.gaming.chat.relocate.com.fasterxml"
+
+    classifier ''
+    dependencies {
+        include(dependency(fileTree(dir: 'M:/Modding/YouTubeChat/1.8.9/.dependencies', include: '*.jar')))
+    }
+}
+
+reobf {
+    shadowJar {}
 }
 
 jar {
