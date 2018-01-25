@@ -65,6 +65,7 @@ public class Authentication
 
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
         FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(YouTubeChat.configDirectory);
+        ModLogger.info("Preparing authentication directory at {}", YouTubeChat.configDirectory.getPath());
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
