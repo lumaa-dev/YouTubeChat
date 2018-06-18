@@ -34,8 +34,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
-import stevekung.mods.ytchat.LoggerYT;
-import stevekung.mods.ytchat.core.YouTubeChatMod;
+import stevekung.mods.stevekunglib.utils.JsonUtils;
+import stevekung.mods.ytchat.utils.LoggerYT;
 
 /**
  * Contains methods for authorizing a user and caching credentials.
@@ -53,7 +53,7 @@ public class Authentication
      * be stored.
      */
     public static final String CREDENTIALS_DIRECTORY = ".ytc-oauth-credentials";
-    
+
     public static File configDirectory;
 
     /**
@@ -85,7 +85,7 @@ public class Authentication
 
         if (file.delete())
         {
-            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Profile " + file.getName() + " have been deleted!").setStyle(YouTubeChatMod.json.green()));
+            LoggerYT.printYTMessage(JsonUtils.create("Profile " + file.getName() + " have been deleted!").setStyle(JsonUtils.green()));
         }
         else
         {
@@ -99,7 +99,7 @@ public class Authentication
 
         if (file.delete())
         {
-            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Profile " + file.getName() + " have been deleted!").setStyle(YouTubeChatMod.json.green()));
+            LoggerYT.printYTMessage(JsonUtils.create("Profile " + file.getName() + " have been deleted!").setStyle(JsonUtils.green()));
         }
         else
         {

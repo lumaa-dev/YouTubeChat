@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat;
+package stevekung.mods.ytchat.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
-import stevekung.mods.ytchat.core.YouTubeChatMod;
+import stevekung.mods.stevekunglib.utils.JsonUtils;
+import stevekung.mods.stevekunglib.utils.client.ClientUtils;
+import stevekung.mods.ytchat.config.ConfigManagerYT;
+import stevekung.mods.ytchat.core.EventHandlerYT;
 
 /**
  *
@@ -70,24 +72,20 @@ public class LoggerYT
 
     public static void printYTMessage(ITextComponent component)
     {
-        if (ConfigManager.displayChatRightSide)
+        ITextComponent message = JsonUtils.create("[YTChat] ").setStyle(JsonUtils.red()).appendSibling(component);
+
+        if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
         {
-            YouTubeChatMod.rightStreamGui.printChatMessage(YouTubeChatMod.json.text("[YTChat] ").setStyle(YouTubeChatMod.json.red()).appendSibling(component));
+            EventHandlerYT.rightStreamGui.printChatMessage(message);
         }
         else
         {
-            if (Minecraft.getMinecraft().player != null)
-            {
-                Minecraft.getMinecraft().player.sendMessage(YouTubeChatMod.json.text("[YTChat] ").setStyle(YouTubeChatMod.json.red()).appendSibling(component));
-            }
+            ClientUtils.printClientMessage(message);
         }
     }
 
     public static void printExceptionMessage(String message)
     {
-        if (Minecraft.getMinecraft().player != null)
-        {
-            Minecraft.getMinecraft().player.sendMessage(YouTubeChatMod.json.text("[YTChatException] ").setStyle(YouTubeChatMod.json.red()).appendSibling(YouTubeChatMod.json.text(message).setStyle(YouTubeChatMod.json.darkRed())));
-        }
+        ClientUtils.printClientMessage(JsonUtils.create("[YTChatException] ").setStyle(JsonUtils.red()).appendSibling(JsonUtils.create(message).setStyle(JsonUtils.darkRed())));
     }
 }

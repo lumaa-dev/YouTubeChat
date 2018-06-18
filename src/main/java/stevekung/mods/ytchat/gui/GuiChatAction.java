@@ -28,14 +28,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stevekung.mods.ytchat.LoggerYT;
+import stevekung.mods.stevekunglib.utils.CommonUtils;
+import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.ytchat.auth.YouTubeChatService;
-import stevekung.mods.ytchat.core.YouTubeChatMod;
+import stevekung.mods.ytchat.utils.LoggerYT;
 
 @SideOnly(Side.CLIENT)
 public class GuiChatAction extends GuiScreen
@@ -50,13 +50,13 @@ public class GuiChatAction extends GuiScreen
     private String channelId;
     private String displayName;
 
-    public GuiChatAction(YouTubeChatService service, String messageId, String channelId, String displayName)
+    public GuiChatAction(String messageId, String channelId, String displayName)
     {
         this.mc = Minecraft.getMinecraft();
-        this.service = service;
         this.messageId = messageId;
         this.channelId = channelId;
         this.displayName = displayName;
+        this.service = YouTubeChatService.getService();
     }
 
     public void display()
@@ -65,14 +65,14 @@ public class GuiChatAction extends GuiScreen
         {
             return;
         }
-        MinecraftForge.EVENT_BUS.register(this);
+        CommonUtils.registerEventHandler(this);
     }
 
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event)
     {
         this.mc.displayGuiScreen(this);
-        MinecraftForge.EVENT_BUS.unregister(this);
+        CommonUtils.unregisterEventHandler(this);
     }
 
     @Override
@@ -99,22 +99,22 @@ public class GuiChatAction extends GuiScreen
         {
             if (button.id == 0)
             {
-                Runnable response = () -> LoggerYT.printYTMessage(YouTubeChatMod.json.text("Message deleted!").setStyle(YouTubeChatMod.json.green()));
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("Message deleted!").setStyle(JsonUtils.green()));
                 this.service.deleteMessage(this.messageId, response);
             }
             if (button.id == 1)
             {
-                Runnable response = () -> LoggerYT.printYTMessage(YouTubeChatMod.json.text("User ").setStyle(YouTubeChatMod.json.green()).appendSibling(YouTubeChatMod.json.text(this.displayName + " ").setStyle(YouTubeChatMod.json.darkRed()).appendSibling(YouTubeChatMod.json.text("was banned!").setStyle(YouTubeChatMod.json.green()))));
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was banned!").setStyle(JsonUtils.green()))));
                 this.service.banUser(this.channelId, response, false);
             }
             if (button.id == 2)
             {
-                Runnable response = () -> LoggerYT.printYTMessage(YouTubeChatMod.json.text("User ").setStyle(YouTubeChatMod.json.green()).appendSibling(YouTubeChatMod.json.text(this.displayName + " ").setStyle(YouTubeChatMod.json.darkRed()).appendSibling(YouTubeChatMod.json.text("was temporary banned!").setStyle(YouTubeChatMod.json.green()))));
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was temporary banned!").setStyle(JsonUtils.green()))));
                 this.service.banUser(this.channelId, response, true);
             }
             if (button.id == 3)
             {
-                Runnable response = () -> LoggerYT.printYTMessage(YouTubeChatMod.json.text("Added ").setStyle(YouTubeChatMod.json.green()).appendSibling(YouTubeChatMod.json.text(this.displayName + " ").setStyle(YouTubeChatMod.json.blue()).appendSibling(YouTubeChatMod.json.text("to moderator!").setStyle(YouTubeChatMod.json.green()))));
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("Added ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.blue()).appendSibling(JsonUtils.create("to moderator!").setStyle(JsonUtils.green()))));
                 this.service.addModerator(this.channelId, response);
             }
             this.mc.displayGuiScreen(null);

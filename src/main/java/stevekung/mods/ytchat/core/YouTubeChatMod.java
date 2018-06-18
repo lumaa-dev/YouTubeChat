@@ -19,118 +19,92 @@ package stevekung.mods.ytchat.core;
 import java.io.File;
 import java.util.Arrays;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import stevekung.mods.ytchat.*;
+import stevekung.mods.stevekunglib.utils.CommonUtils;
+import stevekung.mods.stevekunglib.utils.ModLogger;
+import stevekung.mods.stevekunglib.utils.VersionChecker;
+import stevekung.mods.stevekunglib.utils.client.ClientUtils;
 import stevekung.mods.ytchat.auth.Authentication;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
-import stevekung.mods.ytchat.gui.GuiRightStreamChat;
+import stevekung.mods.ytchat.command.CommandChatAction;
+import stevekung.mods.ytchat.command.CommandYouTubeChat;
 
-@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, guiFactory = YouTubeChatMod.GUI_FACTORY, acceptedMinecraftVersions = "[1.12]")
+@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL, certificateFingerprint = YouTubeChatMod.CERTIFICATE)
 public class YouTubeChatMod
 {
-    public static final String MOD_ID = "youtube_chat";
     public static final String NAME = "YouTube Chat";
-    public static final String VERSION = "1.3.5";
-    public static final String GUI_FACTORY = "stevekung.mods.ytchat.core.config.ConfigGuiFactory";
-    public static final JsonUtil json = new JsonUtil();
-    public static GuiRightStreamChat rightStreamGui;
-    private static boolean onDisconnected;
-    private static boolean onConnected;
-    private int ticks = 40;
+    public static final String MOD_ID = "youtube_chat";
+    private static final int MAJOR_VERSION = 1;
+    private static final int MINOR_VERSION = 3;
+    private static final int BUILD_VERSION = 5;
+    public static final String VERSION = YouTubeChatMod.MAJOR_VERSION + "." + YouTubeChatMod.MINOR_VERSION + "." + YouTubeChatMod.BUILD_VERSION;
+    private static final String FORGE_VERSION = "after:forge@[14.23.4.2705,);";
+    protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.0,); " + YouTubeChatMod.FORGE_VERSION;
+    private static final String URL = "https://minecraft.curseforge.com/projects/youtube-chat";
+    protected static final String JSON_URL = "https://raw.githubusercontent.com/SteveKunG/VersionCheckLibrary/master/youtube_chat_version.json";
+    protected static final String CERTIFICATE = "@FINGERPRINT@";
+
+    @Instance(YouTubeChatMod.MOD_ID)
+    public static YouTubeChatMod INSTANCE;
+
+    public static VersionChecker CHECKER;
+    public static boolean isDevelopment;
+
+    static
+    {
+        try
+        {
+            YouTubeChatMod.isDevelopment = Launch.classLoader.getClassBytes("net.minecraft.world.World") != null;
+        }
+        catch (Exception e) {}
+    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
         YouTubeChatMod.initModInfo(event.getModMetadata());
-        ConfigManager.init(event.getSuggestedConfigurationFile());
-        YouTubeChatService service = (YouTubeChatService) YouTubeChatService.getService();
-        ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
-        ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
-        MinecraftForge.EVENT_BUS.register(this);
+        Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
+        ClientUtils.registerCommand(new CommandYouTubeChat());
+        ClientUtils.registerCommand(new CommandChatAction());
+        CommonUtils.registerEventHandler(this);
+        CommonUtils.registerEventHandler(new EventHandlerYT());
+
+        YouTubeChatMod.CHECKER = new VersionChecker(YouTubeChatMod.INSTANCE, YouTubeChatMod.NAME, YouTubeChatMod.URL, null);
+
+        //if (ConfigManagerIN.indicatia_general.enableVersionChecker)//TODO
+        {
+            YouTubeChatMod.CHECKER.startCheck();
+        }
     }
 
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent event)
+    @EventHandler
+    public void onFingerprintViolation(FMLFingerprintViolationEvent event)
     {
-        if (event.getModID().equalsIgnoreCase(YouTubeChatMod.MOD_ID))
+        if (YouTubeChatMod.isDevelopment)
         {
-            ConfigManager.syncConfig(false);
+            ModLogger.info("Development environment detected! Ignore certificate check.");
+        }
+        else
+        {
+            throw new RuntimeException("Invalid fingerprint detected! This version will NOT be supported by the author!");
         }
     }
 
     @SubscribeEvent
-    public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
     {
-        YouTubeChatMod.rightStreamGui = new GuiRightStreamChat(Minecraft.getMinecraft());
-        onConnected = true;
-    }
-
-    @SubscribeEvent
-    public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
-    {
-        onDisconnected = true;
-        YouTubeChatMod.rightStreamGui.clearChatMessages();
-    }
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        if (CommandYouTubeChat.isReceivedChat)
+        if (event.getModID().equals(YouTubeChatMod.MOD_ID))
         {
-            if (onConnected && this.ticks > 0)
-            {
-                this.ticks--;
-
-                if (this.ticks == 0)
-                {
-                    YouTubeChatService.getService().subscribe(YouTubeChatReceiver.getInstance());
-                    onConnected = false;
-                    this.ticks = 40;
-                }
-            }
-            if (onDisconnected && this.ticks > 0)
-            {
-                this.ticks--;
-
-                if (this.ticks == 0)
-                {
-                    YouTubeChatService.getService().unsubscribe(YouTubeChatReceiver.getInstance());
-                    onDisconnected = false;
-                    this.ticks = 40;
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onPreInfoRender(RenderGameOverlayEvent.Pre event)
-    {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT)
-        {
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-            int width = res.getScaledWidth();
-            int height = res.getScaledHeight();
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.disableAlpha();
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(width / 2, height - 48, 0.0F);
-            YouTubeChatMod.rightStreamGui.drawChat(Minecraft.getMinecraft().ingameGUI.getUpdateCounter());
-            GlStateManager.popMatrix();
+            ConfigManager.sync(YouTubeChatMod.MOD_ID, Config.Type.INSTANCE);
         }
     }
 
@@ -141,6 +115,7 @@ public class YouTubeChatMod
         info.name = YouTubeChatMod.NAME;
         info.description = "Enables interaction with YouTube Live Stream Chat.";
         info.version = YouTubeChatMod.VERSION;
+        info.url = YouTubeChatMod.URL;
         info.authorList = Arrays.asList("SteveKunG", "PeregrineZ", "jimrogers");
         info.credits = "Credit to PeregrineZ for implemented Example Features";
     }

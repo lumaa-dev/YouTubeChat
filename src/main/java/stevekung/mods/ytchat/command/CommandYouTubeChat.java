@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat;
+package stevekung.mods.ytchat.command;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,9 +29,14 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import stevekung.mods.stevekunglib.utils.JsonUtils;
+import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
 import stevekung.mods.ytchat.auth.Authentication;
 import stevekung.mods.ytchat.auth.YouTubeChatService;
-import stevekung.mods.ytchat.core.YouTubeChatMod;
+import stevekung.mods.ytchat.config.ConfigManagerYT;
+import stevekung.mods.ytchat.core.EventHandlerYT;
+import stevekung.mods.ytchat.utils.LoggerYT;
+import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
@@ -40,14 +45,6 @@ import stevekung.mods.ytchat.core.YouTubeChatMod;
  */
 public class CommandYouTubeChat extends ClientCommandBase
 {
-    private YouTubeChatService service;
-    public static boolean isReceivedChat;
-
-    public CommandYouTubeChat(YouTubeChatService service)
-    {
-        this.service = service;
-    }
-
     @Override
     public String getName()
     {
@@ -63,8 +60,9 @@ public class CommandYouTubeChat extends ClientCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        String clientSecret = ConfigManager.clientSecret;
-        boolean hasExecutor = this.service.getExecutor() != null;
+        String clientSecret = ConfigManagerYT.youtube_chat_general.clientSecret;
+        YouTubeChatService service = YouTubeChatService.getService();
+        boolean hasExecutor = service.getExecutor() != null;
 
         if (clientSecret.isEmpty())
         {
@@ -86,17 +84,17 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             if (profile.isEmpty())
             {
-                this.service.start(ConfigManager.liveVideoId, clientSecret, null);
+                service.start(ConfigManagerYT.youtube_chat_general.liveVideoId, clientSecret, null);
             }
             else
             {
-                this.service.start(ConfigManager.liveVideoId, clientSecret, profile);
+                service.start(ConfigManagerYT.youtube_chat_general.liveVideoId, clientSecret, profile);
             }
 
-            if (ConfigManager.autoReceiveChat)
+            if (ConfigManagerYT.youtube_chat_chat.autoReceiveChat)
             {
-                CommandYouTubeChat.isReceivedChat = true;
-                this.service.subscribe(YouTubeChatReceiver.getInstance());
+                EventHandlerYT.isReceivedChat = true;
+                service.subscribe(YouTubeChatReceiver.getInstance());
             }
         }
         else if (args[0].equalsIgnoreCase("stop"))
@@ -106,12 +104,12 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is not initialized");
             }
 
-            this.service.stop(false);
+            service.stop(false);
 
-            if (ConfigManager.autoReceiveChat)
+            if (ConfigManagerYT.youtube_chat_chat.autoReceiveChat)
             {
-                CommandYouTubeChat.isReceivedChat = false;
-                this.service.unsubscribe(YouTubeChatReceiver.getInstance());
+                EventHandlerYT.isReceivedChat = false;
+                service.unsubscribe(YouTubeChatReceiver.getInstance());
             }
         }
         else if (args[0].equalsIgnoreCase("list"))
@@ -122,22 +120,22 @@ public class CommandYouTubeChat extends ClientCommandBase
                 return;
             }
 
-            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Current login profiles list").setStyle(YouTubeChatMod.json.white()));
+            LoggerYT.printYTMessage(JsonUtils.create("Current login profiles list").setStyle(JsonUtils.white()));
 
             if (Authentication.configDirectory.listFiles().length < 1)
             {
-                sender.sendMessage(YouTubeChatMod.json.text("- Empty login profiles!").setStyle(YouTubeChatMod.json.red()));
+                sender.sendMessage(JsonUtils.create("- Empty login profiles!").setStyle(JsonUtils.red()));
             }
             for (File file : Authentication.configDirectory.listFiles())
             {
-                sender.sendMessage(YouTubeChatMod.json.text("- ").appendSibling(YouTubeChatMod.json.text(file.getName()).setStyle(YouTubeChatMod.json.gold())));
+                sender.sendMessage(JsonUtils.create("- ").appendSibling(JsonUtils.create(file.getName()).setStyle(JsonUtils.gold())));
             }
         }
         else if (args[0].equalsIgnoreCase("logout"))
         {
             if (hasExecutor)
             {
-                this.service.stop(true);
+                service.stop(true);
             }
 
             ITextComponent component = ClientCommandBase.getChatComponentFromNthArg(args, 1);
@@ -162,29 +160,29 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         else if (args[0].equalsIgnoreCase("echo_start"))
         {
-            if (!this.service.isInitialized())
+            if (!service.isInitialized())
             {
                 throw new CommandException("Service is not initialized");
             }
-            if (!this.service.getListeners().isEmpty())
+            if (!service.getListeners().isEmpty())
             {
                 throw new CommandException("Service is already start receiving live chat message");
             }
-            CommandYouTubeChat.isReceivedChat = true;
-            this.service.subscribe(YouTubeChatReceiver.getInstance());
+            EventHandlerYT.isReceivedChat = true;
+            service.subscribe(YouTubeChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("echo_stop"))
         {
-            if (!this.service.isInitialized())
+            if (!service.isInitialized())
             {
                 throw new CommandException("Service is not initialized");
             }
-            if (this.service.getListeners().isEmpty())
+            if (service.getListeners().isEmpty())
             {
                 throw new CommandException("Service is stop receiving live chat message");
             }
-            CommandYouTubeChat.isReceivedChat = false;
-            this.service.unsubscribe(YouTubeChatReceiver.getInstance());
+            EventHandlerYT.isReceivedChat = false;
+            service.unsubscribe(YouTubeChatReceiver.getInstance());
         }
         else if (args[0].equalsIgnoreCase("post"))
         {
@@ -197,8 +195,8 @@ public class CommandYouTubeChat extends ClientCommandBase
                 throw new CommandException("Service is not initialized");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> LoggerYT.printYTMessage(YouTubeChatMod.json.text("Message posted").setStyle(YouTubeChatMod.json.green()));
-            this.service.postMessage(message, id);
+            Consumer<String> id = i -> LoggerYT.printYTMessage(JsonUtils.create("Message posted").setStyle(JsonUtils.green()));
+            service.postMessage(message, id);
         }
         else
         {

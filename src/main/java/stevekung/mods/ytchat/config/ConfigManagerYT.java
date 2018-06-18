@@ -1,0 +1,67 @@
+package stevekung.mods.ytchat.config;
+
+import net.minecraftforge.common.config.Config;
+import stevekung.mods.ytchat.core.YouTubeChatMod;
+
+@Config(modid = YouTubeChatMod.MOD_ID)
+public class ConfigManagerYT
+{
+    @Config.LangKey(value = "youtube_chat_general")
+    public static final General youtube_chat_general = new General();
+
+    @Config.LangKey(value = "youtube_chat_chat")
+    public static final Chat youtube_chat_chat = new Chat();
+
+    // Main Settings
+    public static class General
+    {
+        @Config.Comment("The client secret from Google API console.")
+        @Config.Name(value = "Client Secret")
+        public String clientSecret = "";
+
+        @Config.Comment("The specific ID of the live video")
+        @Config.Name(value = "Live Video ID")
+        public String liveVideoId = "";
+    }
+
+    // Chat Settings
+    public static class Chat
+    {
+        @Config.Comment("Put your fancy unicode, it will display in front of your channel name")
+        @Config.Name(value = "Channel Owner Icon (Unicode)")
+        public String ownerUnicodeIcon = "";
+
+        @Config.Comment("Put your fancy unicode, it will display in front of moderator channel")
+        @Config.Name(value = "Moderator Icon (Unicode)")
+        public String moderatorUnicodeIcon = "";
+
+        @Config.Comment("Put the list of rude word, this will be automatically do an action with message when received. split by \",\"")
+        @Config.Name(value = "Rude Word List")
+        public String rudeWordList = "";
+
+        @Config.Comment("If the message contain rude word, this will does an action with selected action")
+        @Config.Name(value = "Rude Word Action")
+        public EnumRudeWordAction rudeWordAction = EnumRudeWordAction.DELETE;
+
+        @Config.Comment("Display super chats only")
+        @Config.Name(value = "Show Super Chat Only")
+        public boolean showSuperChatOnly = false;
+
+        @Config.Comment("Move only YouTube Chat into Right Side of the screen, render same as Chat")
+        @Config.Name(value = "Display YouTube Chat on Right Side")
+        public boolean displayChatRightSide = false;
+
+        @Config.Comment("When you starting service, This will automatically subscribe YouTube Chat Service")
+        @Config.Name(value = "Automatic Receive Chat")
+        public boolean autoReceiveChat = true;
+
+        @Config.Comment("This will remove minecraft color code from chat")
+        @Config.Name(value = "Remove Minecraft Color Code from Chat")
+        public boolean removeColorFormatting = true;
+
+        public static enum EnumRudeWordAction
+        {
+            DELETE, TEMPORARY_BAN, BAN;
+        }
+    }
+}

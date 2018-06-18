@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat;
+package stevekung.mods.ytchat.command;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
+import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
 import stevekung.mods.ytchat.gui.GuiChatAction;
 
 /**
@@ -32,13 +32,6 @@ import stevekung.mods.ytchat.gui.GuiChatAction;
  */
 public class CommandChatAction extends ClientCommandBase
 {
-    private YouTubeChatService service;
-
-    public CommandChatAction(YouTubeChatService service)
-    {
-        this.service = service;
-    }
-
     @Override
     public String getName()
     {
@@ -58,7 +51,7 @@ public class CommandChatAction extends ClientCommandBase
         {
             throw new WrongUsageException(this.getUsage());
         }
-        new GuiChatAction(this.service, args[0], args[1], ClientCommandBase.getChatComponentFromNthArg(args, 2).createCopy().getUnformattedText()).display();
+        new GuiChatAction(args[0], args[1], ClientCommandBase.getChatComponentFromNthArg(args, 2).createCopy().getUnformattedText()).display();
     }
 
     private String getUsage()

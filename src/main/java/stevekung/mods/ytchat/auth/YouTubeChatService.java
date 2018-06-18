@@ -32,9 +32,10 @@ import com.google.api.services.youtube.model.*;
 import com.google.common.base.Strings;
 
 import net.minecraft.client.Minecraft;
-import stevekung.mods.ytchat.AbstractChatService;
-import stevekung.mods.ytchat.LoggerYT;
+import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.ytchat.core.YouTubeChatMod;
+import stevekung.mods.ytchat.utils.AbstractChatService;
+import stevekung.mods.ytchat.utils.LoggerYT;
 
 /**
  * Manages connection to the YouTube chat service, posting chat messages, deleting chat messages,
@@ -43,7 +44,7 @@ import stevekung.mods.ytchat.core.YouTubeChatMod;
 public class YouTubeChatService implements AbstractChatService
 {
     private static final String LIVE_CHAT_FIELDS = "items(authorDetails(channelId,displayName,isChatModerator,isChatOwner,isChatSponsor,isVerified,profileImageUrl),snippet(displayMessage,superChatDetails,publishedAt),id),nextPageToken,pollingIntervalMillis";
-    protected ExecutorService executor;
+    private ExecutorService executor;
     private YouTube youtube;
     private String liveChatId;
     private boolean isInitialized;
@@ -51,22 +52,22 @@ public class YouTubeChatService implements AbstractChatService
     private String nextPageToken;
     private Timer pollTimer;
     private long nextPoll;
+    private static YouTubeChatService INSTANCE;
     public static String channelOwnerId = "";
-    public static String currentLoginProfile = "";
-    private static AbstractChatService service;
+    static String currentLoginProfile = "";
 
     public YouTubeChatService()
     {
         this.listeners = new ArrayList<>();
     }
 
-    public static synchronized AbstractChatService getService()
+    public static synchronized YouTubeChatService getService()
     {
-        if (service == null)
+        if (INSTANCE == null)
         {
-            service = new YouTubeChatService();
+            INSTANCE = new YouTubeChatService();
         }
-        return service;
+        return INSTANCE;
     }
 
     @Override
@@ -81,7 +82,7 @@ public class YouTubeChatService implements AbstractChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Started receiving live chat message").setStyle(YouTubeChatMod.json.white()));
+            LoggerYT.printYTMessage(JsonUtils.create("Started receiving live chat message").setStyle(JsonUtils.white()));
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -96,7 +97,7 @@ public class YouTubeChatService implements AbstractChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Stopped receiving live chat message").setStyle(YouTubeChatMod.json.white()));
+            LoggerYT.printYTMessage(JsonUtils.create("Stopped receiving live chat message").setStyle(JsonUtils.white()));
 
             if (this.listeners.size() == 0)
             {
@@ -314,7 +315,7 @@ public class YouTubeChatService implements AbstractChatService
                 {
                     this.nextPoll = System.currentTimeMillis() + response.getPollingIntervalMillis();
                 }
-                LoggerYT.printYTMessage(YouTubeChatMod.json.text("Service started").setStyle(YouTubeChatMod.json.green()));
+                LoggerYT.printYTMessage(JsonUtils.create("Service started").setStyle(JsonUtils.green()));
             }
             catch (Throwable t)
             {
@@ -335,14 +336,14 @@ public class YouTubeChatService implements AbstractChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        LoggerYT.printYTMessage(YouTubeChatMod.json.text(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(YouTubeChatMod.json.green()));
+        LoggerYT.printYTMessage(JsonUtils.create(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(JsonUtils.green()));
     }
 
     public ExecutorService getExecutor()
     {
         return this.executor;
     }
-    
+
     public List<YouTubeChatMessageListener> getListeners()
     {
         return this.listeners;
