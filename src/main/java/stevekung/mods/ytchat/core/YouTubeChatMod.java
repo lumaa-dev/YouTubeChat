@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat;
+package stevekung.mods.ytchat.core;
 
 import java.io.File;
 import java.util.Arrays;
@@ -33,43 +33,31 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import stevekung.mods.ytchat.*;
+import stevekung.mods.ytchat.auth.Authentication;
+import stevekung.mods.ytchat.auth.YouTubeChatService;
+import stevekung.mods.ytchat.gui.GuiRightStreamChat;
 
-/**
- * Main entry point for YouTube Chat. Provides the chat service API to other mods, e.g.
- *
- * YouTubeChatService youTubeChatService = YouTubeChat.getService();
- */
-@Mod(modid = YouTubeChat.MODID, name = YouTubeChat.NAME, version = YouTubeChat.VERSION, clientSideOnly = true, guiFactory = YouTubeChat.GUI_FACTORY, acceptedMinecraftVersions = "[1.12]")
-public class YouTubeChat
+@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, guiFactory = YouTubeChatMod.GUI_FACTORY, acceptedMinecraftVersions = "[1.12]")
+public class YouTubeChatMod
 {
-    public static final String MODID = "youtube_chat";
+    public static final String MOD_ID = "youtube_chat";
     public static final String NAME = "YouTube Chat";
-    public static final String VERSION = "1.3.4-1.12.2";
-    public static final String GUI_FACTORY = "com.google.youtube.gaming.chat.ConfigGuiFactory";
-    private static YouTubeChatService service;
+    public static final String VERSION = "1.3.5";
+    public static final String GUI_FACTORY = "stevekung.mods.ytchat.core.config.ConfigGuiFactory";
     public static final JsonUtil json = new JsonUtil();
     public static GuiRightStreamChat rightStreamGui;
     private static boolean onDisconnected;
     private static boolean onConnected;
     private int ticks = 40;
-    public static File configDirectory;
-
-    public static synchronized YouTubeChatService getService()
-    {
-        if (service == null)
-        {
-            service = new ChatService();
-        }
-        return service;
-    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        YouTubeChat.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
-        YouTubeChat.initModInfo(event.getModMetadata());
+        Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
+        YouTubeChatMod.initModInfo(event.getModMetadata());
         ConfigManager.init(event.getSuggestedConfigurationFile());
-        ChatService service = (ChatService) YouTubeChat.getService();
+        YouTubeChatService service = (YouTubeChatService) YouTubeChatService.getService();
         ClientCommandHandler.instance.registerCommand(new CommandYouTubeChat(service));
         ClientCommandHandler.instance.registerCommand(new CommandChatAction(service));
         MinecraftForge.EVENT_BUS.register(this);
@@ -78,7 +66,7 @@ public class YouTubeChat
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent event)
     {
-        if (event.getModID().equalsIgnoreCase(YouTubeChat.MODID))
+        if (event.getModID().equalsIgnoreCase(YouTubeChatMod.MOD_ID))
         {
             ConfigManager.syncConfig(false);
         }
@@ -87,7 +75,7 @@ public class YouTubeChat
     @SubscribeEvent
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
-        YouTubeChat.rightStreamGui = new GuiRightStreamChat(Minecraft.getMinecraft());
+        YouTubeChatMod.rightStreamGui = new GuiRightStreamChat(Minecraft.getMinecraft());
         onConnected = true;
     }
 
@@ -95,7 +83,7 @@ public class YouTubeChat
     public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         onDisconnected = true;
-        YouTubeChat.rightStreamGui.clearChatMessages();
+        YouTubeChatMod.rightStreamGui.clearChatMessages();
     }
 
     @SubscribeEvent
@@ -109,7 +97,7 @@ public class YouTubeChat
 
                 if (this.ticks == 0)
                 {
-                    YouTubeChat.service.subscribe(YouTubeChatReceiver.getInstance());
+                    YouTubeChatService.getService().subscribe(YouTubeChatReceiver.getInstance());
                     onConnected = false;
                     this.ticks = 40;
                 }
@@ -120,7 +108,7 @@ public class YouTubeChat
 
                 if (this.ticks == 0)
                 {
-                    YouTubeChat.service.unsubscribe(YouTubeChatReceiver.getInstance());
+                    YouTubeChatService.getService().unsubscribe(YouTubeChatReceiver.getInstance());
                     onDisconnected = false;
                     this.ticks = 40;
                 }
@@ -141,7 +129,7 @@ public class YouTubeChat
             GlStateManager.disableAlpha();
             GlStateManager.pushMatrix();
             GlStateManager.translate(width / 2, height - 48, 0.0F);
-            YouTubeChat.rightStreamGui.drawChat(Minecraft.getMinecraft().ingameGUI.getUpdateCounter());
+            YouTubeChatMod.rightStreamGui.drawChat(Minecraft.getMinecraft().ingameGUI.getUpdateCounter());
             GlStateManager.popMatrix();
         }
     }
@@ -149,10 +137,10 @@ public class YouTubeChat
     private static void initModInfo(ModMetadata info)
     {
         info.autogenerated = false;
-        info.modId = YouTubeChat.MODID;
-        info.name = YouTubeChat.NAME;
+        info.modId = YouTubeChatMod.MOD_ID;
+        info.name = YouTubeChatMod.NAME;
         info.description = "Enables interaction with YouTube Live Stream Chat.";
-        info.version = YouTubeChat.VERSION;
+        info.version = YouTubeChatMod.VERSION;
         info.authorList = Arrays.asList("SteveKunG", "PeregrineZ", "jimrogers");
         info.credits = "Credit to PeregrineZ for implemented Example Features";
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat;
+package stevekung.mods.ytchat.gui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,7 +50,7 @@ public class GuiRightStreamChat extends Gui
         this.mc = mc;
     }
 
-    void drawChat(int updateCounter)
+    public void drawChat(int updateCounter)
     {
         ScaledResolution res = new ScaledResolution(this.mc);
 
@@ -108,13 +108,13 @@ public class GuiRightStreamChat extends Gui
         }
     }
 
-    void clearChatMessages()
+    public void clearChatMessages()
     {
         this.drawnChatLines.clear();
         this.chatLines.clear();
     }
 
-    void printChatMessage(ITextComponent chatComponent)
+    public void printChatMessage(ITextComponent chatComponent)
     {
         this.printChatMessageWithOptionalDeletion(chatComponent, 0);
     }

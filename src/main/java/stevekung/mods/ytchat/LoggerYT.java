@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
+import stevekung.mods.ytchat.core.YouTubeChatMod;
 
 /**
  *
@@ -28,7 +29,7 @@ import net.minecraft.util.text.ITextComponent;
  * @author SteveKunG
  *
  */
-public class ModLogger
+public class LoggerYT
 {
     private static final Logger LOG;
 
@@ -39,45 +40,45 @@ public class ModLogger
 
     public static void info(String message)
     {
-        ModLogger.LOG.info(message);
+        LoggerYT.LOG.info(message);
     }
 
     public static void error(String message)
     {
-        ModLogger.LOG.error(message);
+        LoggerYT.LOG.error(message);
     }
 
     public static void warning(String message)
     {
-        ModLogger.LOG.warn(message);
+        LoggerYT.LOG.warn(message);
     }
 
     public static void info(String message, Object... obj)
     {
-        ModLogger.LOG.info(message, obj);
+        LoggerYT.LOG.info(message, obj);
     }
 
     public static void error(String message, Object... obj)
     {
-        ModLogger.LOG.error(message, obj);
+        LoggerYT.LOG.error(message, obj);
     }
 
     public static void warning(String message, Object... obj)
     {
-        ModLogger.LOG.warn(message, obj);
+        LoggerYT.LOG.warn(message, obj);
     }
 
     public static void printYTMessage(ITextComponent component)
     {
         if (ConfigManager.displayChatRightSide)
         {
-            YouTubeChat.rightStreamGui.printChatMessage(YouTubeChat.json.text("[YTChat] ").setStyle(YouTubeChat.json.red()).appendSibling(component));
+            YouTubeChatMod.rightStreamGui.printChatMessage(YouTubeChatMod.json.text("[YTChat] ").setStyle(YouTubeChatMod.json.red()).appendSibling(component));
         }
         else
         {
             if (Minecraft.getMinecraft().player != null)
             {
-                Minecraft.getMinecraft().player.sendMessage(YouTubeChat.json.text("[YTChat] ").setStyle(YouTubeChat.json.red()).appendSibling(component));
+                Minecraft.getMinecraft().player.sendMessage(YouTubeChatMod.json.text("[YTChat] ").setStyle(YouTubeChatMod.json.red()).appendSibling(component));
             }
         }
     }
@@ -86,7 +87,7 @@ public class ModLogger
     {
         if (Minecraft.getMinecraft().player != null)
         {
-            Minecraft.getMinecraft().player.sendMessage(YouTubeChat.json.text("[YTChatException] ").setStyle(YouTubeChat.json.red()).appendSibling(YouTubeChat.json.text(message).setStyle(YouTubeChat.json.darkRed())));
+            Minecraft.getMinecraft().player.sendMessage(YouTubeChatMod.json.text("[YTChatException] ").setStyle(YouTubeChatMod.json.red()).appendSibling(YouTubeChatMod.json.text(message).setStyle(YouTubeChatMod.json.darkRed())));
         }
     }
 }

@@ -24,6 +24,7 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
+import stevekung.mods.ytchat.core.YouTubeChatMod;
 
 /**
  * Configuration factory for YouTube Chat.
@@ -58,7 +59,7 @@ public class ConfigGuiFactory implements IModGuiFactory
     {
         public GuiStreamChatConfig(GuiScreen parentScreen)
         {
-            super(parentScreen, new ConfigElement(ConfigManager.getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), YouTubeChat.MODID, false, false, "YouTube Chat Configuration");
+            super(parentScreen, new ConfigElement(ConfigManager.getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), YouTubeChatMod.MOD_ID, false, false, "YouTube Chat Configuration");
         }
     }
 }

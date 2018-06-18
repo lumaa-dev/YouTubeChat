@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat;
+package stevekung.mods.ytchat.auth;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +34,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
+import stevekung.mods.ytchat.LoggerYT;
+import stevekung.mods.ytchat.core.YouTubeChatMod;
+
 /**
  * Contains methods for authorizing a user and caching credentials.
  */
@@ -50,6 +53,8 @@ public class Authentication
      * be stored.
      */
     public static final String CREDENTIALS_DIRECTORY = ".ytc-oauth-credentials";
+    
+    public static File configDirectory;
 
     /**
      * Authorizes the installed application to access user's protected data.
@@ -64,8 +69,8 @@ public class Authentication
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(YouTubeChat.configDirectory);
-        ModLogger.info("Preparing authentication directory at {}", YouTubeChat.configDirectory.getPath());
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(Authentication.configDirectory);
+        LoggerYT.info("Preparing authentication directory at {}", Authentication.configDirectory.getPath());
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
@@ -76,29 +81,29 @@ public class Authentication
 
     public static void clearCurrentCredentials() throws IOException
     {
-        File file = new File(YouTubeChat.configDirectory, ChatService.currentLoginProfile);
+        File file = new File(Authentication.configDirectory, YouTubeChatService.currentLoginProfile);
 
         if (file.delete())
         {
-            ModLogger.printYTMessage(YouTubeChat.json.text("Profile " + file.getName() + " have been deleted!").setStyle(YouTubeChat.json.green()));
+            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Profile " + file.getName() + " have been deleted!").setStyle(YouTubeChatMod.json.green()));
         }
         else
         {
-            ModLogger.printExceptionMessage("Cannot delete file or file not found!");
+            LoggerYT.printExceptionMessage("Cannot delete file or file not found!");
         }
     }
 
     public static void clearCredentials(String fileName) throws IOException
     {
-        File file = new File(YouTubeChat.configDirectory, fileName);
+        File file = new File(Authentication.configDirectory, fileName);
 
         if (file.delete())
         {
-            ModLogger.printYTMessage(YouTubeChat.json.text("Profile " + file.getName() + " have been deleted!").setStyle(YouTubeChat.json.green()));
+            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Profile " + file.getName() + " have been deleted!").setStyle(YouTubeChatMod.json.green()));
         }
         else
         {
-            ModLogger.printExceptionMessage("Cannot delete file or file not found!");
+            LoggerYT.printExceptionMessage("Cannot delete file or file not found!");
         }
     }
 }

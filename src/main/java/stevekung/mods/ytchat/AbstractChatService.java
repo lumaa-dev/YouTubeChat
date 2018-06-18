@@ -25,7 +25,7 @@ import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
  * An interface for other mods to subscribe to the live chat stream, post messages, or delete
  * messages.
  */
-public interface YouTubeChatService
+public interface AbstractChatService
 {
     /**
      * Notifies subscribers of chat message details when a message is received.
@@ -35,7 +35,10 @@ public interface YouTubeChatService
         void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message);
     }
 
-    /** @return a boolean indicating if the service is initialized. */
+    /**
+     * @return a boolean indicating if the service is initialized.
+     *
+     */
     boolean isInitialized();
 
     /**

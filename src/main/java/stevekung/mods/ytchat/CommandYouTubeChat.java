@@ -29,6 +29,9 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import stevekung.mods.ytchat.auth.Authentication;
+import stevekung.mods.ytchat.auth.YouTubeChatService;
+import stevekung.mods.ytchat.core.YouTubeChatMod;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
@@ -37,10 +40,10 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class CommandYouTubeChat extends ClientCommandBase
 {
-    private ChatService service;
-    static boolean isReceivedChat;
+    private YouTubeChatService service;
+    public static boolean isReceivedChat;
 
-    public CommandYouTubeChat(ChatService service)
+    public CommandYouTubeChat(YouTubeChatService service)
     {
         this.service = service;
     }
@@ -61,6 +64,7 @@ public class CommandYouTubeChat extends ClientCommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         String clientSecret = ConfigManager.clientSecret;
+        boolean hasExecutor = this.service.getExecutor() != null;
 
         if (clientSecret.isEmpty())
         {
@@ -72,7 +76,7 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         if (args[0].equalsIgnoreCase("start"))
         {
-            if (this.service.executor != null)
+            if (hasExecutor)
             {
                 throw new CommandException("Service is already initialized");
             }
@@ -97,7 +101,7 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         else if (args[0].equalsIgnoreCase("stop"))
         {
-            if (this.service.executor == null)
+            if (!hasExecutor)
             {
                 throw new CommandException("Service is not initialized");
             }
@@ -112,26 +116,26 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         else if (args[0].equalsIgnoreCase("list"))
         {
-            if (!YouTubeChat.configDirectory.exists())
+            if (!Authentication.configDirectory.exists())
             {
-                ModLogger.printExceptionMessage("Folder doesn't exist!");
+                LoggerYT.printExceptionMessage("Folder doesn't exist!");
                 return;
             }
 
-            ModLogger.printYTMessage(YouTubeChat.json.text("Current login profiles list").setStyle(YouTubeChat.json.white()));
+            LoggerYT.printYTMessage(YouTubeChatMod.json.text("Current login profiles list").setStyle(YouTubeChatMod.json.white()));
 
-            if (YouTubeChat.configDirectory.listFiles().length < 1)
+            if (Authentication.configDirectory.listFiles().length < 1)
             {
-                sender.sendMessage(YouTubeChat.json.text("- Empty login profiles!").setStyle(YouTubeChat.json.red()));
+                sender.sendMessage(YouTubeChatMod.json.text("- Empty login profiles!").setStyle(YouTubeChatMod.json.red()));
             }
-            for (File file : YouTubeChat.configDirectory.listFiles())
+            for (File file : Authentication.configDirectory.listFiles())
             {
-                sender.sendMessage(YouTubeChat.json.text("- ").appendSibling(YouTubeChat.json.text(file.getName()).setStyle(YouTubeChat.json.gold())));
+                sender.sendMessage(YouTubeChatMod.json.text("- ").appendSibling(YouTubeChatMod.json.text(file.getName()).setStyle(YouTubeChatMod.json.gold())));
             }
         }
         else if (args[0].equalsIgnoreCase("logout"))
         {
-            if (this.service.executor != null)
+            if (hasExecutor)
             {
                 this.service.stop(true);
             }
@@ -153,7 +157,7 @@ public class CommandYouTubeChat extends ClientCommandBase
             catch (IOException e)
             {
                 e.printStackTrace();
-                ModLogger.printExceptionMessage(e.getMessage());
+                LoggerYT.printExceptionMessage(e.getMessage());
             }
         }
         else if (args[0].equalsIgnoreCase("echo_start"))
@@ -162,7 +166,7 @@ public class CommandYouTubeChat extends ClientCommandBase
             {
                 throw new CommandException("Service is not initialized");
             }
-            if (!this.service.listeners.isEmpty())
+            if (!this.service.getListeners().isEmpty())
             {
                 throw new CommandException("Service is already start receiving live chat message");
             }
@@ -175,7 +179,7 @@ public class CommandYouTubeChat extends ClientCommandBase
             {
                 throw new CommandException("Service is not initialized");
             }
-            if (this.service.listeners.isEmpty())
+            if (this.service.getListeners().isEmpty())
             {
                 throw new CommandException("Service is stop receiving live chat message");
             }
@@ -188,12 +192,12 @@ public class CommandYouTubeChat extends ClientCommandBase
             {
                 throw new WrongUsageException("/ytc post <message>");
             }
-            if (this.service.executor == null)
+            if (!hasExecutor)
             {
                 throw new CommandException("Service is not initialized");
             }
             String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> ModLogger.printYTMessage(YouTubeChat.json.text("Message posted").setStyle(YouTubeChat.json.green()));
+            Consumer<String> id = i -> LoggerYT.printYTMessage(YouTubeChatMod.json.text("Message posted").setStyle(YouTubeChatMod.json.green()));
             this.service.postMessage(message, id);
         }
         else
@@ -213,11 +217,11 @@ public class CommandYouTubeChat extends ClientCommandBase
         {
             if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("logout"))
             {
-                if (YouTubeChat.configDirectory.exists())
+                if (Authentication.configDirectory.exists())
                 {
                     List<String> list = new LinkedList<>();
 
-                    for (File file : YouTubeChat.configDirectory.listFiles())
+                    for (File file : Authentication.configDirectory.listFiles())
                     {
                         list.add(file.getName());
                     }

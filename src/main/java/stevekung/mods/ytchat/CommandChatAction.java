@@ -20,6 +20,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import stevekung.mods.ytchat.auth.YouTubeChatService;
+import stevekung.mods.ytchat.gui.GuiChatAction;
 
 /**
  *
@@ -30,9 +32,9 @@ import net.minecraft.server.MinecraftServer;
  */
 public class CommandChatAction extends ClientCommandBase
 {
-    private ChatService service;
+    private YouTubeChatService service;
 
-    public CommandChatAction(ChatService service)
+    public CommandChatAction(YouTubeChatService service)
     {
         this.service = service;
     }
