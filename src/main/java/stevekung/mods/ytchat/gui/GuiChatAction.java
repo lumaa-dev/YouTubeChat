@@ -97,6 +97,8 @@ public class GuiChatAction extends GuiScreen
             this.banButton.enabled = false;
             this.temporaryBanButton.enabled = false;
             this.addModerator.enabled = false;
+            this.unbanButton.enabled = false;
+            this.removeModerator.enabled = false;
         }
     }
 
