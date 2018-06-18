@@ -27,13 +27,13 @@ import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import stevekung.mods.stevekunglib.utils.CommonUtils;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
+import stevekung.mods.stevekunglib.utils.LangUtils;
 import stevekung.mods.ytchat.auth.YouTubeChatService;
 import stevekung.mods.ytchat.utils.LoggerYT;
 
@@ -41,9 +41,11 @@ import stevekung.mods.ytchat.utils.LoggerYT;
 public class GuiChatAction extends GuiScreen
 {
     private GuiButton deleteButton;
-    private GuiButton banButton;
     private GuiButton temporaryBanButton;
+    private GuiButton banButton;
+    private GuiButton unbanButton;
     private GuiButton addModerator;
+    private GuiButton removeModerator;
     private GuiButton cancelButton;
     private YouTubeChatService service;
     private String messageId;
@@ -78,11 +80,17 @@ public class GuiChatAction extends GuiScreen
     @Override
     public void initGui()
     {
-        this.buttonList.add(this.deleteButton = new GuiButton(0, this.width / 2 - 170, this.height / 5 + 96, 80, 20, "Delete"));
-        this.buttonList.add(this.banButton = new GuiButton(1, this.width / 2 - 83, this.height / 5 + 96, 80, 20, "Ban"));
-        this.buttonList.add(this.temporaryBanButton = new GuiButton(2, this.width / 2 + 4, this.height / 5 + 96, 80, 20, "Temporary Ban"));
-        this.buttonList.add(this.addModerator = new GuiButton(3, this.width / 2 + 90, this.height / 5 + 96, 80, 20, "Add Moderator"));
-        this.buttonList.add(this.cancelButton = new GuiButton(4, this.width / 2 - 100, this.height / 5 + 120, I18n.format("gui.cancel")));
+        int xChat = this.width / 2 - 120;
+        int yChat = this.height / 2;
+        int xMod = this.width / 2 + 4;
+        this.buttonList.add(this.deleteButton = new GuiButton(0, xChat, yChat - 30, 120, 20, "Delete"));
+        this.buttonList.add(this.temporaryBanButton = new GuiButton(1, xChat, yChat - 8, 120, 20, "Temporary Ban"));
+        this.buttonList.add(this.banButton = new GuiButton(2, xChat, yChat + 14, 120, 20, "Ban"));
+        this.buttonList.add(this.unbanButton = new GuiButton(3, xChat, yChat + 36, 120, 20, "Unban"));
+        
+        this.buttonList.add(this.addModerator = new GuiButton(4, xMod, yChat - 30, 120, 20, "Add Moderator"));
+        this.buttonList.add(this.removeModerator = new GuiButton(5, xMod, yChat - 8, 120, 20, "Remove Moderator"));
+        this.buttonList.add(this.cancelButton = new GuiButton(50, this.width / 2 - 100, this.height / 2 + 60, LangUtils.translate("gui.cancel")));
 
         if (YouTubeChatService.channelOwnerId.equals(this.channelId))
         {
@@ -97,25 +105,37 @@ public class GuiChatAction extends GuiScreen
     {
         if (button.enabled)
         {
-            if (button.id == 0)
+            if (button.id == this.deleteButton.id)
             {
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("Message deleted!").setStyle(JsonUtils.green()));
                 this.service.deleteMessage(this.messageId, response);
             }
-            if (button.id == 1)
-            {
-                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was banned!").setStyle(JsonUtils.green()))));
-                this.service.banUser(this.channelId, response, false);
-            }
-            if (button.id == 2)
+            else if (button.id == this.temporaryBanButton.id)
             {
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was temporary banned!").setStyle(JsonUtils.green()))));
                 this.service.banUser(this.channelId, response, true);
             }
-            if (button.id == 3)
+            else if (button.id == this.banButton.id)
+            {
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was banned!").setStyle(JsonUtils.green()))));
+                this.service.banUser(this.channelId, response, false);
+            }
+            else if (button.id == this.unbanButton.id)
+            {
+                //TODO Unban
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("has been unbanned!").setStyle(JsonUtils.green()))));
+                this.service.unbanUser(this.channelId, this.messageId, response);
+            }
+            else if (button.id == this.addModerator.id)
             {
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("Added ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.blue()).appendSibling(JsonUtils.create("to moderator!").setStyle(JsonUtils.green()))));
                 this.service.addModerator(this.channelId, response);
+            }
+            else if (button.id == this.removeModerator.id)
+            {
+                //TODO Remove moderator
+                Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("Removed ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.blue()).appendSibling(JsonUtils.create("from moderator!").setStyle(JsonUtils.green()))));
+                this.service.removeModerator(this.channelId, response);
             }
             this.mc.displayGuiScreen(null);
         }
@@ -125,7 +145,7 @@ public class GuiChatAction extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRenderer, "Do an action for this message", this.width / 2, 120, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Do an action for this message", this.width / 2, this.height / 2 - 50, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

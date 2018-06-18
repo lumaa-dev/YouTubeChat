@@ -22,6 +22,9 @@ public class ConfigManagerYT
         @Config.Comment("The specific ID of the live video")
         @Config.Name(value = "Live Video ID")
         public String liveVideoId = "";
+
+        @Config.Name(value = "Enable Version Checker")
+        public boolean enableVersionChecker = true;
     }
 
     // Chat Settings
@@ -34,6 +37,10 @@ public class ConfigManagerYT
         @Config.Comment("Put your fancy unicode, it will display in front of moderator channel")
         @Config.Name(value = "Moderator Icon (Unicode)")
         public String moderatorUnicodeIcon = "";
+
+        @Config.Comment("Put the list of rude word, this will be automatically ban user when message is received. split by \",\"")
+        @Config.Name(value = "Banned Rude Word List")
+        public String bannedRudeWordList = "";
 
         @Config.Comment("Put the list of rude word, this will be automatically do an action with message when received. split by \",\"")
         @Config.Name(value = "Rude Word List")
@@ -55,13 +62,9 @@ public class ConfigManagerYT
         @Config.Name(value = "Automatic Receive Chat")
         public boolean autoReceiveChat = true;
 
-        @Config.Comment("This will remove minecraft color code from chat")
-        @Config.Name(value = "Remove Minecraft Color Code from Chat")
-        public boolean removeColorFormatting = true;
-
         public static enum EnumRudeWordAction
         {
-            DELETE, TEMPORARY_BAN, BAN;
+            DELETE, TEMPORARY_BAN;
         }
     }
 }

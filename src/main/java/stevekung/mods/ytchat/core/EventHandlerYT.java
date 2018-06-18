@@ -19,6 +19,7 @@ public class EventHandlerYT
     private boolean onConnected;
     private int ticks = 40;
     private final Minecraft mc;
+    private boolean initVersionCheck;
 
     public EventHandlerYT()
     {
@@ -66,6 +67,15 @@ public class EventHandlerYT
                     this.ticks = 40;
                 }
             }
+        }
+
+        if (this.mc.player != null)
+        {
+            if (!this.initVersionCheck)
+            {
+                YouTubeChatMod.CHECKER.startCheckIfFailed();
+            }
+            this.initVersionCheck = true;
         }
     }
 

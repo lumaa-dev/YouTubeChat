@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -184,20 +183,6 @@ public class CommandYouTubeChat extends ClientCommandBase
             EventHandlerYT.isReceivedChat = false;
             service.unsubscribe(YouTubeChatReceiver.getInstance());
         }
-        else if (args[0].equalsIgnoreCase("post"))
-        {
-            if (args.length == 1)
-            {
-                throw new WrongUsageException("/ytc post <message>");
-            }
-            if (!hasExecutor)
-            {
-                throw new CommandException("Service is not initialized");
-            }
-            String message = ClientCommandBase.getChatComponentFromNthArg(args, 1).createCopy().getUnformattedText();
-            Consumer<String> id = i -> LoggerYT.printYTMessage(JsonUtils.create("Message posted").setStyle(JsonUtils.green()));
-            service.postMessage(message, id);
-        }
         else
         {
             throw new WrongUsageException(this.getUsage());
@@ -209,7 +194,7 @@ public class CommandYouTubeChat extends ClientCommandBase
     {
         if (args.length == 1)
         {
-            return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "list", "logout", "echo_start", "echo_stop", "post");
+            return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "list", "logout", "echo_start", "echo_stop");
         }
         if (args.length == 2)
         {
@@ -232,6 +217,6 @@ public class CommandYouTubeChat extends ClientCommandBase
 
     private String getUsage()
     {
-        return "/ytc <start|stop|list|logout|echo_start|echo_stop|post>";
+        return "/ytc <start|stop|list|logout|echo_start|echo_stop>";
     }
 }

@@ -18,6 +18,7 @@ package stevekung.mods.ytchat.utils;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
+import com.google.api.services.youtube.model.LiveChatUserBannedMessageDetails;
 
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -50,10 +51,8 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
     @Override
     public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
     {
-        if (ConfigManagerYT.youtube_chat_chat.removeColorFormatting)
-        {
-            message = TextFormatting.getTextWithoutFormattingCodes(message);
-        }
+        message = TextFormatting.getTextWithoutFormattingCodes(message);
+        
         if (!ConfigManagerYT.youtube_chat_chat.showSuperChatOnly)
         {
             String unicode = "";
@@ -75,6 +74,19 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
             {
                 unicode = "\u2713 " + this.getUnicode(ConfigManagerYT.youtube_chat_chat.moderatorUnicodeIcon);
             }
+
+            if (!ConfigManagerYT.youtube_chat_chat.bannedRudeWordList.isEmpty())
+            {
+                for (String word : ConfigManagerYT.youtube_chat_chat.bannedRudeWordList.split(","))
+                {
+                    if (message.contains(word) && !author.getIsChatOwner() && !author.getIsVerified() && !author.getIsChatModerator())
+                    {
+                        Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(userDisplayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was automatically banned!").setStyle(JsonUtils.green()))));
+                        YouTubeChatService.getService().banUser(author.getChannelId(), response, false);
+                        return;
+                    }
+                }
+            }
             if (!ConfigManagerYT.youtube_chat_chat.rudeWordList.isEmpty())
             {
                 for (String word : ConfigManagerYT.youtube_chat_chat.rudeWordList.split(","))
@@ -88,10 +100,6 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
                         case DELETE:
                             response = () -> {};
                             YouTubeChatService.getService().deleteMessage(id, response);
-                            break;
-                        case BAN:
-                            response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(userDisplayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was automatically banned!").setStyle(JsonUtils.green()))));
-                            YouTubeChatService.getService().banUser(author.getChannelId(), response, false);
                             break;
                         case TEMPORARY_BAN:
                             response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(userDisplayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was automatically temporary banned!").setStyle(JsonUtils.green()))));

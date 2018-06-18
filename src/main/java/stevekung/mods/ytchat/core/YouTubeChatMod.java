@@ -36,7 +36,9 @@ import stevekung.mods.stevekunglib.utils.VersionChecker;
 import stevekung.mods.stevekunglib.utils.client.ClientUtils;
 import stevekung.mods.ytchat.auth.Authentication;
 import stevekung.mods.ytchat.command.CommandChatAction;
+import stevekung.mods.ytchat.command.CommandPostMessage;
 import stevekung.mods.ytchat.command.CommandYouTubeChat;
+import stevekung.mods.ytchat.config.ConfigManagerYT;
 
 @Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL, certificateFingerprint = YouTubeChatMod.CERTIFICATE)
 public class YouTubeChatMod
@@ -75,12 +77,13 @@ public class YouTubeChatMod
         Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
         ClientUtils.registerCommand(new CommandYouTubeChat());
         ClientUtils.registerCommand(new CommandChatAction());
+        ClientUtils.registerCommand(new CommandPostMessage());
         CommonUtils.registerEventHandler(this);
         CommonUtils.registerEventHandler(new EventHandlerYT());
 
         YouTubeChatMod.CHECKER = new VersionChecker(YouTubeChatMod.INSTANCE, YouTubeChatMod.NAME, YouTubeChatMod.URL, null);
 
-        //if (ConfigManagerIN.indicatia_general.enableVersionChecker)//TODO
+        if (ConfigManagerYT.youtube_chat_general.enableVersionChecker)
         {
             YouTubeChatMod.CHECKER.startCheck();
         }
