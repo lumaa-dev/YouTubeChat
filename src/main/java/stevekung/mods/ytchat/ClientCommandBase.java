@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.youtube.gaming.chat;
+package stevekung.mods.ytchat;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

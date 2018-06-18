@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.youtube.gaming.chat;
+package stevekung.mods.ytchat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.youtube.gaming.chat;
+package stevekung.mods.ytchat;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.google.youtube.gaming.chat.YouTubeChatService.YouTubeChatMessageListener;
 
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import stevekung.mods.ytchat.YouTubeChatService.YouTubeChatMessageListener;
 
 /**
  *

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.youtube.gaming.chat;
+package stevekung.mods.ytchat;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
