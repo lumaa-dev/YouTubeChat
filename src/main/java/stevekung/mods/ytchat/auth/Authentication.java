@@ -36,6 +36,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.ytchat.utils.LoggerYT;
+import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 /**
  * Contains methods for authorizing a user and caching credentials.
@@ -55,6 +56,7 @@ public class Authentication
     public static final String CREDENTIALS_DIRECTORY = ".ytc-oauth-credentials";
 
     public static File configDirectory;
+    public static File userDir;
 
     /**
      * Authorizes the installed application to access user's protected data.
@@ -69,8 +71,8 @@ public class Authentication
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(Authentication.configDirectory);
-        LoggerYT.info("Preparing authentication directory at {}", Authentication.configDirectory.getPath());
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(Authentication.userDir);
+        LoggerYT.info("Preparing authentication directory at {}", Authentication.userDir.getPath());
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
@@ -81,7 +83,7 @@ public class Authentication
 
     public static void clearCurrentCredentials() throws IOException
     {
-        File file = new File(Authentication.configDirectory, YouTubeChatService.currentLoginProfile);
+        File file = new File(Authentication.userDir, YouTubeChatService.currentLoginProfile);
 
         if (file.delete())
         {
@@ -95,7 +97,7 @@ public class Authentication
 
     public static void clearCredentials(String fileName) throws IOException
     {
-        File file = new File(Authentication.configDirectory, fileName);
+        File file = new File(Authentication.userDir, fileName);
 
         if (file.delete())
         {

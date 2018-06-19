@@ -18,14 +18,12 @@ package stevekung.mods.ytchat.utils;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.google.api.services.youtube.model.LiveChatUserBannedMessageDetails;
 
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
 import stevekung.mods.ytchat.config.ConfigManagerYT;
 import stevekung.mods.ytchat.utils.AbstractChatService.YouTubeChatMessageListener;
 
@@ -49,10 +47,10 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
     }
 
     @Override
-    public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message)
+    public void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message, String moderatorId)
     {
         message = TextFormatting.getTextWithoutFormattingCodes(message);
-        
+
         if (!ConfigManagerYT.youtube_chat_chat.showSuperChatOnly)
         {
             String unicode = "";
@@ -111,7 +109,7 @@ public class YouTubeChatReceiver implements YouTubeChatMessageListener
                 }
             }
             Style color = author.getIsChatOwner() ? JsonUtils.gold() : author.getIsChatModerator() ? JsonUtils.blue() : JsonUtils.gray();
-            LoggerYT.printYTMessage(JsonUtils.create(unicode + userDisplayName).setStyle(color.setClickEvent(JsonUtils.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(JsonUtils.hover(HoverEvent.Action.SHOW_TEXT, JsonUtils.create("Click to do action this message").setStyle(JsonUtils.white())))).appendSibling(JsonUtils.create(": " + message).setStyle(JsonUtils.white().setClickEvent(JsonUtils.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(JsonUtils.hover(HoverEvent.Action.SHOW_TEXT, JsonUtils.create("Click to do action this message").setStyle(JsonUtils.white()))))));
+            LoggerYT.printYTMessage(JsonUtils.create(unicode + userDisplayName).setStyle(color.setClickEvent(JsonUtils.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + userDisplayName)).setHoverEvent(JsonUtils.hover(HoverEvent.Action.SHOW_TEXT, JsonUtils.create("Click to do action this message").setStyle(JsonUtils.white())))).appendSibling(JsonUtils.create(": " + message).setStyle(JsonUtils.white().setClickEvent(JsonUtils.click(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + id + " " + author.getChannelId() + " " + moderatorId + " " + userDisplayName)).setHoverEvent(JsonUtils.hover(HoverEvent.Action.SHOW_TEXT, JsonUtils.create("Click to do action this message").setStyle(JsonUtils.white()))))));
         }
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {

@@ -24,9 +24,9 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
 import stevekung.mods.ytchat.config.ConfigManagerYT;
 import stevekung.mods.ytchat.utils.LoggerYT;
+import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 public class CommandPostMessage extends ClientCommandBase
 {

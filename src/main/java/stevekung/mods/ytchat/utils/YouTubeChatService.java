@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.auth;
+package stevekung.mods.ytchat.utils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -33,9 +33,8 @@ import com.google.common.base.Strings;
 
 import net.minecraft.client.Minecraft;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
+import stevekung.mods.ytchat.auth.Authentication;
 import stevekung.mods.ytchat.core.YouTubeChatMod;
-import stevekung.mods.ytchat.utils.AbstractChatService;
-import stevekung.mods.ytchat.utils.LoggerYT;
 
 /**
  * Manages connection to the YouTube chat service, posting chat messages, deleting chat messages,
@@ -43,7 +42,7 @@ import stevekung.mods.ytchat.utils.LoggerYT;
  */
 public class YouTubeChatService implements AbstractChatService
 {
-    private static final String LIVE_CHAT_FIELDS = "items(authorDetails(channelId,displayName,isChatModerator,isChatOwner,isChatSponsor,isVerified),snippet(displayMessage,superChatDetails,userBannedDetails),id),nextPageToken,pollingIntervalMillis";
+    private static final String LIVE_CHAT_FIELDS = "items(authorDetails(channelId,displayName,isChatModerator,isChatOwner,isChatSponsor,isVerified),snippet(displayMessage,superChatDetails),id),nextPageToken,pollingIntervalMillis";
     private ExecutorService executor;
     private YouTube youtube;
     private String liveChatId;
@@ -54,7 +53,7 @@ public class YouTubeChatService implements AbstractChatService
     private long nextPoll;
     private static YouTubeChatService INSTANCE;
     public static String channelOwnerId = "";
-    static String currentLoginProfile = "";
+    public static String currentLoginProfile = "";
 
     public static synchronized YouTubeChatService getService()
     {
@@ -233,9 +232,10 @@ public class YouTubeChatService implements AbstractChatService
     }
 
     @Override
-    public void unbanUser(final String channelId, final String messageId, final Runnable onComplete)
+    //TODO FIX THIS
+    public void unbanUser(final String id, final Runnable onComplete)
     {
-        if (channelId == null || channelId.isEmpty())
+        if (id == null || id.isEmpty())
         {
             onComplete.run();
             return;
@@ -245,15 +245,8 @@ public class YouTubeChatService implements AbstractChatService
         {
             try
             {
-                LiveChatBan liveChatBan = new LiveChatBan();
-                LiveChatBanSnippet snippet = new LiveChatBanSnippet();
-                ChannelProfileDetails details = new ChannelProfileDetails();
-                snippet.setLiveChatId(this.liveChatId);
-                snippet.setBanDurationSeconds(BigInteger.valueOf(300));
-                details.setChannelId(channelId);
-                snippet.setBannedUserDetails(details);
-                liveChatBan.setSnippet(snippet);
-                YouTube.LiveChatBans.Delete liveChatBanDelete = this.youtube.liveChatBans().delete(channelId);
+                YouTube.LiveChatBans.Delete liveChatBanDelete = this.youtube.liveChatBans().delete(id);
+                liveChatBanDelete.setId(id);
                 liveChatBanDelete.execute();
                 onComplete.run();
             }
@@ -267,9 +260,9 @@ public class YouTubeChatService implements AbstractChatService
     }
 
     @Override
-    public void removeModerator(final String channelId, final Runnable onComplete)
+    public void removeModerator(final String moderatorId, final Runnable onComplete)
     {
-        if (channelId == null || channelId.isEmpty())
+        if (moderatorId == null || moderatorId.isEmpty())
         {
             onComplete.run();
             return;
@@ -279,7 +272,8 @@ public class YouTubeChatService implements AbstractChatService
         {
             try
             {
-                YouTube.LiveChatModerators.Delete liveChatModDelete = this.youtube.liveChatModerators().delete(channelId);
+                YouTube.LiveChatModerators.Delete liveChatModDelete = this.youtube.liveChatModerators().delete(moderatorId);
+                liveChatModDelete.setId(moderatorId);
                 liveChatModDelete.execute();
                 onComplete.run();
             }
@@ -327,7 +321,7 @@ public class YouTubeChatService implements AbstractChatService
 
                         if (this.liveChatId != null && !this.liveChatId.isEmpty())
                         {
-                            LoggerYT.info("Live chat id: {}", this.liveChatId);
+                            LoggerYT.info("Live Chat ID: {}", this.liveChatId);
                             break;
                         }
                     }
@@ -345,7 +339,7 @@ public class YouTubeChatService implements AbstractChatService
 
                         if (this.liveChatId != null && !this.liveChatId.isEmpty())
                         {
-                            LoggerYT.info("Live chat id: {}", this.liveChatId);
+                            LoggerYT.info("Live Chat ID: {}", this.liveChatId);
                             break;
                         }
                     }
@@ -424,27 +418,27 @@ public class YouTubeChatService implements AbstractChatService
                     }
 
                     // Get chat messages from YouTube
-                    LiveChatMessageListResponse response = YouTubeChatService.this.youtube.liveChatMessages().list(YouTubeChatService.this.liveChatId, "snippet, authorDetails").setPageToken(YouTubeChatService.this.nextPageToken).setFields(LIVE_CHAT_FIELDS).execute();
-                    YouTubeChatService.this.nextPageToken = response.getNextPageToken();
-                    List<LiveChatMessage> messages = response.getItems();
+                    LiveChatMessageListResponse chatResponse = YouTubeChatService.this.youtube.liveChatMessages().list(YouTubeChatService.this.liveChatId, "snippet, authorDetails").setPageToken(YouTubeChatService.this.nextPageToken).setFields(LIVE_CHAT_FIELDS).execute();
+                    // Get moderators list from YouTube
+                    LiveChatModeratorListResponse moderatorResponse = YouTubeChatService.this.youtube.liveChatModerators().list(YouTubeChatService.this.liveChatId, "snippet, id").setFields("items(id,snippet(moderatorDetails(channelId)))").execute();
+                    YouTubeChatService.this.nextPageToken = chatResponse.getNextPageToken();
 
                     // Broadcast message to listeners on main thread
-                    for (LiveChatMessage message : messages)
+                    for (LiveChatMessage message : chatResponse.getItems())
                     {
                         LiveChatMessageSnippet snippet = message.getSnippet();
-                        
-                        if (snippet.getUserBannedDetails() != null)
+                        String moderatorId = "";
+
+                        for (LiveChatModerator moderator : moderatorResponse.getItems())
                         {
-                            LiveChatUserBannedMessageDetails bannedDetails = snippet.getUserBannedDetails();
-                            System.out.println(bannedDetails.getBanType());
-                            System.out.println(bannedDetails.getBanDurationSeconds());
-                            System.out.println(bannedDetails.getBannedUserDetails().getChannelId());
-                            System.out.println(bannedDetails.getBannedUserDetails().getDisplayName());
+                            if (message.getAuthorDetails().getChannelId().equals(moderator.getSnippet().getModeratorDetails().getChannelId()))
+                            {
+                                moderatorId = moderator.getId();
+                            }
                         }
-                        
-                        YouTubeChatService.this.broadcastMessage(message.getAuthorDetails(), snippet.getSuperChatDetails(), message.getId(), snippet.getDisplayMessage());
+                        YouTubeChatService.this.broadcastMessage(message.getAuthorDetails(), snippet.getSuperChatDetails(), message.getId(), snippet.getDisplayMessage(), moderatorId);
                     }
-                    YouTubeChatService.this.poll(response.getPollingIntervalMillis());
+                    YouTubeChatService.this.poll(chatResponse.getPollingIntervalMillis());
                 }
                 catch (Throwable t)
                 {
@@ -455,11 +449,11 @@ public class YouTubeChatService implements AbstractChatService
         }, delay);
     }
 
-    private void broadcastMessage(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails details, String id, String message)
+    private void broadcastMessage(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails details, String id, String message, String moderatorId)
     {
         for (YouTubeChatMessageListener listener : this.listeners)
         {
-            listener.onMessageReceived(author, details, id, message);
+            listener.onMessageReceived(author, details, id, message, moderatorId);
         }
     }
 

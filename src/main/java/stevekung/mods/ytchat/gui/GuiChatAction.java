@@ -34,8 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import stevekung.mods.stevekunglib.utils.CommonUtils;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.LangUtils;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
 import stevekung.mods.ytchat.utils.LoggerYT;
+import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 @SideOnly(Side.CLIENT)
 public class GuiChatAction extends GuiScreen
@@ -50,13 +50,15 @@ public class GuiChatAction extends GuiScreen
     private YouTubeChatService service;
     private String messageId;
     private String channelId;
+    private String moderatorId;
     private String displayName;
 
-    public GuiChatAction(String messageId, String channelId, String displayName)
+    public GuiChatAction(String messageId, String channelId, String moderatorId, String displayName)
     {
         this.mc = Minecraft.getMinecraft();
         this.messageId = messageId;
         this.channelId = channelId;
+        this.moderatorId = moderatorId;
         this.displayName = displayName;
         this.service = YouTubeChatService.getService();
     }
@@ -87,19 +89,28 @@ public class GuiChatAction extends GuiScreen
         this.buttonList.add(this.temporaryBanButton = new GuiButton(1, xChat, yChat - 8, 120, 20, "Temporary Ban"));
         this.buttonList.add(this.banButton = new GuiButton(2, xChat, yChat + 14, 120, 20, "Ban"));
         this.buttonList.add(this.unbanButton = new GuiButton(3, xChat, yChat + 36, 120, 20, "Unban"));
-        
+
         this.buttonList.add(this.addModerator = new GuiButton(4, xMod, yChat - 30, 120, 20, "Add Moderator"));
         this.buttonList.add(this.removeModerator = new GuiButton(5, xMod, yChat - 8, 120, 20, "Remove Moderator"));
         this.buttonList.add(this.cancelButton = new GuiButton(50, this.width / 2 - 100, this.height / 2 + 60, LangUtils.translate("gui.cancel")));
+
+
+
 
         if (YouTubeChatService.channelOwnerId.equals(this.channelId))
         {
             this.banButton.enabled = false;
             this.temporaryBanButton.enabled = false;
             this.addModerator.enabled = false;
+            this.removeModerator.enabled = false;
             this.unbanButton.enabled = false;
+        }
+        if (this.moderatorId.isEmpty())
+        {
             this.removeModerator.enabled = false;
         }
+
+        //        this.unbanButton.enabled = true;
     }
 
     @Override
@@ -124,9 +135,8 @@ public class GuiChatAction extends GuiScreen
             }
             else if (button.id == this.unbanButton.id)
             {
-                //TODO Unban
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("has been unbanned!").setStyle(JsonUtils.green()))));
-                this.service.unbanUser(this.channelId, this.messageId, response);
+                this.service.unbanUser(this.channelId, response);
             }
             else if (button.id == this.addModerator.id)
             {
@@ -135,9 +145,8 @@ public class GuiChatAction extends GuiScreen
             }
             else if (button.id == this.removeModerator.id)
             {
-                //TODO Remove moderator
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("Removed ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.blue()).appendSibling(JsonUtils.create("from moderator!").setStyle(JsonUtils.green()))));
-                this.service.removeModerator(this.channelId, response);
+                this.service.removeModerator(this.moderatorId, response);
             }
             this.mc.displayGuiScreen(null);
         }

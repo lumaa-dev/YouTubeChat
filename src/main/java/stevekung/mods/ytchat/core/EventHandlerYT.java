@@ -7,9 +7,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
 import stevekung.mods.ytchat.gui.GuiRightStreamChat;
 import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
+import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 public class EventHandlerYT
 {

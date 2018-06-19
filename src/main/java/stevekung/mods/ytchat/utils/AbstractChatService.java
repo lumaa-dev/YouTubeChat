@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.google.api.services.youtube.model.LiveChatUserBannedMessageDetails;
 
 /**
  * An interface for other mods to subscribe to the live chat stream, post messages, or delete
@@ -33,7 +32,7 @@ public interface AbstractChatService
      */
     interface YouTubeChatMessageListener
     {
-        void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message);
+        void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message, String moderatorId);
     }
 
     /**
@@ -89,8 +88,14 @@ public interface AbstractChatService
      * @param onComplete Callback when the operation is complete.
      */
     void addModerator(String channelId, Runnable onComplete);
-    
-    ///////////////////////////////////
-    void unbanUser(String channelId, String messageId, Runnable onComplete);//TODO
-    void removeModerator(String channelId, Runnable onComplete);
+
+    void unbanUser(String channelId, Runnable onComplete);//TODO
+
+    /**
+     * Removes moderator from channel.
+     *
+     * @param moderatorId The moderator id to remove.
+     * @param onComplete Callback when the operation is complete.
+     */
+    void removeModerator(String moderatorId, Runnable onComplete);
 }

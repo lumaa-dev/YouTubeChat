@@ -31,11 +31,11 @@ import net.minecraft.util.text.ITextComponent;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
 import stevekung.mods.ytchat.auth.Authentication;
-import stevekung.mods.ytchat.auth.YouTubeChatService;
 import stevekung.mods.ytchat.config.ConfigManagerYT;
 import stevekung.mods.ytchat.core.EventHandlerYT;
 import stevekung.mods.ytchat.utils.LoggerYT;
 import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
+import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
@@ -113,7 +113,7 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         else if (args[0].equalsIgnoreCase("list"))
         {
-            if (!Authentication.configDirectory.exists())
+            if (!Authentication.userDir.exists())
             {
                 LoggerYT.printExceptionMessage("Folder doesn't exist!");
                 return;
@@ -121,11 +121,11 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             LoggerYT.printYTMessage(JsonUtils.create("Current login profiles list").setStyle(JsonUtils.white()));
 
-            if (Authentication.configDirectory.listFiles().length < 1)
+            if (Authentication.userDir.listFiles().length < 1)
             {
                 sender.sendMessage(JsonUtils.create("- Empty login profiles!").setStyle(JsonUtils.red()));
             }
-            for (File file : Authentication.configDirectory.listFiles())
+            for (File file : Authentication.userDir.listFiles())
             {
                 sender.sendMessage(JsonUtils.create("- ").appendSibling(JsonUtils.create(file.getName()).setStyle(JsonUtils.gold())));
             }
@@ -200,11 +200,11 @@ public class CommandYouTubeChat extends ClientCommandBase
         {
             if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("logout"))
             {
-                if (Authentication.configDirectory.exists())
+                if (Authentication.userDir.exists())
                 {
                     List<String> list = new LinkedList<>();
 
-                    for (File file : Authentication.configDirectory.listFiles())
+                    for (File file : Authentication.userDir.listFiles())
                     {
                         list.add(file.getName());
                     }

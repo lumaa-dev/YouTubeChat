@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stevekung.mods.stevekunglib.utils.CommonUtils;
+import stevekung.mods.stevekunglib.utils.GameProfileUtils;
 import stevekung.mods.stevekunglib.utils.ModLogger;
 import stevekung.mods.stevekunglib.utils.VersionChecker;
 import stevekung.mods.stevekunglib.utils.client.ClientUtils;
@@ -75,6 +76,7 @@ public class YouTubeChatMod
     {
         YouTubeChatMod.initModInfo(event.getModMetadata());
         Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
+        Authentication.userDir = new File(Authentication.configDirectory, GameProfileUtils.getUUID().toString());
         ClientUtils.registerCommand(new CommandYouTubeChat());
         ClientUtils.registerCommand(new CommandChatAction());
         ClientUtils.registerCommand(new CommandPostMessage());
