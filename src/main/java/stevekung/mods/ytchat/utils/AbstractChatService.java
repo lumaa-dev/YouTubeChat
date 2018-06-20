@@ -89,7 +89,7 @@ public interface AbstractChatService
      */
     void addModerator(String channelId, Runnable onComplete);
 
-    void unbanUser(String channelId, Runnable onComplete);//TODO
+    void unbanUser(String channelId, Runnable onComplete);//TODO Fix this
 
     /**
      * Removes moderator from channel.

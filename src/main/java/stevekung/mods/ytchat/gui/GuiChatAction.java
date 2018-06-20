@@ -47,11 +47,11 @@ public class GuiChatAction extends GuiScreen
     private GuiButton addModerator;
     private GuiButton removeModerator;
     private GuiButton cancelButton;
-    private YouTubeChatService service;
-    private String messageId;
-    private String channelId;
-    private String moderatorId;
-    private String displayName;
+    private final YouTubeChatService service;
+    private final String messageId;
+    private final String channelId;
+    private final String moderatorId;
+    private final String displayName;
 
     public GuiChatAction(String messageId, String channelId, String moderatorId, String displayName)
     {
@@ -94,9 +94,6 @@ public class GuiChatAction extends GuiScreen
         this.buttonList.add(this.removeModerator = new GuiButton(5, xMod, yChat - 8, 120, 20, "Remove Moderator"));
         this.buttonList.add(this.cancelButton = new GuiButton(50, this.width / 2 - 100, this.height / 2 + 60, LangUtils.translate("gui.cancel")));
 
-
-
-
         if (YouTubeChatService.channelOwnerId.equals(this.channelId))
         {
             this.banButton.enabled = false;
@@ -109,8 +106,7 @@ public class GuiChatAction extends GuiScreen
         {
             this.removeModerator.enabled = false;
         }
-
-        //        this.unbanButton.enabled = true;
+        this.unbanButton.enabled = false;//TODO Temporary disabled
     }
 
     @Override
@@ -133,7 +129,7 @@ public class GuiChatAction extends GuiScreen
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("was banned!").setStyle(JsonUtils.green()))));
                 this.service.banUser(this.channelId, response, false);
             }
-            else if (button.id == this.unbanButton.id)
+            else if (button.id == this.unbanButton.id)//TODO Fix this
             {
                 Runnable response = () -> LoggerYT.printYTMessage(JsonUtils.create("User ").setStyle(JsonUtils.green()).appendSibling(JsonUtils.create(this.displayName + " ").setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create("has been unbanned!").setStyle(JsonUtils.green()))));
                 this.service.unbanUser(this.channelId, response);

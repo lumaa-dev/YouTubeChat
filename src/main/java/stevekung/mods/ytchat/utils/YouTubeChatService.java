@@ -100,9 +100,6 @@ public class YouTubeChatService implements AbstractChatService
         }
     }
 
-    /**
-     * Posts a live chat message and notifies the caller of the message Id posted.
-     */
     @Override
     public void postMessage(final String message, final Consumer<String> onComplete)
     {
@@ -232,8 +229,7 @@ public class YouTubeChatService implements AbstractChatService
     }
 
     @Override
-    //TODO FIX THIS
-    public void unbanUser(final String id, final Runnable onComplete)
+    public void unbanUser(final String id, final Runnable onComplete)//TODO Fix this
     {
         if (id == null || id.isEmpty())
         {
