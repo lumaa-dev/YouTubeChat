@@ -38,7 +38,7 @@ import stevekung.mods.ytchat.core.YouTubeChatMod;
 
 /**
  * Manages connection to the YouTube chat service, posting chat messages, deleting chat messages,
- * polling for chat messages and notifying subcribers.
+ * polling for chat messages and notifying subscribers.
  */
 public class YouTubeChatService implements AbstractChatService
 {
