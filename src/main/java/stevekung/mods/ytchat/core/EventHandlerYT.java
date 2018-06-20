@@ -30,14 +30,22 @@ public class EventHandlerYT
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
         EventHandlerYT.rightStreamGui = new GuiRightStreamChat(this.mc);
-        this.onConnected = true;
+
+        if (EventHandlerYT.isReceivedChat)
+        {
+            this.onConnected = true;
+        }
     }
 
     @SubscribeEvent
     public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
-        this.onDisconnected = true;
         EventHandlerYT.rightStreamGui.clearChatMessages();
+
+        if (EventHandlerYT.isReceivedChat)
+        {
+            this.onDisconnected = true;
+        }
     }
 
     @SubscribeEvent

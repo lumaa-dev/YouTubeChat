@@ -47,8 +47,8 @@ public class YouTubeChatMod
     public static final String NAME = "YouTube Chat";
     public static final String MOD_ID = "youtube_chat";
     private static final int MAJOR_VERSION = 1;
-    private static final int MINOR_VERSION = 3;
-    private static final int BUILD_VERSION = 5;
+    private static final int MINOR_VERSION = 4;
+    private static final int BUILD_VERSION = 0;
     public static final String VERSION = YouTubeChatMod.MAJOR_VERSION + "." + YouTubeChatMod.MINOR_VERSION + "." + YouTubeChatMod.BUILD_VERSION;
     private static final String FORGE_VERSION = "after:forge@[14.23.4.2705,);";
     protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.0,); " + YouTubeChatMod.FORGE_VERSION;
@@ -122,6 +122,6 @@ public class YouTubeChatMod
         info.version = YouTubeChatMod.VERSION;
         info.url = YouTubeChatMod.URL;
         info.authorList = Arrays.asList("SteveKunG", "PeregrineZ", "jimrogers");
-        info.credits = "Credit to PeregrineZ for implemented Example Features";
+        info.credits = "Credit to PeregrineZ for implemented example features";
     }
 }

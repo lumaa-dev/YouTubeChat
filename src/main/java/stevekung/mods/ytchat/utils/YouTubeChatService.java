@@ -16,7 +16,13 @@
 
 package stevekung.mods.ytchat.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -394,6 +400,34 @@ public class YouTubeChatService implements AbstractChatService
         return this.listeners;
     }
 
+    protected void getContent(String videoId)//XXX
+    {
+        URL url;
+
+        try
+        {
+            String viewCountUrl = "https://www.youtube.com/live_stats?v=" + videoId;
+            url = new URL(viewCountUrl);
+            URLConnection connection = url.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String input;
+
+            while ((input = reader.readLine()) != null)
+            {
+                System.out.println(input);
+            }
+            reader.close();
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     private void poll(long delay)
     {
         this.pollTimer = new Timer();
@@ -434,6 +468,7 @@ public class YouTubeChatService implements AbstractChatService
                         }
                         YouTubeChatService.this.broadcastMessage(message.getAuthorDetails(), snippet.getSuperChatDetails(), message.getId(), snippet.getDisplayMessage(), moderatorId);
                     }
+                    //YouTubeChatService.this.getContent(YouTubeChatService.this.v);
                     YouTubeChatService.this.poll(chatResponse.getPollingIntervalMillis());
                 }
                 catch (Throwable t)
