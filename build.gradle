@@ -16,31 +16,17 @@ plugins {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
-
-def keystore = new groovy.json.JsonSlurper().parseText(file("${keystore_path}").text)
 def mcVersion = project.mc_version
-
-sourceSets.main {
-    java {
-        srcDirs = ["src/main/java", "dependencies/main/java"]
-    }
-    resources {
-        srcDirs = ["src/main/resources", "dependencies/main/resources"]
-    }
-}
 
 version = project.version
 group = "stevekung.mods.ytchat"
-archivesBaseName = "YouTubeChat"
+archivesBaseName = "YouTubeChat-" + mcVersion
 
 minecraft {
     version = "1.12.2-14.23.4.2708"
     runDir = "run"
     mappings = "snapshot_20171003"
     makeObfSourceJar = false
-
-    replace "@FINGERPRINT@", keystore.sha1
-    replaceIn "YouTubeChatMod.java"
 }
 
 configurations {
@@ -50,6 +36,7 @@ configurations {
 
 dependencies {
     compile fileTree(dir: "M:/Modding/YouTubeChat/1.12.2/.dependencies", include: "*.jar")
+    compile files("library/SteveKunG's-Lib.jar")
 }
 
 shadowJar {
@@ -81,17 +68,8 @@ jar {
     from configurations.embed.collect {
         exclude "META-INF/LICENSE*"
         exclude "META-INF/NOTICE*"
+        exclude "META-INF/*.cfg"
+        exclude "stevekung/mods/stevekunglib/**"
         it.isDirectory() ? it : zipTree(it)
     }
 }
-
-task signJar(type: SignJar, dependsOn: "reobfJar") {
-    keyStore = keystore.keystore_path
-    alias = keystore.alias
-    storePass = keystore.keystore_pass
-    keyPass = keystore.keystore_pass
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-build.dependsOn signJar

@@ -4,7 +4,7 @@ bin
 .gradle
 .gradle_data
 build
-dependencies
+library
 eclipse
 run
 
