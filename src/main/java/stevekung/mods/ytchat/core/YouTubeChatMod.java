@@ -80,7 +80,7 @@ public class YouTubeChatMod
         CommonUtils.registerEventHandler(this);
         CommonUtils.registerEventHandler(new EventHandlerYT());
 
-        YouTubeChatMod.CHECKER = new VersionChecker(YouTubeChatMod.INSTANCE, YouTubeChatMod.NAME, YouTubeChatMod.URL, null);
+        YouTubeChatMod.CHECKER = new VersionChecker(YouTubeChatMod.INSTANCE, YouTubeChatMod.NAME, YouTubeChatMod.URL);
 
         if (ConfigManagerYT.youtube_chat_general.enableVersionChecker)
         {
