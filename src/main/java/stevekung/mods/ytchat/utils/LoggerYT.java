@@ -33,7 +33,7 @@ import stevekung.mods.ytchat.core.EventHandlerYT;
  */
 public class LoggerYT
 {
-    private static final Logger LOG = LogManager.getLogger("YTChat");
+    private static final Logger LOG = LogManager.getLogger("YouTubeChat");
 
     public static void info(String message)
     {

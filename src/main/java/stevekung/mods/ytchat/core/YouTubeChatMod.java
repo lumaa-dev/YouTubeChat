@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import stevekung.mods.stevekunglib.utils.CommonUtils;
@@ -38,8 +39,9 @@ import stevekung.mods.ytchat.command.CommandChatAction;
 import stevekung.mods.ytchat.command.CommandPostMessage;
 import stevekung.mods.ytchat.command.CommandYouTubeChat;
 import stevekung.mods.ytchat.config.ConfigManagerYT;
+import stevekung.mods.ytchat.utils.LoggerYT;
 
-@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL)
+@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL, certificateFingerprint = YouTubeChatMod.CERTIFICATE)
 public class YouTubeChatMod
 {
     public static final String NAME = "YouTube Chat";
@@ -50,6 +52,7 @@ public class YouTubeChatMod
     public static final String VERSION = YouTubeChatMod.MAJOR_VERSION + "." + YouTubeChatMod.MINOR_VERSION + "." + YouTubeChatMod.BUILD_VERSION;
     private static final String FORGE_VERSION = "after:forge@[14.23.4.2705,);";
     protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.0,); " + YouTubeChatMod.FORGE_VERSION;
+    protected static final String CERTIFICATE = "@FINGERPRINT@";
     private static final String URL = "https://minecraft.curseforge.com/projects/youtube-chat";
     protected static final String JSON_URL = "https://raw.githubusercontent.com/SteveKunG/VersionCheckLibrary/master/youtube_chat_version.json";
 
@@ -85,6 +88,19 @@ public class YouTubeChatMod
         if (ConfigManagerYT.youtube_chat_general.enableVersionChecker)
         {
             YouTubeChatMod.CHECKER.startCheck();
+        }
+    }
+
+    @EventHandler
+    public void onFingerprintViolation(FMLFingerprintViolationEvent event)
+    {
+        if (YouTubeChatMod.isDevelopment)
+        {
+            LoggerYT.info("Development environment detected! Ignore certificate check.");
+        }
+        else
+        {
+            throw new RuntimeException("Invalid fingerprint detected! This version will NOT be supported by the author!");
         }
     }
 

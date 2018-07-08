@@ -17,6 +17,7 @@ plugins {
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
 def mcVersion = project.mc_version
+def keystore = new groovy.json.JsonSlurper().parseText(file("${keystore_path}").text)
 
 version = project.version
 group = "stevekung.mods.ytchat"
@@ -27,6 +28,9 @@ minecraft {
     runDir = "run"
     mappings = "snapshot_20171003"
     makeObfSourceJar = false
+
+    replace "@FINGERPRINT@", keystore.sha1
+    replaceIn "YouTubeChatMod.java"
 }
 
 configurations {
@@ -58,6 +62,9 @@ shadowJar {
     dependencies {
         include(dependency(fileTree(dir: "M:/Modding/YouTubeChat/1.12.2/.dependencies", include: "*.jar")))
     }
+    exclude "stevekung/mods/stevekunglib/**"
+    exclude "META-INF/stevekunglib_at.cfg"
+    exclude "dummyThing"
 }
 
 reobf {
@@ -68,8 +75,17 @@ jar {
     from configurations.embed.collect {
         exclude "META-INF/LICENSE*"
         exclude "META-INF/NOTICE*"
-        exclude "META-INF/*.cfg"
-        exclude "stevekung/mods/stevekunglib/**"
         it.isDirectory() ? it : zipTree(it)
     }
 }
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    keyStore = keystore.keystore_path
+    alias = keystore.alias
+    storePass = keystore.keystore_pass
+    keyPass = keystore.keystore_pass
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+build.dependsOn signJar
