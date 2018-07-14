@@ -71,7 +71,8 @@ public class LoggerYT
 
         if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
         {
-            EventHandlerYT.rightStreamGui.printChatMessage(message);
+            message = component.appendSibling(JsonUtils.create(" [YTChat]").setStyle(JsonUtils.red()));
+            EventHandlerYT.rightStreamGui.printYTChatMessage(message);
         }
         else
         {
@@ -81,6 +82,13 @@ public class LoggerYT
 
     public static void printExceptionMessage(String message)
     {
-        ClientUtils.printClientMessage(JsonUtils.create("[YTChatException] ").setStyle(JsonUtils.red()).appendSibling(JsonUtils.create(message).setStyle(JsonUtils.darkRed())));
+        if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
+        {
+            EventHandlerYT.rightStreamGui.printYTChatMessage(JsonUtils.create(message).setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create(" [YTChatException]").setStyle(JsonUtils.red())));
+        }
+        else
+        {
+            ClientUtils.printClientMessage(JsonUtils.create("[YTChatException] ").setStyle(JsonUtils.red()).appendSibling(JsonUtils.create(message).setStyle(JsonUtils.darkRed())));
+        }
     }
 }

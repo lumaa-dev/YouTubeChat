@@ -23,7 +23,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.ChatLine;
+import net.minecraft.client.gui.GuiNewChat;
+import net.minecraft.client.gui.GuiUtilRenderComponents;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -39,18 +42,91 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 @SideOnly(Side.CLIENT)
-public class GuiRightStreamChat extends Gui
+public class GuiRightChatYT extends GuiNewChat
 {
     private final Minecraft mc;
     private final List<ChatLine> chatLines = new ArrayList<>();
     private final List<ChatLine> drawnChatLines = new ArrayList<>();
+    private int scrollPos;
+    private boolean isScrolled;
 
-    public GuiRightStreamChat(Minecraft mc)
+    public GuiRightChatYT(Minecraft mc)
     {
+        super(mc);
         this.mc = mc;
     }
 
-    public void drawChat(int updateCounter)
+    @Override
+    public void clearChatMessages(boolean clearSent)
+    {
+        this.drawnChatLines.clear();
+        this.chatLines.clear();
+        super.clearChatMessages(clearSent);
+    }
+
+    @Override
+    public void resetScroll()
+    {
+        super.resetScroll();
+        this.scrollPos = 0;
+        this.isScrolled = false;
+    }
+
+    @Override
+    public void scroll(int amount)
+    {
+        super.scroll(amount);
+        this.scrollPos += amount;
+        int i = this.drawnChatLines.size();
+
+        if (this.scrollPos > i - this.getLineCount())
+        {
+            this.scrollPos = i - this.getLineCount();
+        }
+        if (this.scrollPos <= 0)
+        {
+            this.scrollPos = 0;
+            this.isScrolled = false;
+        }
+    }
+
+    @Override
+    public boolean getChatOpen()
+    {
+        return this.mc.currentScreen instanceof GuiChatYT;
+    }
+
+    @Override
+    public void deleteChatLine(int id)
+    {
+        super.deleteChatLine(id);
+        Iterator<ChatLine> iterator = this.drawnChatLines.iterator();
+
+        while (iterator.hasNext())
+        {
+            ChatLine chatline = iterator.next();
+
+            if (chatline.getChatLineID() == id)
+            {
+                iterator.remove();
+            }
+        }
+
+        iterator = this.chatLines.iterator();
+
+        while (iterator.hasNext())
+        {
+            ChatLine chatline1 = iterator.next();
+
+            if (chatline1.getChatLineID() == id)
+            {
+                iterator.remove();
+                break;
+            }
+        }
+    }
+
+    public void drawRightChat(int updateCounter)
     {
         ScaledResolution res = new ScaledResolution(this.mc);
 
@@ -62,21 +138,29 @@ public class GuiRightStreamChat extends Gui
 
             if (j > 0)
             {
+                boolean flag = false;
+
+                if (this.getChatOpen())
+                {
+                    flag = true;
+                }
+
                 float f1 = this.getChatScale();
                 int k = MathHelper.ceil(this.getChatWidth() / f1);
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(2.0F, 8.0F, 0.0F);
                 GlStateManager.scale(f1, f1, 1.0F);
+                int l = 0;
 
-                for (int i1 = 0; i1 < this.drawnChatLines.size() && i1 < i; ++i1)
+                for (int i1 = 0; i1 + this.scrollPos < this.drawnChatLines.size() && i1 < i; ++i1)
                 {
-                    ChatLine chatline = this.drawnChatLines.get(i1);
+                    ChatLine chatline = this.drawnChatLines.get(i1 + this.scrollPos);
 
                     if (chatline != null)
                     {
                         int j1 = updateCounter - chatline.getUpdatedCounter();
 
-                        if (j1 < 200)
+                        if (j1 < 200 || flag)
                         {
                             double d0 = j1 / 200.0D;
                             d0 = 1.0D - d0;
@@ -85,7 +169,14 @@ public class GuiRightStreamChat extends Gui
                             d0 = d0 * d0;
                             int l1 = (int)(255.0D * d0);
 
+                            if (flag)
+                            {
+                                l1 = 255;
+                            }
+
                             l1 = (int)(l1 * f);
+                            ++l;
+
                             if (l1 > 3)
                             {
                                 int j2 = -i1 * 9;
@@ -103,60 +194,35 @@ public class GuiRightStreamChat extends Gui
                         }
                     }
                 }
+                if (flag)
+                {
+                    int k2 = this.mc.fontRenderer.FONT_HEIGHT;
+                    GlStateManager.translate(-3.0F, 0.0F, 0.0F);
+                    int l2 = j * k2 + j;
+                    int i3 = l * k2 + l;
+                    int j3 = this.scrollPos * i3 / j;
+                    int k1 = i3 * i3 / l2;
+
+                    if (l2 != i3)
+                    {
+                        int k3 = j3 > 0 ? 170 : 96;
+                        int l3 = this.isScrolled ? 13382451 : 3355562;
+                        drawRect(0, -j3, 2, -j3 - k1, l3 + (k3 << 24));
+                        drawRect(2, -j3, 1, -j3 - k1, 13421772 + (k3 << 24));
+                    }
+                }
                 GlStateManager.popMatrix();
             }
         }
     }
 
-    public void clearChatMessages()
+    public void printYTChatMessage(ITextComponent chatComponent)
     {
-        this.drawnChatLines.clear();
-        this.chatLines.clear();
-    }
-
-    public void printChatMessage(ITextComponent chatComponent)
-    {
-        this.printChatMessageWithOptionalDeletion(chatComponent, 0);
-    }
-
-    private void printChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId)
-    {
-        this.setChatLine(chatComponent, chatLineId, this.mc.ingameGUI.getUpdateCounter(), false);
-    }
-
-    private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly)
-    {
-        if (chatLineId != 0)
-        {
-            this.deleteChatLine(chatLineId);
-        }
-
-        int i = MathHelper.floor(this.getChatWidth() / this.getChatScale());
-        List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponent, i, this.mc.fontRenderer, false, false);
-
-        for (ITextComponent itextcomponent : list)
-        {
-            this.drawnChatLines.add(0, new ChatLine(updateCounter, itextcomponent, chatLineId));
-        }
-
-        while (this.drawnChatLines.size() > 100)
-        {
-            this.drawnChatLines.remove(this.drawnChatLines.size() - 1);
-        }
-
-        if (!displayOnly)
-        {
-            this.chatLines.add(0, new ChatLine(updateCounter, chatComponent, chatLineId));
-
-            while (this.chatLines.size() > 100)
-            {
-                this.chatLines.remove(this.chatLines.size() - 1);
-            }
-        }
+        this.printYTChatMessageWithOptionalDeletion(chatComponent, 0);
     }
 
     @Nullable
-    private ITextComponent getChatComponent(int mouseX, int mouseY)
+    public ITextComponent getYTChatComponent(int mouseX, int mouseY)
     {
         if (!this.getChatOpen())
         {
@@ -167,7 +233,7 @@ public class GuiRightStreamChat extends Gui
             ScaledResolution scaledresolution = new ScaledResolution(this.mc);
             int i = scaledresolution.getScaleFactor();
             float f = this.getChatScale();
-            int j = mouseX / i - 2;
+            int j = scaledresolution.getScaledWidth() - 4 - mouseX / i;
             int k = mouseY / i - 40;
             j = MathHelper.floor(j / f);
             k = MathHelper.floor(k / f);
@@ -178,7 +244,7 @@ public class GuiRightStreamChat extends Gui
 
                 if (j <= MathHelper.floor(this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRenderer.FONT_HEIGHT * l + l)
                 {
-                    int i1 = k / this.mc.fontRenderer.FONT_HEIGHT;
+                    int i1 = k / this.mc.fontRenderer.FONT_HEIGHT + this.scrollPos;
 
                     if (i1 >= 0 && i1 < this.drawnChatLines.size())
                     {
@@ -212,56 +278,45 @@ public class GuiRightStreamChat extends Gui
         }
     }
 
-    private boolean getChatOpen()
+    private void printYTChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId)
     {
-        return this.mc.currentScreen instanceof GuiChat;
+        this.setChatLine(chatComponent, chatLineId, this.mc.ingameGUI.getUpdateCounter(), false);
     }
 
-    private void deleteChatLine(int id)
+    private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly)
     {
-        Iterator<ChatLine> iterator = this.drawnChatLines.iterator();
-
-        while (iterator.hasNext())
+        if (chatLineId != 0)
         {
-            ChatLine chatline = iterator.next();
-
-            if (chatline.getChatLineID() == id)
-            {
-                iterator.remove();
-            }
+            this.deleteChatLine(chatLineId);
         }
 
-        iterator = this.chatLines.iterator();
+        int i = MathHelper.floor(this.getChatWidth() / this.getChatScale());
+        List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponent, i, this.mc.fontRenderer, false, false);
+        boolean flag = this.getChatOpen();
 
-        while (iterator.hasNext())
+        for (ITextComponent itextcomponent : list)
         {
-            ChatLine chatline1 = iterator.next();
-
-            if (chatline1.getChatLineID() == id)
+            if (flag && this.scrollPos > 0)
             {
-                iterator.remove();
-                break;
+                this.isScrolled = true;
+                this.scroll(1);
+            }
+            this.drawnChatLines.add(0, new ChatLine(updateCounter, itextcomponent, chatLineId));
+        }
+
+        while (this.drawnChatLines.size() > 100)
+        {
+            this.drawnChatLines.remove(this.drawnChatLines.size() - 1);
+        }
+
+        if (!displayOnly)
+        {
+            this.chatLines.add(0, new ChatLine(updateCounter, chatComponent, chatLineId));
+
+            while (this.chatLines.size() > 100)
+            {
+                this.chatLines.remove(this.chatLines.size() - 1);
             }
         }
-    }
-
-    private int getChatWidth()
-    {
-        return GuiNewChat.calculateChatboxWidth(this.mc.gameSettings.chatWidth);
-    }
-
-    private int getChatHeight()
-    {
-        return GuiNewChat.calculateChatboxHeight(this.getChatOpen() ? this.mc.gameSettings.chatHeightFocused : this.mc.gameSettings.chatHeightUnfocused);
-    }
-
-    private float getChatScale()
-    {
-        return this.mc.gameSettings.chatScale;
-    }
-
-    private int getLineCount()
-    {
-        return this.getChatHeight() / 9;
     }
 }

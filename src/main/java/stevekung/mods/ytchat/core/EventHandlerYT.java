@@ -1,20 +1,28 @@
 package stevekung.mods.ytchat.core;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiSleepMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import stevekung.mods.ytchat.gui.GuiRightStreamChat;
+import stevekung.mods.ytchat.gui.GuiChatYT;
+import stevekung.mods.ytchat.gui.GuiRightChatYT;
+import stevekung.mods.ytchat.gui.GuiSleepMPYT;
 import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
 import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 public class EventHandlerYT
 {
     public static boolean isReceivedChat;
-    public static GuiRightStreamChat rightStreamGui;
+    public static GuiRightChatYT rightStreamGui;
     private boolean onDisconnected;
     private boolean onConnected;
     private int ticks = 40;
@@ -29,7 +37,8 @@ public class EventHandlerYT
     @SubscribeEvent
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
-        EventHandlerYT.rightStreamGui = new GuiRightStreamChat(this.mc);
+        EventHandlerYT.rightStreamGui = new GuiRightChatYT(this.mc);
+        this.mc.ingameGUI.persistantChatGUI = new GuiRightChatYT(this.mc);
 
         if (EventHandlerYT.isReceivedChat)
         {
@@ -40,7 +49,7 @@ public class EventHandlerYT
     @SubscribeEvent
     public void onClientDisconnectFromServer(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
-        EventHandlerYT.rightStreamGui.clearChatMessages();
+        EventHandlerYT.rightStreamGui.clearChatMessages(true);
 
         if (EventHandlerYT.isReceivedChat)
         {
@@ -85,6 +94,14 @@ public class EventHandlerYT
             }
             this.initVersionCheck = true;
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_F3) && Keyboard.isKeyDown(Keyboard.KEY_D))
+        {
+            if (EventHandlerYT.rightStreamGui != null)
+            {
+                EventHandlerYT.rightStreamGui.clearChatMessages(false);
+            }
+        }
+        EventHandlerYT.replaceGui(this.mc, this.mc.currentScreen);
     }
 
     @SubscribeEvent
@@ -101,7 +118,39 @@ public class EventHandlerYT
             GlStateManager.pushMatrix();
             GlStateManager.translate(width / 2, height - 48, 0.0F);
             EventHandlerYT.rightStreamGui.drawChat(this.mc.ingameGUI.getUpdateCounter());
+            EventHandlerYT.rightStreamGui.drawRightChat(this.mc.ingameGUI.getUpdateCounter());
             GlStateManager.popMatrix();
+        }
+    }
+
+    @SubscribeEvent
+    public void onPressKey(InputEvent.KeyInputEvent event)
+    {
+        if (this.mc.currentScreen == null && this.mc.gameSettings.keyBindCommand.isPressed())
+        {
+            GuiChatYT chatGuiSlash = new GuiChatYT("/");
+            this.mc.displayGuiScreen(chatGuiSlash);
+        }
+    }
+
+    private static void replaceGui(Minecraft mc, GuiScreen currentScreen)
+    {
+        if (currentScreen != null)
+        {
+            if (currentScreen instanceof GuiChat && !(currentScreen instanceof GuiChatYT || currentScreen instanceof GuiSleepMP))
+            {
+                GuiChatYT chatGui = new GuiChatYT();
+                mc.displayGuiScreen(chatGui);
+            }
+            if (currentScreen instanceof GuiSleepMP && !(currentScreen instanceof GuiSleepMPYT))
+            {
+                GuiSleepMPYT sleepGui = new GuiSleepMPYT();
+                mc.displayGuiScreen(sleepGui);
+            }
+            if (currentScreen instanceof GuiSleepMPYT && !mc.player.isPlayerSleeping())
+            {
+                mc.displayGuiScreen(null);
+            }
         }
     }
 }
