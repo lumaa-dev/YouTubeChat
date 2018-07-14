@@ -416,7 +416,7 @@ public class YouTubeChatService implements AbstractChatService
 
             while ((view = reader.readLine()) != null)
             {
-                YouTubeChatService.currentLiveViewCount = "Current watched:" + view;
+                YouTubeChatService.currentLiveViewCount = "Current watched: " + view;
             }
             reader.close();
         }
@@ -441,7 +441,10 @@ public class YouTubeChatService implements AbstractChatService
                 try
                 {
                     // Get current live view count
-                    YouTubeChatService.this.getCurrentViewCount();
+                    if (!YouTubeChatService.liveVideoId.isEmpty())
+                    {
+                        YouTubeChatService.this.getCurrentViewCount();
+                    }
 
                     // Check if game is paused
                     Minecraft mc = Minecraft.getMinecraft();

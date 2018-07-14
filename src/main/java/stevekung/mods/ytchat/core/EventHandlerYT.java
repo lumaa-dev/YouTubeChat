@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSleepMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -130,6 +131,17 @@ public class EventHandlerYT
         {
             GuiChatYT chatGuiSlash = new GuiChatYT("/");
             this.mc.displayGuiScreen(chatGuiSlash);
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientSendChat(ClientChatEvent event)
+    {
+        String message = event.getMessage();
+
+        if (message.contains("$set_live"))
+        {
+            YouTubeChatService.liveVideoId = message.replace("$set_live ", "");
         }
     }
 
