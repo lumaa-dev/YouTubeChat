@@ -60,6 +60,8 @@ public class YouTubeChatService implements AbstractChatService
     private static YouTubeChatService INSTANCE;
     public static String channelOwnerId = "";
     public static String currentLoginProfile = "";
+    public static String liveVideoId = "";
+    public static String currentLiveViewCount = "";
 
     public static synchronized YouTubeChatService getService()
     {
@@ -400,21 +402,21 @@ public class YouTubeChatService implements AbstractChatService
         return this.listeners;
     }
 
-    protected void getContent(String videoId)//XXX
+    protected void getCurrentViewCount()
     {
         URL url;
 
         try
         {
-            String viewCountUrl = "https://www.youtube.com/live_stats?v=" + videoId;
+            String viewCountUrl = "https://www.youtube.com/live_stats?v=" + YouTubeChatService.liveVideoId;
             url = new URL(viewCountUrl);
             URLConnection connection = url.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String input;
+            String view;
 
-            while ((input = reader.readLine()) != null)
+            while ((view = reader.readLine()) != null)
             {
-                System.out.println(input);
+                YouTubeChatService.currentLiveViewCount = "Current watched:" + view;
             }
             reader.close();
         }
@@ -438,6 +440,9 @@ public class YouTubeChatService implements AbstractChatService
             {
                 try
                 {
+                    // Get current live view count
+                    YouTubeChatService.this.getCurrentViewCount();
+
                     // Check if game is paused
                     Minecraft mc = Minecraft.getMinecraft();
 
