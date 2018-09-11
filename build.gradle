@@ -6,31 +6,42 @@ buildscript {
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.4"
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
     }
 }
 
 plugins {
-    id "com.github.johnrengelman.shadow" version "1.2.4"
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+    id "com.matthewprenger.cursegradle" version "1.1.0"
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
+def api = new groovy.json.JsonSlurper().parseText(file("${api_token_path}").text)
 def mcVersion = project.mc_version
 def keystore = new groovy.json.JsonSlurper().parseText(file("${keystore_path}").text)
 
 version = project.version
 group = "stevekung.mods.ytchat"
 archivesBaseName = "YouTubeChat-" + mcVersion
+sourceCompatibility = targetCompatibility = 1.8
 
 minecraft {
-    version = "1.12.2-14.23.4.2708"
+    version = "1.12.2-14.23.4.2760"
     runDir = "run"
     mappings = "snapshot_20171003"
     makeObfSourceJar = false
 
     replace "@FINGERPRINT@", keystore.sha1
     replaceIn "YouTubeChatMod.java"
+}
+
+repositories {
+    // Curse Gradle
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
 }
 
 configurations {
@@ -49,6 +60,7 @@ shadowJar {
     relocate "org.apache.http", "stevekung.mods.ytchat.relocate.org.apache.http"
     relocate "org.codehaus", "stevekung.mods.ytchat.relocate.org.codehaus"
     relocate "org.mortbay", "stevekung.mods.ytchat.relocate.org.mortbay"
+    relocate "org.checkerframework", "stevekung.mods.ytchat.relocate.org.checkerframework"
     relocate "javax.annotation", "stevekung.mods.ytchat.relocate.javax.annotation"
     relocate "javax.servlet", "stevekung.mods.ytchat.relocate.javax.servlet"
     relocate "com.google.api", "stevekung.mods.ytchat.relocate.com.google.api"
@@ -68,6 +80,7 @@ shadowJar {
     exclude "stevekung/mods/stevekunglib/**"
     exclude "META-INF/stevekunglib_at.cfg"
     exclude "dummyThing"
+    exclude "mozilla/public-suffix-list.txt"
 }
 
 reobf {
@@ -78,7 +91,26 @@ jar {
     from configurations.embed.collect {
         exclude "META-INF/LICENSE*"
         exclude "META-INF/NOTICE*"
+        exclude "META-INF/maven*"
         it.isDirectory() ? it : zipTree(it)
+    }
+}
+
+curseforge {
+    apiKey = api.youtube_chat
+    project {
+        id = "272146" //TODO
+        changelog = ""
+        changelogType = "markdown"
+        releaseType = "release"
+        addGameVersion mcVersion
+
+        mainArtifact(file("build/libs/YouTubeChat-" + mcVersion + "-" + version + ".jar")) {
+            displayName = "YouTubeChat-" + mcVersion + "-" + version
+            relations {
+                requiredLibrary "stevekungs-lib"
+            }
+        }
     }
 }
 

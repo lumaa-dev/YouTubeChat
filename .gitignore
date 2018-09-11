@@ -14,7 +14,3 @@ run
 .metadata
 .classpath
 .project
-gradle-wrapper.jar
-gradle-wrapper.properties
-gradlew.bat
-gradlew
