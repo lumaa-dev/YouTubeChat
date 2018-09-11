@@ -416,7 +416,7 @@ public class YouTubeChatService implements AbstractChatService
 
             while ((view = reader.readLine()) != null)
             {
-                YouTubeChatService.currentLiveViewCount = "Current watched: " + view;
+                YouTubeChatService.currentLiveViewCount = view;
             }
             reader.close();
         }

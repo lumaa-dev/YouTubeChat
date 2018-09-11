@@ -39,7 +39,7 @@ public class EventHandlerYT
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
         EventHandlerYT.rightStreamGui = new GuiRightChatYT(this.mc);
-        this.mc.ingameGUI.persistantChatGUI = new GuiRightChatYT(this.mc);
+        //this.mc.ingameGUI.persistantChatGUI = new GuiRightChatYT(this.mc);
 
         if (EventHandlerYT.isReceivedChat)
         {
@@ -102,7 +102,7 @@ public class EventHandlerYT
                 EventHandlerYT.rightStreamGui.clearChatMessages(false);
             }
         }
-        EventHandlerYT.replaceGui(this.mc, this.mc.currentScreen);
+        //EventHandlerYT.replaceGui(this.mc, this.mc.currentScreen);
     }
 
     @SubscribeEvent
@@ -127,11 +127,11 @@ public class EventHandlerYT
     @SubscribeEvent
     public void onPressKey(InputEvent.KeyInputEvent event)
     {
-        if (this.mc.currentScreen == null && this.mc.gameSettings.keyBindCommand.isPressed())
+        /*if (this.mc.currentScreen == null && this.mc.gameSettings.keyBindCommand.isPressed())
         {
             GuiChatYT chatGuiSlash = new GuiChatYT("/");
             this.mc.displayGuiScreen(chatGuiSlash);
-        }
+        }*/
     }
 
     @SubscribeEvent
