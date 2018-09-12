@@ -28,8 +28,10 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import stevekung.mods.stevekunglib.client.gui.GuiChatRegistry;
 import stevekung.mods.stevekunglib.utils.CommonUtils;
 import stevekung.mods.stevekunglib.utils.GameProfileUtils;
 import stevekung.mods.stevekunglib.utils.VersionChecker;
@@ -39,6 +41,7 @@ import stevekung.mods.ytchat.command.CommandChatAction;
 import stevekung.mods.ytchat.command.CommandPostMessage;
 import stevekung.mods.ytchat.command.CommandYouTubeChat;
 import stevekung.mods.ytchat.config.ConfigManagerYT;
+import stevekung.mods.ytchat.gui.GuiYouTubeChat;
 import stevekung.mods.ytchat.utils.LoggerYT;
 
 @Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL, certificateFingerprint = YouTubeChatMod.CERTIFICATE)
@@ -89,6 +92,12 @@ public class YouTubeChatMod
         {
             YouTubeChatMod.CHECKER.startCheck();
         }
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        GuiChatRegistry.register(new GuiYouTubeChat());
     }
 
     @EventHandler

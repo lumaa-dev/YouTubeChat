@@ -19,20 +19,14 @@ package stevekung.mods.ytchat.core;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiSleepMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import stevekung.mods.ytchat.gui.GuiChatYT;
 import stevekung.mods.ytchat.gui.GuiRightChatYT;
-import stevekung.mods.ytchat.gui.GuiSleepMPYT;
 import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
 import stevekung.mods.ytchat.utils.YouTubeChatService;
 
@@ -55,7 +49,6 @@ public class EventHandlerYT
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
         EventHandlerYT.rightStreamGui = new GuiRightChatYT(this.mc);
-        //this.mc.ingameGUI.persistantChatGUI = new GuiRightChatYT(this.mc);
 
         if (EventHandlerYT.isReceivedChat)
         {
@@ -118,7 +111,6 @@ public class EventHandlerYT
                 EventHandlerYT.rightStreamGui.clearChatMessages(false);
             }
         }
-        //EventHandlerYT.replaceGui(this.mc, this.mc.currentScreen);
     }
 
     @SubscribeEvent
@@ -141,16 +133,6 @@ public class EventHandlerYT
     }
 
     @SubscribeEvent
-    public void onPressKey(InputEvent.KeyInputEvent event)
-    {
-        /*if (this.mc.currentScreen == null && this.mc.gameSettings.keyBindCommand.isPressed())
-        {
-            GuiChatYT chatGuiSlash = new GuiChatYT("/");
-            this.mc.displayGuiScreen(chatGuiSlash);
-        }*/
-    }
-
-    @SubscribeEvent
     public void onClientSendChat(ClientChatEvent event)
     {
         String message = event.getMessage();
@@ -158,27 +140,6 @@ public class EventHandlerYT
         if (message.contains("$set_live"))
         {
             YouTubeChatService.liveVideoId = message.replace("$set_live ", "");
-        }
-    }
-
-    private static void replaceGui(Minecraft mc, GuiScreen currentScreen)
-    {
-        if (currentScreen != null)
-        {
-            if (currentScreen instanceof GuiChat && !(currentScreen instanceof GuiChatYT || currentScreen instanceof GuiSleepMP))
-            {
-                GuiChatYT chatGui = new GuiChatYT();
-                mc.displayGuiScreen(chatGui);
-            }
-            if (currentScreen instanceof GuiSleepMP && !(currentScreen instanceof GuiSleepMPYT))
-            {
-                GuiSleepMPYT sleepGui = new GuiSleepMPYT();
-                mc.displayGuiScreen(sleepGui);
-            }
-            if (currentScreen instanceof GuiSleepMPYT && !mc.player.isPlayerSleeping())
-            {
-                mc.displayGuiScreen(null);
-            }
         }
     }
 }

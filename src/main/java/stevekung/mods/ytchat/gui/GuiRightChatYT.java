@@ -34,6 +34,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import stevekung.mods.stevekunglib.client.gui.GuiChatBase;
 
 /**
  *
@@ -93,7 +94,7 @@ public class GuiRightChatYT extends GuiNewChat
     @Override
     public boolean getChatOpen()
     {
-        return this.mc.currentScreen instanceof GuiChatYT;
+        return this.mc.currentScreen instanceof GuiChatBase;
     }
 
     @Override
@@ -207,8 +208,8 @@ public class GuiRightChatYT extends GuiNewChat
                     {
                         int k3 = j3 > 0 ? 170 : 96;
                         int l3 = this.isScrolled ? 13382451 : 3355562;
-                        drawRect(0, -j3, 2, -j3 - k1, l3 + (k3 << 24));
-                        drawRect(2, -j3, 1, -j3 - k1, 13421772 + (k3 << 24));
+                        drawRect(res.getScaledWidth() / 2, -j3, res.getScaledWidth() / 2 + 1, -j3 - k1, l3 + (k3 << 24));
+                        drawRect(res.getScaledWidth() / 2, -j3, res.getScaledWidth() / 2 + 1, -j3 - k1, 13421772 + (k3 << 24));
                     }
                 }
                 GlStateManager.popMatrix();
