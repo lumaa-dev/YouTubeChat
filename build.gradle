@@ -50,7 +50,7 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: "M:/Modding/YouTubeChat/1.12.2/.dependencies", include: "*.jar")
+    compile fileTree(dir: "M:/Modding/YouTubeChat/1.13-pre/.dependencies", include: "*.jar")
     compile files("library/SteveKunG's-Lib.jar")
 }
 
@@ -72,13 +72,14 @@ shadowJar {
 
     classifier ""
     dependencies {
-        include(dependency(fileTree(dir: "M:/Modding/YouTubeChat/1.12.2/.dependencies", include: "*.jar")))
+        include(dependency(fileTree(dir: "M:/Modding/YouTubeChat/1.13-pre/.dependencies", include: "*.jar")))
     }
     manifest {
         attributes("FMLAT": "youtube_chat_at.cfg", "FMLCorePluginContainsFMLMod": "true")
     }
     exclude "stevekung/mods/stevekunglib/**"
     exclude "META-INF/stevekunglib_at.cfg"
+    exclude "META-INF/maven/**"
     exclude "dummyThing"
     exclude "mozilla/public-suffix-list.txt"
 }
@@ -91,7 +92,6 @@ jar {
     from configurations.embed.collect {
         exclude "META-INF/LICENSE*"
         exclude "META-INF/NOTICE*"
-        exclude "META-INF/maven*"
         it.isDirectory() ? it : zipTree(it)
     }
 }
