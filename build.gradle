@@ -102,6 +102,10 @@ curseforge {
         releaseType = "release"
         addGameVersion mcVersion
 
+        afterEvaluate { //TODO Temp fix
+            gameVersionStrings.remove('Java 9')
+        }
+
         mainArtifact(file("build/libs/YouTubeChat-" + mcVersion + "-" + version + ".jar")) {
             displayName = "YouTubeChat-" + mcVersion + "-" + version
             relations {
