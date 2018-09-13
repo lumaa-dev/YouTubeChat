@@ -74,9 +74,6 @@ shadowJar {
     dependencies {
         include(dependency(fileTree(dir: "M:/Modding/YouTubeChat/1.13-pre/.dependencies", include: "*.jar")))
     }
-    manifest {
-        attributes("FMLAT": "youtube_chat_at.cfg", "FMLCorePluginContainsFMLMod": "true")
-    }
     exclude "stevekung/mods/stevekunglib/**"
     exclude "META-INF/stevekunglib_at.cfg"
     exclude "META-INF/maven/**"
