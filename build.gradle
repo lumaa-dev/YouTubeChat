@@ -96,9 +96,9 @@ jar {
 curseforge {
     apiKey = api.youtube_chat
     project {
-        id = "272146" //TODO
-        changelog = ""
-        changelogType = "markdown"
+        id = "302916"
+        changelog = "Change Log"
+        changelogType = "WYSIWYG"
         releaseType = "release"
         addGameVersion mcVersion
 
