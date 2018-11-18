@@ -1,8 +1,9 @@
 # folder
-bin
-.settings
+.dependencies
 .gradle
 .gradle_data
+.settings
+bin
 build
 library
 eclipse
