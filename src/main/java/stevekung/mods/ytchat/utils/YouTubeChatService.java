@@ -353,6 +353,7 @@ public class YouTubeChatService implements AbstractChatService
                 if (this.liveChatId == null || this.liveChatId.isEmpty())
                 {
                     LoggerYT.printExceptionMessage("Could not find live chat for " + identity);
+                    this.stop(false);
                     return;
                 }
 
