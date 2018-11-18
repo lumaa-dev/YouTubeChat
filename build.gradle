@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://files.minecraftforge.net/maven" }
         maven { url = "https://plugins.gradle.org/m2/" }
     }
     dependencies {
@@ -30,7 +30,7 @@ archivesBaseName = "YouTubeChat-" + mcVersion
 sourceCompatibility = targetCompatibility = 1.8
 
 minecraft {
-    version = "1.12.2-14.23.4.2760"
+    version = "1.12.2-14.23.5.2775"
     runDir = "run"
     mappings = "snapshot_20171003"
     makeObfSourceJar = false
