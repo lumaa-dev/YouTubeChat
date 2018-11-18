@@ -39,6 +39,7 @@ import com.google.common.base.Strings;
 
 import net.minecraft.client.Minecraft;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
+import stevekung.mods.stevekunglib.utils.client.ClientUtils;
 import stevekung.mods.ytchat.auth.Authentication;
 import stevekung.mods.ytchat.core.YouTubeChatMod;
 
@@ -84,7 +85,7 @@ public class YouTubeChatService implements AbstractChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            LoggerYT.printYTMessage(JsonUtils.create("Started receiving live chat message").setStyle(JsonUtils.white()));
+            ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create("Started receiving live chat message").setStyle(JsonUtils.white())));
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -99,7 +100,7 @@ public class YouTubeChatService implements AbstractChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            LoggerYT.printYTMessage(JsonUtils.create("Stopped receiving live chat message").setStyle(JsonUtils.white()));
+            ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create("Stopped receiving live chat message").setStyle(JsonUtils.white())));
 
             if (this.listeners.size() == 0)
             {
@@ -389,7 +390,7 @@ public class YouTubeChatService implements AbstractChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        LoggerYT.printYTMessage(JsonUtils.create(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(JsonUtils.green()));
+        ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(JsonUtils.green())));
     }
 
     public ExecutorService getExecutor()
@@ -402,14 +403,12 @@ public class YouTubeChatService implements AbstractChatService
         return this.listeners;
     }
 
-    protected void getCurrentViewCount()
+    private void getCurrentViewCount()
     {
-        URL url;
-
         try
         {
             String viewCountUrl = "https://www.youtube.com/live_stats?v=" + YouTubeChatService.liveVideoId;
-            url = new URL(viewCountUrl);
+            URL url = new URL(viewCountUrl);
             URLConnection connection = url.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String view;
@@ -476,7 +475,6 @@ public class YouTubeChatService implements AbstractChatService
                         }
                         YouTubeChatService.this.broadcastMessage(message.getAuthorDetails(), snippet.getSuperChatDetails(), message.getId(), snippet.getDisplayMessage(), moderatorId);
                     }
-                    //YouTubeChatService.this.getContent(YouTubeChatService.this.v);
                     YouTubeChatService.this.poll(chatResponse.getPollingIntervalMillis());
                 }
                 catch (Throwable t)

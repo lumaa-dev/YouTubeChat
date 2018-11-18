@@ -80,6 +80,12 @@ public class LoggerYT
         }
     }
 
+    public static ITextComponent printYTOverlayMessage(ITextComponent component)
+    {
+        ITextComponent message = JsonUtils.create("[YTChat] ").setStyle(JsonUtils.red()).appendSibling(component);
+        return message;
+    }
+
     public static void printExceptionMessage(String message)
     {
         if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
