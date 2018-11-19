@@ -83,12 +83,12 @@ public class GuiChatAction extends GuiScreen
     public void initGui()
     {
         int xChat = this.width / 2 - 120;
-        int yChat = this.height / 2;
+        int yChat = this.height / 2 - 25;
         int xMod = this.width / 2 + 4;
         this.buttonList.add(this.deleteButton = new GuiButton(0, xChat, yChat - 30, 120, 20, "Delete"));
         this.buttonList.add(this.temporaryBanButton = new GuiButton(1, xChat, yChat - 8, 120, 20, "Temporary Ban"));
         this.buttonList.add(this.banButton = new GuiButton(2, xChat, yChat + 14, 120, 20, "Ban"));
-        this.buttonList.add(this.unbanButton = new GuiButton(3, xChat, yChat + 36, 120, 20, "Unban"));
+        this.buttonList.add(this.unbanButton = new GuiButton(3, xChat, yChat + 36, 120, 20, "Unban (WIP)"));
 
         this.buttonList.add(this.addModerator = new GuiButton(4, xMod, yChat - 30, 120, 20, "Add Moderator"));
         this.buttonList.add(this.removeModerator = new GuiButton(5, xMod, yChat - 8, 120, 20, "Remove Moderator"));
@@ -152,7 +152,7 @@ public class GuiChatAction extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRenderer, "Do an action for this message", this.width / 2, this.height / 2 - 50, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Select your action", this.width / 2, this.height / 2 - 75, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }
