@@ -80,15 +80,7 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             ITextComponent component = ClientCommandBase.getChatComponentFromNthArg(args, 1);
             String profile = component.createCopy().getUnformattedText();
-
-            if (profile.isEmpty())
-            {
-                service.start(ConfigManagerYT.youtube_chat_general.liveVideoId, clientSecret, null);
-            }
-            else
-            {
-                service.start(ConfigManagerYT.youtube_chat_general.liveVideoId, clientSecret, profile);
-            }
+            service.start(clientSecret, profile.isEmpty() ? null : profile);
 
             if (ConfigManagerYT.youtube_chat_chat.autoReceiveChat)
             {

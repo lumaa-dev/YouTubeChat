@@ -291,7 +291,7 @@ public class YouTubeChatService implements AbstractChatService
         });
     }
 
-    public void start(final String videoId, final String clientSecret, final String defaultAuthName)
+    public void start(final String clientSecret, final String defaultAuthName)
     {
         this.executor = Executors.newCachedThreadPool();
         this.executor.execute(() ->
@@ -311,48 +311,24 @@ public class YouTubeChatService implements AbstractChatService
                 // This object is used to make YouTube Data API requests
                 this.youtube = new YouTube.Builder(Authentication.HTTP_TRANSPORT, Authentication.JSON_FACTORY, credential).setApplicationName(YouTubeChatMod.NAME).build();
 
-                // Get the live chat id
-                String identity;
+                YouTube.LiveBroadcasts.List broadcastList = this.youtube.liveBroadcasts().list("snippet").setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
+                LiveBroadcastListResponse broadcastListResponse = broadcastList.execute();
 
-                if (videoId != null && !videoId.isEmpty())
+                for (LiveBroadcast broadcast : broadcastListResponse.getItems())
                 {
-                    identity = "videoId " + videoId;
-                    YouTube.Videos.List videoList = this.youtube.videos().list("liveStreamingDetails").setFields("items/liveStreamingDetails/activeLiveChatId").setId(videoId);
-                    VideoListResponse response = videoList.execute();
+                    this.liveChatId = broadcast.getSnippet().getLiveChatId();
+                    YouTubeChatService.channelOwnerId = broadcast.getSnippet().getChannelId();
 
-                    for (Video video : response.getItems())
+                    if (this.liveChatId != null && !this.liveChatId.isEmpty())
                     {
-                        this.liveChatId = video.getLiveStreamingDetails().getActiveLiveChatId();
-
-                        if (this.liveChatId != null && !this.liveChatId.isEmpty())
-                        {
-                            LoggerYT.info("Live Chat ID: {}", this.liveChatId);
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    identity = "current user";
-                    YouTube.LiveBroadcasts.List broadcastList = this.youtube.liveBroadcasts().list("snippet").setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
-                    LiveBroadcastListResponse broadcastListResponse = broadcastList.execute();
-
-                    for (LiveBroadcast broadcast : broadcastListResponse.getItems())
-                    {
-                        this.liveChatId = broadcast.getSnippet().getLiveChatId();
-                        YouTubeChatService.channelOwnerId = broadcast.getSnippet().getChannelId();
-
-                        if (this.liveChatId != null && !this.liveChatId.isEmpty())
-                        {
-                            LoggerYT.info("Live Chat ID: {}", this.liveChatId);
-                            break;
-                        }
+                        LoggerYT.info("Live Chat ID: {}", this.liveChatId);
+                        break;
                     }
                 }
 
                 if (this.liveChatId == null || this.liveChatId.isEmpty())
                 {
-                    LoggerYT.printExceptionMessage("Could not find live chat for " + identity);
+                    LoggerYT.printExceptionMessage("Could not find live chat for current user");
                     this.stop(false);
                     return;
                 }

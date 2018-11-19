@@ -35,10 +35,6 @@ public class ConfigManagerYT
         @Config.Name(value = "Client Secret")
         public String clientSecret = "";
 
-        @Config.Comment("The specific ID of the live video")
-        @Config.Name(value = "Live Video ID")
-        public String liveVideoId = "";
-
         @Config.Name(value = "Enable Version Checker")
         public boolean enableVersionChecker = true;
     }
