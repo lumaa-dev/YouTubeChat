@@ -111,7 +111,7 @@ curseforge {
     project {
         id = "302916"
         changelog = "Change Log"
-        changelogType = "WYSIWYG"
+        changelogType = "markdown"
         releaseType = "release"
         addGameVersion mcVersion
 
