@@ -82,6 +82,8 @@ shadowJar {
     relocate "com.google.j2objc", "stevekung.mods.ytchat.relocate.com.google.j2objc"
     relocate "com.google.thirdparty", "stevekung.mods.ytchat.relocate.com.google.thirdparty"
     relocate "com.fasterxml", "stevekung.mods.ytchat.relocate.com.fasterxml"
+    relocate "io.grpc", "stevekung.mods.ytchat.relocate.io.grpc"
+    relocate "io.opencensus", "stevekung.mods.ytchat.relocate.io.opencensus"
 
     classifier ""
     dependencies {
