@@ -16,16 +16,15 @@
 
 package stevekung.mods.ytchat.core;
 
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import stevekung.mods.stevekungslib.utils.client.ClientUtils;
 import stevekung.mods.ytchat.gui.GuiRightChatYT;
 import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
 import stevekung.mods.ytchat.utils.YouTubeChatService;
@@ -42,10 +41,10 @@ public class EventHandlerYT
 
     public EventHandlerYT()
     {
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Minecraft.getInstance();
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent TODO
     public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event)
     {
         EventHandlerYT.rightStreamGui = new GuiRightChatYT(this.mc);
@@ -65,11 +64,16 @@ public class EventHandlerYT
         {
             this.onDisconnected = true;
         }
-    }
+    }*/
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
+        if (EventHandlerYT.rightStreamGui == null)//TODO Temp
+        {
+            EventHandlerYT.rightStreamGui = new GuiRightChatYT(this.mc);
+        }
+
         if (EventHandlerYT.isReceivedChat)
         {
             if (this.onConnected && this.ticks > 0)
@@ -104,7 +108,7 @@ public class EventHandlerYT
             }
             this.initVersionCheck = true;
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_F3) && Keyboard.isKeyDown(Keyboard.KEY_D))
+        if (ClientUtils.isKeyDown(GLFW.GLFW_KEY_F3) && ClientUtils.isKeyDown(GLFW.GLFW_KEY_D))
         {
             if (EventHandlerYT.rightStreamGui != null)
             {
@@ -118,16 +122,15 @@ public class EventHandlerYT
     {
         if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT)
         {
-            ScaledResolution res = new ScaledResolution(this.mc);
-            int width = res.getScaledWidth();
-            int height = res.getScaledHeight();
+            int width = mc.mainWindow.getScaledWidth();
+            int height = mc.mainWindow.getScaledHeight();
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.disableAlpha();
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.disableAlphaTest();
             GlStateManager.pushMatrix();
-            GlStateManager.translate(width / 2, height - 48, 0.0F);
-            EventHandlerYT.rightStreamGui.drawChat(this.mc.ingameGUI.getUpdateCounter());
-            EventHandlerYT.rightStreamGui.drawRightChat(this.mc.ingameGUI.getUpdateCounter());
+            GlStateManager.translatef(width / 2, height - 48, 0.0F);
+            EventHandlerYT.rightStreamGui.drawChat(this.mc.ingameGUI.getTicks());
+            EventHandlerYT.rightStreamGui.drawRightChat(this.mc.ingameGUI.getTicks());
             GlStateManager.popMatrix();
         }
     }

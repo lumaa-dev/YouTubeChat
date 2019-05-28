@@ -16,13 +16,11 @@
 
 package stevekung.mods.ytchat.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.util.text.ITextComponent;
-import stevekung.mods.stevekunglib.utils.JsonUtils;
-import stevekung.mods.stevekunglib.utils.client.ClientUtils;
-import stevekung.mods.ytchat.config.ConfigManagerYT;
+import stevekung.mods.stevekungslib.utils.JsonUtils;
+import stevekung.mods.stevekungslib.utils.LoggerBase;
+import stevekung.mods.stevekungslib.utils.client.ClientUtils;
+import stevekung.mods.ytchat.config.YouTubeChatConfig;
 import stevekung.mods.ytchat.core.EventHandlerYT;
 
 /**
@@ -31,45 +29,18 @@ import stevekung.mods.ytchat.core.EventHandlerYT;
  * @author SteveKunG
  *
  */
-public class LoggerYT
+public class LoggerYT extends LoggerBase
 {
-    private static final Logger LOG = LogManager.getLogger("YouTubeChat");
-
-    public static void info(String message)
+    public LoggerYT()
     {
-        LoggerYT.LOG.info(message);
+        super("YouTube Chat", false);
     }
 
-    public static void error(String message)
-    {
-        LoggerYT.LOG.error(message);
-    }
-
-    public static void warning(String message)
-    {
-        LoggerYT.LOG.warn(message);
-    }
-
-    public static void info(String message, Object... obj)
-    {
-        LoggerYT.LOG.info(message, obj);
-    }
-
-    public static void error(String message, Object... obj)
-    {
-        LoggerYT.LOG.error(message, obj);
-    }
-
-    public static void warning(String message, Object... obj)
-    {
-        LoggerYT.LOG.warn(message, obj);
-    }
-
-    public static void printYTMessage(ITextComponent component)
+    public void printYTMessage(ITextComponent component)
     {
         ITextComponent message = JsonUtils.create("[YTChat] ").setStyle(JsonUtils.red()).appendSibling(component);
 
-        if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
+        if (YouTubeChatConfig.GENERAL.displayChatRightSide.get())
         {
             message = component.appendSibling(JsonUtils.create(" [YTChat]").setStyle(JsonUtils.red()));
             EventHandlerYT.rightStreamGui.printYTChatMessage(message);
@@ -80,15 +51,15 @@ public class LoggerYT
         }
     }
 
-    public static ITextComponent printYTOverlayMessage(ITextComponent component)
+    public ITextComponent printYTOverlayMessage(ITextComponent component)
     {
         ITextComponent message = JsonUtils.create("[YTChat] ").setStyle(JsonUtils.red()).appendSibling(component);
         return message;
     }
 
-    public static void printExceptionMessage(String message)
+    public void printExceptionMessage(String message)
     {
-        if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
+        if (YouTubeChatConfig.GENERAL.displayChatRightSide.get())
         {
             EventHandlerYT.rightStreamGui.printYTChatMessage(JsonUtils.create(message).setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create(" [YTChatException]").setStyle(JsonUtils.red())));
         }

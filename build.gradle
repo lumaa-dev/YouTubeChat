@@ -1,11 +1,11 @@
 buildscript {
     repositories {
-        jcenter()
         maven { url = "https://files.minecraftforge.net/maven" }
-        maven { url = "https://plugins.gradle.org/m2/" }
+        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.2.0"
     }
@@ -17,26 +17,49 @@ plugins {
     id "net.minecrell.licenser" version "0.4.1"
 }
 
-apply plugin: "net.minecraftforge.gradle.forge"
+def api = new groovy.json.JsonSlurper().parseText(file("${api_token_path}").text)
+def keystore = new groovy.json.JsonSlurper().parseText(file("${keystore_path}").text)
+def mcVersion = project.mc_version
+
+apply plugin: "net.minecraftforge.gradle"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "net.minecrell.licenser"
-def api = new groovy.json.JsonSlurper().parseText(file("${api_token_path}").text)
-def mcVersion = project.mc_version
-def keystore = new groovy.json.JsonSlurper().parseText(file("${keystore_path}").text)
+apply plugin: "eclipse"
+
+import net.minecraftforge.gradle.common.task.SignJar
 
 version = project.version
 group = "stevekung.mods.ytchat"
 archivesBaseName = "YouTubeChat-" + mcVersion
-sourceCompatibility = targetCompatibility = 1.8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
+compileJava.options.encoding = "UTF-8"
 
 minecraft {
-    version = "1.12.2-14.23.5.2838"
-    runDir = "run"
-    mappings = "snapshot_20171003"
-    makeObfSourceJar = false
+    mappings channel: "snapshot", version: "20180921-1.13"
+    accessTransformer = file("$rootDir/libs/accesstransformer.cfg")
 
-    replace "@FINGERPRINT@", keystore.sha1
-    replaceIn "YouTubeChatMod.java"
+    runs {
+        client = {
+            workingDirectory project.file("run").canonicalPath
+            source sourceSets.main
+
+            mods {
+                youtube_chat {
+                    source sourceSets.main
+                }
+            }
+        }
+        server = {
+            workingDirectory project.file("run").canonicalPath
+            source sourceSets.main
+
+            mods {
+                youtube_chat {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
 repositories {
@@ -52,8 +75,9 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: "M:/Modding/YouTubeChat/1.13-pre/.dependencies", include: "*.jar")
-    compile files("library/SteveKunG's-Lib.jar")
+    minecraft "net.minecraftforge:forge:1.13.2-25.0.219"
+    compile files("libs/SteveKunG's-Lib-1.13.2-2.0.0-deobf.jar")
+    compile fileTree(dir: "$rootDir/.dependencies", include: "*.jar")
 }
 
 license {
@@ -87,7 +111,7 @@ shadowJar {
 
     classifier ""
     dependencies {
-        include(dependency(fileTree(dir: "M:/Modding/YouTubeChat/1.13-pre/.dependencies", include: "*.jar")))
+        include(dependency(fileTree(dir: "$rootDir/.dependencies", include: "*.jar")))
     }
     exclude "stevekung/mods/stevekunglib/**"
     exclude "META-INF/stevekunglib_at.cfg"
@@ -105,6 +129,18 @@ jar {
         exclude "META-INF/LICENSE*"
         exclude "META-INF/NOTICE*"
         it.isDirectory() ? it : zipTree(it)
+    }
+
+    manifest {
+        attributes([
+                "Specification-Title": "youtube_chat",
+                "Specification-Vendor": "SteveKunG",
+                "Specification-Version": "1",
+                "Implementation-Title": "YouTube-Chat",
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"SteveKunG",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
 }
 
@@ -126,7 +162,7 @@ curseforge {
     }
 }
 
-task signJar(type: SignJar, dependsOn: reobfJar) {
+task signJar(type: SignJar, dependsOn: jar) {
     keyStore = keystore.keystore_path
     alias = keystore.alias
     storePass = keystore.keystore_pass

@@ -34,8 +34,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 
-import stevekung.mods.stevekunglib.utils.JsonUtils;
-import stevekung.mods.ytchat.utils.LoggerYT;
+import stevekung.mods.stevekungslib.utils.JsonUtils;
+import stevekung.mods.ytchat.core.YouTubeChatMod;
 import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 /**
@@ -72,7 +72,7 @@ public class Authentication
 
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
         FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(Authentication.userDir);
-        LoggerYT.info("Preparing authentication directory at {}", Authentication.userDir.getPath());
+        YouTubeChatMod.LOGGER.info("Preparing authentication directory at {}", Authentication.userDir.getPath());
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
@@ -87,11 +87,11 @@ public class Authentication
 
         if (file.delete())
         {
-            LoggerYT.printYTMessage(JsonUtils.create("Profile " + file.getName() + " have been deleted!").setStyle(JsonUtils.green()));
+            YouTubeChatMod.LOGGER.printYTMessage(JsonUtils.create("Profile " + file.getName() + " have been deleted!").setStyle(JsonUtils.green()));
         }
         else
         {
-            LoggerYT.printExceptionMessage("Cannot delete file or file not found!");
+            YouTubeChatMod.LOGGER.printExceptionMessage("Cannot delete file or file not found!");
         }
     }
 
@@ -101,11 +101,11 @@ public class Authentication
 
         if (file.delete())
         {
-            LoggerYT.printYTMessage(JsonUtils.create("Profile " + file.getName() + " have been deleted!").setStyle(JsonUtils.green()));
+            YouTubeChatMod.LOGGER.printYTMessage(JsonUtils.create("Profile " + file.getName() + " have been deleted!").setStyle(JsonUtils.green()));
         }
         else
         {
-            LoggerYT.printExceptionMessage("Cannot delete file or file not found!");
+            YouTubeChatMod.LOGGER.printExceptionMessage("Cannot delete file or file not found!");
         }
     }
 }

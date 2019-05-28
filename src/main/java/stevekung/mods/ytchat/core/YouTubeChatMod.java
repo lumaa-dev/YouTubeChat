@@ -17,120 +17,73 @@
 package stevekung.mods.ytchat.core;
 
 import java.io.File;
-import java.util.Arrays;
 
-import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import com.mojang.brigadier.CommandDispatcher;
+
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import stevekung.mods.stevekunglib.client.gui.GuiChatRegistry;
-import stevekung.mods.stevekunglib.utils.CommonUtils;
-import stevekung.mods.stevekunglib.utils.GameProfileUtils;
-import stevekung.mods.stevekunglib.utils.VersionChecker;
-import stevekung.mods.stevekunglib.utils.client.ClientUtils;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
+import stevekung.mods.stevekungslib.client.gui.GuiChatRegistry;
+import stevekung.mods.stevekungslib.utils.CommonUtils;
+import stevekung.mods.stevekungslib.utils.GameProfileUtils;
+import stevekung.mods.stevekungslib.utils.VersionChecker;
 import stevekung.mods.ytchat.auth.Authentication;
-import stevekung.mods.ytchat.command.CommandChatAction;
-import stevekung.mods.ytchat.command.CommandPostMessage;
-import stevekung.mods.ytchat.command.CommandYouTubeChat;
-import stevekung.mods.ytchat.config.ConfigManagerYT;
+import stevekung.mods.ytchat.command.ChatActionCommand;
+import stevekung.mods.ytchat.command.PostMessageCommand;
+import stevekung.mods.ytchat.command.YouTubeChatCommand;
+import stevekung.mods.ytchat.config.YouTubeChatConfig;
 import stevekung.mods.ytchat.gui.GuiYouTubeChat;
 import stevekung.mods.ytchat.utils.LoggerYT;
 
-@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL, certificateFingerprint = YouTubeChatMod.CERTIFICATE)
+@Mod(YouTubeChatMod.MOD_ID)
 public class YouTubeChatMod
 {
     public static final String NAME = "YouTube Chat";
     public static final String MOD_ID = "youtube_chat";
-    private static final int MAJOR_VERSION = 1;
-    private static final int MINOR_VERSION = 4;
-    private static final int BUILD_VERSION = 1;
-    public static final String VERSION = YouTubeChatMod.MAJOR_VERSION + "." + YouTubeChatMod.MINOR_VERSION + "." + YouTubeChatMod.BUILD_VERSION;
-    private static final String FORGE_VERSION = "after:forge@[14.23.5.2768,);";
-    protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.5,); " + YouTubeChatMod.FORGE_VERSION;
-    protected static final String CERTIFICATE = "@FINGERPRINT@";
     private static final String URL = "https://minecraft.curseforge.com/projects/youtube-chat";
-    protected static final String JSON_URL = "https://raw.githubusercontent.com/SteveKunG/VersionCheckLibrary/master/youtube_chat_version.json";
 
-    @Instance(YouTubeChatMod.MOD_ID)
-    public static YouTubeChatMod INSTANCE;
-
+    public static final LoggerYT LOGGER = new LoggerYT();
     public static VersionChecker CHECKER;
-    public static boolean isDevelopment;
 
-    static
+    public YouTubeChatMod()
     {
-        try
-        {
-            YouTubeChatMod.isDevelopment = Launch.classLoader.getClassBytes("net.minecraft.world.World") != null;
-        }
-        catch (Exception e) {}
+        CommonUtils.addModListener(this::setup);
+        CommonUtils.addModListener(this::loadComplete);
+        CommonUtils.addListener(this::serverStarting);
+
+        CommonUtils.registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.GENERAL_BUILDER);
+        CommonUtils.registerModEventBus(YouTubeChatConfig.class);
     }
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    private void setup(FMLClientSetupEvent event)
     {
-        YouTubeChatMod.initModInfo(event.getModMetadata());
-        Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
+        Authentication.configDirectory = new File(FMLPaths.CONFIGDIR.get().toFile(), Authentication.CREDENTIALS_DIRECTORY);
         Authentication.userDir = new File(Authentication.configDirectory, GameProfileUtils.getUUID().toString());
-        ClientUtils.registerCommand(new CommandYouTubeChat());
-        ClientUtils.registerCommand(new CommandChatAction());
-        ClientUtils.registerCommand(new CommandPostMessage());
         CommonUtils.registerEventHandler(this);
         CommonUtils.registerEventHandler(new EventHandlerYT());
 
-        YouTubeChatMod.CHECKER = new VersionChecker(YouTubeChatMod.INSTANCE, YouTubeChatMod.NAME, YouTubeChatMod.URL);
+        YouTubeChatMod.CHECKER = new VersionChecker(this, YouTubeChatMod.NAME, YouTubeChatMod.URL);
 
-        if (ConfigManagerYT.youtube_chat_general.enableVersionChecker)
+        if (YouTubeChatConfig.GENERAL.enableVersionChecker.get())
         {
             YouTubeChatMod.CHECKER.startCheck();
         }
     }
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
+    private void loadComplete(FMLLoadCompleteEvent event)
     {
         GuiChatRegistry.register(new GuiYouTubeChat());
     }
 
-    @EventHandler
-    public void onFingerprintViolation(FMLFingerprintViolationEvent event)
+    private void serverStarting(FMLServerStartingEvent event)
     {
-        if (YouTubeChatMod.isDevelopment)
-        {
-            LoggerYT.info("Development environment detected! Ignore certificate check.");
-        }
-        else
-        {
-            throw new RuntimeException("Invalid fingerprint detected! This version will NOT be supported by the author!");
-        }
-    }
-
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
-    {
-        if (event.getModID().equals(YouTubeChatMod.MOD_ID))
-        {
-            ConfigManager.sync(YouTubeChatMod.MOD_ID, Config.Type.INSTANCE);
-        }
-    }
-
-    private static void initModInfo(ModMetadata info)
-    {
-        info.autogenerated = false;
-        info.modId = YouTubeChatMod.MOD_ID;
-        info.name = YouTubeChatMod.NAME;
-        info.description = "Enables interaction with YouTube Live Stream Chat.";
-        info.version = YouTubeChatMod.VERSION;
-        info.url = YouTubeChatMod.URL;
-        info.authorList = Arrays.asList("SteveKunG", "PeregrineZ", "jimrogers");
-        info.credits = "Credit to PeregrineZ for implemented example features";
+        CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
+        ChatActionCommand.register(dispatcher);
+        PostMessageCommand.register(dispatcher);
+        YouTubeChatCommand.register(dispatcher);
     }
 }

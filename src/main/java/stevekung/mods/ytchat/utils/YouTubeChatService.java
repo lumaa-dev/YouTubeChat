@@ -38,8 +38,8 @@ import com.google.api.services.youtube.model.*;
 import com.google.common.base.Strings;
 
 import net.minecraft.client.Minecraft;
-import stevekung.mods.stevekunglib.utils.JsonUtils;
-import stevekung.mods.stevekunglib.utils.client.ClientUtils;
+import stevekung.mods.stevekungslib.utils.JsonUtils;
+import stevekung.mods.stevekungslib.utils.client.ClientUtils;
 import stevekung.mods.ytchat.auth.Authentication;
 import stevekung.mods.ytchat.core.YouTubeChatMod;
 
@@ -85,7 +85,7 @@ public class YouTubeChatService implements AbstractChatService
         if (!this.listeners.contains(listener))
         {
             this.listeners.add(listener);
-            ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create("Started receiving live chat message").setStyle(JsonUtils.white())));
+            ClientUtils.setOverlayMessage(YouTubeChatMod.LOGGER.printYTOverlayMessage(JsonUtils.create("Started receiving live chat message").setStyle(JsonUtils.white())));
 
             if (this.isInitialized && this.pollTimer == null)
             {
@@ -100,7 +100,7 @@ public class YouTubeChatService implements AbstractChatService
         if (this.listeners.contains(listener))
         {
             this.listeners.remove(listener);
-            ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create("Stopped receiving live chat message").setStyle(JsonUtils.white())));
+            ClientUtils.setOverlayMessage(YouTubeChatMod.LOGGER.printYTOverlayMessage(JsonUtils.create("Stopped receiving live chat message").setStyle(JsonUtils.white())));
 
             if (this.listeners.size() == 0)
             {
@@ -137,7 +137,7 @@ public class YouTubeChatService implements AbstractChatService
             catch (Throwable t)
             {
                 onComplete.accept(null);
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
             }
         });
@@ -162,7 +162,7 @@ public class YouTubeChatService implements AbstractChatService
             }
             catch (Throwable t)
             {
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
                 onComplete.run();
             }
@@ -197,7 +197,7 @@ public class YouTubeChatService implements AbstractChatService
             }
             catch (Throwable t)
             {
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
                 onComplete.run();
             }
@@ -230,7 +230,7 @@ public class YouTubeChatService implements AbstractChatService
             }
             catch (Throwable t)
             {
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
                 onComplete.run();
             }
@@ -257,7 +257,7 @@ public class YouTubeChatService implements AbstractChatService
             }
             catch (Throwable t)
             {
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
                 onComplete.run();
             }
@@ -284,7 +284,7 @@ public class YouTubeChatService implements AbstractChatService
             }
             catch (Throwable t)
             {
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
                 onComplete.run();
             }
@@ -311,7 +311,7 @@ public class YouTubeChatService implements AbstractChatService
                 // This object is used to make YouTube Data API requests
                 this.youtube = new YouTube.Builder(Authentication.HTTP_TRANSPORT, Authentication.JSON_FACTORY, credential).setApplicationName(YouTubeChatMod.NAME).build();
 
-                YouTube.LiveBroadcasts.List broadcastList = this.youtube.liveBroadcasts().list("snippet").setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
+                YouTube.LiveBroadcasts.List broadcastList = this.youtube.liveBroadcasts().list("snippet,contentDetails").setFields("items(snippet(liveChatId,channelId),contentDetails(monitorStream(enableMonitorStream,broadcastStreamDelayMs)))").setBroadcastType("all").setBroadcastStatus("active");
                 LiveBroadcastListResponse broadcastListResponse = broadcastList.execute();
 
                 for (LiveBroadcast broadcast : broadcastListResponse.getItems())
@@ -319,16 +319,21 @@ public class YouTubeChatService implements AbstractChatService
                     this.liveChatId = broadcast.getSnippet().getLiveChatId();
                     YouTubeChatService.channelOwnerId = broadcast.getSnippet().getChannelId();
 
+                    broadcast.getContentDetails().getMonitorStream().setEnableMonitorStream(false);
+
+                    System.out.println(broadcast.getContentDetails().getMonitorStream().getBroadcastStreamDelayMs());
+                    System.out.println(broadcast.getContentDetails().getMonitorStream().getEnableMonitorStream());
+
                     if (this.liveChatId != null && !this.liveChatId.isEmpty())
                     {
-                        LoggerYT.info("Live Chat ID: {}", this.liveChatId);
+                        YouTubeChatMod.LOGGER.info("Live Chat ID: {}", this.liveChatId);
                         break;
                     }
                 }
 
                 if (this.liveChatId == null || this.liveChatId.isEmpty())
                 {
-                    LoggerYT.printExceptionMessage("Could not find live chat for current user");
+                    YouTubeChatMod.LOGGER.printExceptionMessage("Could not find live chat for current user");
                     this.stop(false);
                     return;
                 }
@@ -346,11 +351,11 @@ public class YouTubeChatService implements AbstractChatService
                 {
                     this.nextPoll = System.currentTimeMillis() + response.getPollingIntervalMillis();
                 }
-                LoggerYT.printYTMessage(JsonUtils.create("Service started").setStyle(JsonUtils.green()));
+                YouTubeChatMod.LOGGER.printYTMessage(JsonUtils.create("Service started").setStyle(JsonUtils.green()));
             }
             catch (Throwable t)
             {
-                LoggerYT.printExceptionMessage(t.getMessage());
+                YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                 t.printStackTrace();
             }
         });
@@ -367,12 +372,12 @@ public class YouTubeChatService implements AbstractChatService
         }
         this.liveChatId = null;
         this.isInitialized = false;
-        ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(JsonUtils.green())));
+        ClientUtils.setOverlayMessage(YouTubeChatMod.LOGGER.printYTOverlayMessage(JsonUtils.create(isLogout ? "Stopped service and logout" : "Service stopped").setStyle(JsonUtils.green())));
     }
 
-    public ExecutorService getExecutor()
+    public boolean hasExecutor()
     {
-        return this.executor;
+        return this.executor != null;
     }
 
     public List<YouTubeChatMessageListener> getListeners()
@@ -423,12 +428,23 @@ public class YouTubeChatService implements AbstractChatService
                     }
 
                     // Check if game is paused
-                    Minecraft mc = Minecraft.getMinecraft();
+                    Minecraft mc = Minecraft.getInstance();
 
                     if (mc.isGamePaused())
                     {
                         YouTubeChatService.this.poll(200);
                         return;
+                    }
+
+
+                    YouTube.LiveBroadcasts.List broadcastList = YouTubeChatService.this.youtube.liveBroadcasts().list("contentDetails").setFields("items(contentDetails(monitorStream(enableMonitorStream,broadcastStreamDelayMs)))").setBroadcastType("all").setBroadcastStatus("active");
+                    LiveBroadcastListResponse broadcastListResponse = broadcastList.execute();
+
+                    for (LiveBroadcast broadcast : broadcastListResponse.getItems())
+                    {
+                        broadcast.getContentDetails().getMonitorStream().setEnableMonitorStream(false);
+                        System.out.println(broadcast.getContentDetails().getMonitorStream().getBroadcastStreamDelayMs());
+                        System.out.println(broadcast.getContentDetails().getMonitorStream().getEnableMonitorStream());
                     }
 
                     // Get chat messages from YouTube
@@ -456,7 +472,7 @@ public class YouTubeChatService implements AbstractChatService
                 }
                 catch (Throwable t)
                 {
-                    LoggerYT.printExceptionMessage(t.getMessage());
+                    YouTubeChatMod.LOGGER.printExceptionMessage(t.getMessage());
                     t.printStackTrace();
                 }
             }

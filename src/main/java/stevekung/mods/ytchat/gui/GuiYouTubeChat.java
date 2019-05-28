@@ -16,22 +16,19 @@
 
 package stevekung.mods.ytchat.gui;
 
-import java.io.IOException;
 import java.util.List;
-
-import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import stevekung.mods.stevekunglib.client.gui.IGuiChat;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import stevekung.mods.stevekungslib.client.gui.IGuiChat;
 import stevekung.mods.ytchat.core.EventHandlerYT;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiYouTubeChat implements IGuiChat
 {
     private int sentHistoryCursor = -1;
@@ -43,37 +40,32 @@ public class GuiYouTubeChat implements IGuiChat
     }
 
     @Override
-    public void handleMouseInput(int width, int height) throws IOException
+    public boolean mouseScrolled(double wheel)
     {
-        int i = Mouse.getEventDWheel();
-
-        if (i != 0)
+        if (wheel > 1.0D)
         {
-            if (i > 1)
-            {
-                i = 1;
-            }
-            if (i < -1)
-            {
-                i = -1;
-            }
-
-            if (!GuiScreen.isShiftKeyDown())
-            {
-                i *= 7;
-            }
-            EventHandlerYT.rightStreamGui.scroll(i);
+            wheel = 1.0D;
         }
+        if (wheel < -1.0D)
+        {
+            wheel = -1.0D;
+        }
+        if (!GuiScreen.isCtrlKeyDown())
+        {
+            wheel *= 7;
+        }
+        EventHandlerYT.rightStreamGui.func_194813_a(wheel);
+        return true;
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    public void mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
         if (mouseButton == 0)
         {
-            ITextComponent itextcomponent = EventHandlerYT.rightStreamGui.getYTChatComponent(Mouse.getX(), Mouse.getY());
+            ITextComponent itextcomponent = EventHandlerYT.rightStreamGui.getYTChatComponent(mouseX, mouseY);
 
-            if (itextcomponent != null && Minecraft.getMinecraft().currentScreen.handleComponentClick(itextcomponent))
+            if (itextcomponent != null && Minecraft.getInstance().currentScreen.handleComponentClick(itextcomponent))
             {
                 return;
             }
@@ -101,40 +93,25 @@ public class GuiYouTubeChat implements IGuiChat
     }
 
     @Override
-    public void drawScreen(List<GuiButton> buttonList, int mouseX, int mouseY, float partialTicks)
+    public void render(List<GuiButton> buttonList, int mouseX, int mouseY, float partialTicks)
     {
-        ITextComponent itextcomponent = EventHandlerYT.rightStreamGui.getYTChatComponent(Mouse.getX(), Mouse.getY());
+        ITextComponent itextcomponent = EventHandlerYT.rightStreamGui.getYTChatComponent(mouseX, mouseY);
 
         if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null)
         {
-            Minecraft.getMinecraft().currentScreen.handleComponentHover(itextcomponent, mouseX, mouseY);
+            //Minecraft.getInstance().currentScreen.handleComponentHover(itextcomponent, mouseX, mouseY);TODO AT handleComponentHover
         }
     }
 
     @Override
     public void keyTypedScrollDown()
     {
-        EventHandlerYT.rightStreamGui.scroll(EventHandlerYT.rightStreamGui.getLineCount() - 1);
+        EventHandlerYT.rightStreamGui.func_194813_a(EventHandlerYT.rightStreamGui.getLineCount() - 1);
     }
 
     @Override
     public void keyTypedScrollUp()
     {
-        EventHandlerYT.rightStreamGui.scroll(-EventHandlerYT.rightStreamGui.getLineCount() + 1);
+        EventHandlerYT.rightStreamGui.func_194813_a(-EventHandlerYT.rightStreamGui.getLineCount() + 1);
     }
-
-    @Override
-    public void actionPerformed(GuiButton button) {}
-
-    @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {}
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {}
-
-    @Override
-    public void onGuiClosed() {}
-
-    @Override
-    public void updateScreen(List<GuiButton> buttonList, int width, int height) {}
 }
