@@ -32,10 +32,7 @@ public class ChatActionCommand
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
         dispatcher.register(Commands.literal("ytcaction").requires(requirement -> requirement.hasPermissionLevel(0))
-                .then(Commands.argument("message_id", StringArgumentType.word())
-                        .then(Commands.argument("channel_id", StringArgumentType.word())
-                                .then(Commands.argument("moderator_id", StringArgumentType.word())
-                                        .then(Commands.argument("name", StringArgumentType.greedyString()))))
+                .then(Commands.argument("message_id", StringArgumentType.word()).then(Commands.argument("channel_id", StringArgumentType.word()).then(Commands.argument("moderator_id", StringArgumentType.word()).then(Commands.argument("name", StringArgumentType.greedyString()))))
                         .executes(requirement -> ChatActionCommand.display(requirement.getSource(), StringArgumentType.getString(requirement, "message_id"), StringArgumentType.getString(requirement, "channel_id"), StringArgumentType.getString(requirement, "moderator_id"), StringArgumentType.getString(requirement, "name")))));
     }
 

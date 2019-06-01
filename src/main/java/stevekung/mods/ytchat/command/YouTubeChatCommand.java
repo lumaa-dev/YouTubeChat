@@ -60,7 +60,7 @@ public class YouTubeChatCommand
         {
             throw new CommandException(LangUtils.translateComponent("commands.service_is_init"));
         }
-        service.start(clientSecret, profile.isEmpty() ? null : profile);
+        service.start(clientSecret, profile);
         EventHandlerYT.isReceivedChat = true;
         service.subscribe(YouTubeChatReceiver.getInstance());
         return 0;
