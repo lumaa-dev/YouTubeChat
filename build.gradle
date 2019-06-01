@@ -35,7 +35,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 compileJava.options.encoding = "UTF-8"
 
 minecraft {
-    mappings channel: "snapshot", version: "20180921-1.13"
+    mappings channel: "snapshot", version: "${mcp_mapping}"
     accessTransformer = file("$rootDir/libs/accesstransformer.cfg")
 
     runs {
@@ -75,7 +75,7 @@ configurations {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.13.2-25.0.219"
+    minecraft "net.minecraftforge:forge:${forge_version}"
     compile files("libs/SteveKunG's-Lib-1.13.2-2.0.0-deobf.jar")
     compile fileTree(dir: "$rootDir/.dependencies", include: "*.jar")
 }
