@@ -89,6 +89,7 @@ shadowJar {
     dependencies {
         include(dependency(fileTree(dir: "$rootDir/.dependencies", include: "*.jar")))
     }
+
     exclude "stevekung/mods/stevekunglib/**"
     exclude "META-INF/stevekunglib_at.cfg"
     exclude "META-INF/maven/**"
