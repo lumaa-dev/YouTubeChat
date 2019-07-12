@@ -23,10 +23,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ChatLine;
-import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.client.gui.GuiUtilRenderComponents;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -34,7 +31,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import stevekung.mods.stevekunglib.client.gui.GuiChatBase;
 
 /**
  *
@@ -94,7 +90,7 @@ public class GuiRightChatYT extends GuiNewChat
     @Override
     public boolean getChatOpen()
     {
-        return this.mc.currentScreen instanceof GuiChatBase;
+        return this.mc.currentScreen instanceof GuiChat;
     }
 
     @Override

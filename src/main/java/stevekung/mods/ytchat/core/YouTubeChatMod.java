@@ -51,10 +51,10 @@ public class YouTubeChatMod
     public static final String MOD_ID = "youtube_chat";
     private static final int MAJOR_VERSION = 1;
     private static final int MINOR_VERSION = 4;
-    private static final int BUILD_VERSION = 1;
+    private static final int BUILD_VERSION = 2;
     public static final String VERSION = YouTubeChatMod.MAJOR_VERSION + "." + YouTubeChatMod.MINOR_VERSION + "." + YouTubeChatMod.BUILD_VERSION;
     private static final String FORGE_VERSION = "after:forge@[14.23.5.2768,);";
-    protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.5,); " + YouTubeChatMod.FORGE_VERSION;
+    protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.6,); " + YouTubeChatMod.FORGE_VERSION;
     protected static final String CERTIFICATE = "@FINGERPRINT@";
     private static final String URL = "https://minecraft.curseforge.com/projects/youtube-chat";
     protected static final String JSON_URL = "https://raw.githubusercontent.com/SteveKunG/VersionCheckLibrary/master/youtube_chat_version.json";

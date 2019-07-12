@@ -16,7 +16,6 @@
 
 package stevekung.mods.ytchat.gui;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
@@ -43,7 +42,7 @@ public class GuiYouTubeChat implements IGuiChat
     }
 
     @Override
-    public void handleMouseInput(int width, int height) throws IOException
+    public void handleMouseInput(int width, int height)
     {
         int i = Mouse.getEventDWheel();
 
@@ -112,13 +111,13 @@ public class GuiYouTubeChat implements IGuiChat
     }
 
     @Override
-    public void keyTypedScrollDown()
+    public void pageUp()
     {
         EventHandlerYT.rightStreamGui.scroll(EventHandlerYT.rightStreamGui.getLineCount() - 1);
     }
 
     @Override
-    public void keyTypedScrollUp()
+    public void pageDown()
     {
         EventHandlerYT.rightStreamGui.scroll(-EventHandlerYT.rightStreamGui.getLineCount() + 1);
     }
