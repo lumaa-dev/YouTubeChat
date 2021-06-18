@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.command;
+package com.stevekung.mods.ytc.command;
 
-import java.util.function.Consumer;
+import com.stevekung.mods.ytc.config.ConfigManagerYT;
+import com.stevekung.mods.ytc.service.YouTubeChatService;
+import com.stevekung.mods.ytc.utils.LoggerYT;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -24,17 +26,13 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
-import stevekung.mods.stevekunglib.utils.client.ClientUtils;
-import stevekung.mods.ytchat.config.ConfigManagerYT;
-import stevekung.mods.ytchat.utils.LoggerYT;
-import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 public class CommandPostMessage extends ClientCommandBase
 {
     @Override
     public String getName()
     {
-        return "ytm";
+        return "yt";
     }
 
     @Override
@@ -46,29 +44,27 @@ public class CommandPostMessage extends ClientCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        String clientSecret = ConfigManagerYT.youtube_chat_general.clientSecret;
+        String clientSecret = ConfigManagerYT.YOUTUBE_CHAT_GENERAL.clientSecret;
         YouTubeChatService service = YouTubeChatService.getService();
-        boolean hasExecutor = service.getExecutor() != null;
 
         if (clientSecret.isEmpty())
         {
-            throw new CommandException("No client secret configurated");
+            throw new CommandException("[YouTubeChat] No client secret configurated");
         }
         if (args.length == 0)
         {
             throw new WrongUsageException(this.getUsage());
         }
-        if (!hasExecutor)
+        if (!service.hasExecutor())
         {
-            throw new CommandException("Service is not initialized");
+            throw new CommandException("[YouTubeChat] Service is not started");
         }
         String message = ClientCommandBase.getChatComponentFromNthArg(args, 0).createCopy().getUnformattedText();
-        Consumer<String> id = i -> ClientUtils.setOverlayMessage(LoggerYT.printYTOverlayMessage(JsonUtils.create("Message posted").setStyle(JsonUtils.green())));
-        service.postMessage(message, id);
+        service.postMessage(message, i -> LoggerYT.printYTOverlayMessage(JsonUtils.create("Message posted").setStyle(JsonUtils.green())));
     }
 
     private String getUsage()
     {
-        return "/ytm <message>";
+        return "/yt <message>";
     }
 }

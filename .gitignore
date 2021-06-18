@@ -1,17 +1,18 @@
 # folder
-.dependencies
 .gradle
 .settings
 bin
 build
-library
 eclipse
+library
 run
 
 # file
 *.launch
 *.txt
+*.bat
 .metadata
 .classpath
 .project
 stevekunglib_at.cfg
+client_secret*.json

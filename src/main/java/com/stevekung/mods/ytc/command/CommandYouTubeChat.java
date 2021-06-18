@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.command;
+package com.stevekung.mods.ytc.command;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.stevekung.mods.ytc.config.ConfigManagerYT;
+import com.stevekung.mods.ytc.core.EventHandlerYT;
+import com.stevekung.mods.ytc.service.AuthService;
+import com.stevekung.mods.ytc.service.YouTubeChatService;
+import com.stevekung.mods.ytc.utils.LoggerYT;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -30,17 +36,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
-import stevekung.mods.ytchat.auth.Authentication;
-import stevekung.mods.ytchat.config.ConfigManagerYT;
-import stevekung.mods.ytchat.core.EventHandlerYT;
-import stevekung.mods.ytchat.utils.LoggerYT;
-import stevekung.mods.ytchat.utils.YouTubeChatReceiver;
-import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 /**
  * An in-game command for managing the YouTube Chat service. Usage:
  *
- * /ytc <start|stop|logout|echo_start|echo_stop|post>
+ * /ytc <start|stop|logout|list>
  */
 public class CommandYouTubeChat extends ClientCommandBase
 {
@@ -59,13 +59,12 @@ public class CommandYouTubeChat extends ClientCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        String clientSecret = ConfigManagerYT.youtube_chat_general.clientSecret;
+        String clientSecret = ConfigManagerYT.YOUTUBE_CHAT_GENERAL.clientSecret;
         YouTubeChatService service = YouTubeChatService.getService();
-        boolean hasExecutor = service.getExecutor() != null;
 
         if (clientSecret.isEmpty())
         {
-            throw new CommandException("No client secret configurated");
+            throw new CommandException("[YouTubeChat] No client secret configurated");
         }
         if (args.length == 0)
         {
@@ -73,39 +72,31 @@ public class CommandYouTubeChat extends ClientCommandBase
         }
         if (args[0].equalsIgnoreCase("start"))
         {
-            if (hasExecutor)
+            if (service.hasExecutor())
             {
-                throw new CommandException("Service is already initialized");
+                throw new CommandException("[YouTubeChat] Service is already started");
             }
 
             ITextComponent component = ClientCommandBase.getChatComponentFromNthArg(args, 1);
             String profile = component.createCopy().getUnformattedText();
             service.start(clientSecret, profile.isEmpty() ? null : profile);
-
-            if (ConfigManagerYT.youtube_chat_chat.autoReceiveChat)
-            {
-                EventHandlerYT.isReceivedChat = true;
-                service.subscribe(YouTubeChatReceiver.getInstance());
-            }
+            EventHandlerYT.chatReceived = true;
+            service.subscribe();
         }
         else if (args[0].equalsIgnoreCase("stop"))
         {
-            if (!hasExecutor)
+            if (!service.hasExecutor())
             {
-                throw new CommandException("Service is not initialized");
+                throw new CommandException("[YouTubeChat] Service is not started");
             }
 
             service.stop(false);
-
-            if (ConfigManagerYT.youtube_chat_chat.autoReceiveChat)
-            {
-                EventHandlerYT.isReceivedChat = false;
-                service.unsubscribe(YouTubeChatReceiver.getInstance());
-            }
+            EventHandlerYT.chatReceived = false;
+            service.unsubscribe();
         }
         else if (args[0].equalsIgnoreCase("list"))
         {
-            if (!Authentication.userDir.exists())
+            if (!AuthService.USER_DIR.exists())
             {
                 LoggerYT.printExceptionMessage("Folder doesn't exist!");
                 return;
@@ -113,19 +104,20 @@ public class CommandYouTubeChat extends ClientCommandBase
 
             LoggerYT.printYTMessage(JsonUtils.create("Current login profiles list").setStyle(JsonUtils.white()));
 
-            if (Authentication.userDir.listFiles().length < 1)
+            if (AuthService.USER_DIR.listFiles().length < 1)
             {
                 sender.sendMessage(JsonUtils.create("- Empty login profiles!").setStyle(JsonUtils.red()));
             }
-            for (File file : Authentication.userDir.listFiles())
+            for (File file : AuthService.USER_DIR.listFiles())
             {
                 sender.sendMessage(JsonUtils.create("- ").appendSibling(JsonUtils.create(file.getName()).setStyle(JsonUtils.gold())));
             }
         }
         else if (args[0].equalsIgnoreCase("logout"))
         {
-            if (hasExecutor)
+            if (service.hasExecutor())
             {
+                service.unsubscribe();
                 service.stop(true);
             }
 
@@ -136,11 +128,11 @@ public class CommandYouTubeChat extends ClientCommandBase
             {
                 if (profile.isEmpty())
                 {
-                    Authentication.clearCurrentCredentials();
+                    AuthService.clearCurrentCredentials();
                 }
                 else
                 {
-                    Authentication.clearCredentials(profile);
+                    AuthService.clearCredentials(profile);
                 }
             }
             catch (IOException e)
@@ -148,32 +140,6 @@ public class CommandYouTubeChat extends ClientCommandBase
                 e.printStackTrace();
                 LoggerYT.printExceptionMessage(e.getMessage());
             }
-        }
-        else if (args[0].equalsIgnoreCase("echo_start"))
-        {
-            if (!service.isInitialized())
-            {
-                throw new CommandException("Service is not initialized");
-            }
-            if (!service.getListeners().isEmpty())
-            {
-                throw new CommandException("Service is already start receiving live chat message");
-            }
-            EventHandlerYT.isReceivedChat = true;
-            service.subscribe(YouTubeChatReceiver.getInstance());
-        }
-        else if (args[0].equalsIgnoreCase("echo_stop"))
-        {
-            if (!service.isInitialized())
-            {
-                throw new CommandException("Service is not initialized");
-            }
-            if (service.getListeners().isEmpty())
-            {
-                throw new CommandException("Service is stop receiving live chat message");
-            }
-            EventHandlerYT.isReceivedChat = false;
-            service.unsubscribe(YouTubeChatReceiver.getInstance());
         }
         else
         {
@@ -186,29 +152,23 @@ public class CommandYouTubeChat extends ClientCommandBase
     {
         if (args.length == 1)
         {
-            return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "list", "logout", "echo_start", "echo_stop");
+            return CommandBase.getListOfStringsMatchingLastWord(args, "start", "stop", "list", "logout");
         }
-        if (args.length == 2)
+        if (args.length == 2 && (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("logout")) && AuthService.USER_DIR.exists())
         {
-            if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("logout"))
-            {
-                if (Authentication.userDir.exists())
-                {
-                    List<String> list = new LinkedList<>();
+            List<String> list = Lists.newArrayList();
 
-                    for (File file : Authentication.userDir.listFiles())
-                    {
-                        list.add(file.getName());
-                    }
-                    return CommandBase.getListOfStringsMatchingLastWord(args, list);
-                }
+            for (File file : AuthService.USER_DIR.listFiles())
+            {
+                list.add(file.getName());
             }
+            return CommandBase.getListOfStringsMatchingLastWord(args, list);
         }
         return super.getTabCompletions(server, sender, args, pos);
     }
 
     private String getUsage()
     {
-        return "/ytc <start|stop|list|logout|echo_start|echo_stop>";
+        return "/ytc <start|stop|list|logout>";
     }
 }

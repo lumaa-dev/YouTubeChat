@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.command;
+package com.stevekung.mods.ytc.command;
+
+import com.stevekung.mods.ytc.gui.GuiChatAction;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
-import stevekung.mods.ytchat.gui.GuiChatAction;
 
 /**
  *
- * Do an action with current chat message. [Delete, Ban, Temporary ban, Add moderator]
+ * Do an action with current chat message. [Delete, Ban, Temporary Ban, Add Moderator]
  * Usage: /ytcaction <message_id> <channel_id>
  * @author SteveKunG
  *

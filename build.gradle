@@ -1,42 +1,39 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.3.0"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
 
 plugins {
     id "com.github.johnrengelman.shadow" version "4.0.4"
-    id "com.matthewprenger.cursegradle" version "1.3.0"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
     id "net.minecrell.licenser" version "0.4.1"
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "net.minecrell.licenser"
-def api = new groovy.json.JsonSlurper().parseText(file("${api_token_path}").text)
 def mcVersion = project.mc_version
-def keystore = new groovy.json.JsonSlurper().parseText(file("${keystore_path}").text)
 
 version = project.version
-group = "stevekung.mods.ytchat"
+group = "com.stevekung.mods.ytc"
 archivesBaseName = "YouTubeChat-" + mcVersion
-sourceCompatibility = targetCompatibility = 1.8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
+compileJava.options.encoding = "UTF-8"
 
 minecraft {
     version = "${forge_version}"
     runDir = "run"
     mappings = "${mcp_mapping}"
     makeObfSourceJar = false
-
-    replace "@FINGERPRINT@", keystore.sha1
-    replaceIn "YouTubeChatMod.java"
 }
 
 repositories {
@@ -52,13 +49,28 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: "$rootDir/.dependencies", include: "*.jar")
-    compile files("library/SteveKunG's-Lib.jar")
+    embed (group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+    embed (group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
+        exclude(group: "com.google.guava")
+    }
+    embed (group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
+        exclude(group: "com.google.guava")
+    }
+    embed (group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+    embed (group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+
+    compileOnly files("library/SteveKunG's-Lib.jar")
 }
 
 license {
     header = file("LICENSE-header.txt")
-    include "stevekung/mods/ytchat/"
+    include "com/stevekung/mods/ytc"
 
     tasks {
         main {
@@ -68,33 +80,21 @@ license {
 }
 
 shadowJar {
-    relocate "org.apache.commons.codec", "stevekung.mods.ytchat.relocate.org.apache.commons.codec"
-    relocate "org.apache.commons.logging", "stevekung.mods.ytchat.relocate.org.apache.commons.logging"
-    relocate "org.apache.http", "stevekung.mods.ytchat.relocate.org.apache.http"
-    relocate "org.codehaus", "stevekung.mods.ytchat.relocate.org.codehaus"
-    relocate "org.mortbay", "stevekung.mods.ytchat.relocate.org.mortbay"
-    relocate "org.checkerframework", "stevekung.mods.ytchat.relocate.org.checkerframework"
-    relocate "javax.annotation", "stevekung.mods.ytchat.relocate.javax.annotation"
-    relocate "javax.servlet", "stevekung.mods.ytchat.relocate.javax.servlet"
-    relocate "com.google.api", "stevekung.mods.ytchat.relocate.com.google.api"
-    relocate "com.google.common", "stevekung.mods.ytchat.relocate.com.google.common"
-    relocate "com.google.errorprone", "stevekung.mods.ytchat.relocate.com.google.errorprone"
-    relocate "com.google.j2objc", "stevekung.mods.ytchat.relocate.com.google.j2objc"
-    relocate "com.google.thirdparty", "stevekung.mods.ytchat.relocate.com.google.thirdparty"
-    relocate "com.fasterxml", "stevekung.mods.ytchat.relocate.com.fasterxml"
-    relocate "io.grpc", "stevekung.mods.ytchat.relocate.io.grpc"
-    relocate "io.opencensus", "stevekung.mods.ytchat.relocate.io.opencensus"
+    relocate "com.fasterxml", "com.stevekung.mods.ytc.relocate.com.fasterxml"
+    relocate "com.google", "com.stevekung.mods.ytc.relocate.com.google"
+    relocate "io", "com.stevekung.mods.ytc.relocate.io"
+    relocate "javax", "com.stevekung.mods.ytc.relocate.javax"
+    relocate "org", "com.stevekung.mods.ytc.relocate.org"
 
     classifier ""
-    dependencies {
-        include(dependency(fileTree(dir: "$rootDir/.dependencies", include: "*.jar")))
-    }
 
-    exclude "stevekung/mods/stevekunglib/**"
-    exclude "META-INF/stevekunglib_at.cfg"
     exclude "META-INF/maven/**"
+    exclude "META-INF/proguard/**"
+    exclude "META-INF/DEPENDENCIES"
+    exclude "mozilla/**"
+    exclude "module-info.class"
+    exclude "youtube.v3.json"
     exclude "dummyThing"
-    exclude "mozilla/public-suffix-list.txt"
 }
 
 reobf {
@@ -103,14 +103,12 @@ reobf {
 
 jar {
     from configurations.embed.collect {
-        exclude "META-INF/LICENSE*"
-        exclude "META-INF/NOTICE*"
         it.isDirectory() ? it : zipTree(it)
     }
 }
 
 curseforge {
-    apiKey = api.youtube_chat
+    /*apiKey = api.youtube_chat
     project {
         id = "302916"
         changelog = "Change Log"
@@ -124,16 +122,5 @@ curseforge {
                 requiredLibrary "stevekungs-lib"
             }
         }
-    }
+    }*/
 }
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    keyStore = keystore.keystore_path
-    alias = keystore.alias
-    storePass = keystore.keystore_pass
-    keyPass = keystore.keystore_pass
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-build.dependsOn signJar

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.core;
+package com.stevekung.mods.ytc.core;
 
 import java.io.File;
 import java.util.Arrays;
+
+import com.stevekung.mods.ytc.command.CommandChatAction;
+import com.stevekung.mods.ytc.command.CommandPostMessage;
+import com.stevekung.mods.ytc.command.CommandYouTubeChat;
+import com.stevekung.mods.ytc.config.ConfigManagerYT;
+import com.stevekung.mods.ytc.service.AuthService;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Config;
@@ -27,24 +33,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import stevekung.mods.stevekunglib.client.gui.GuiChatRegistry;
 import stevekung.mods.stevekunglib.utils.CommonUtils;
 import stevekung.mods.stevekunglib.utils.GameProfileUtils;
 import stevekung.mods.stevekunglib.utils.VersionChecker;
 import stevekung.mods.stevekunglib.utils.client.ClientUtils;
-import stevekung.mods.ytchat.auth.Authentication;
-import stevekung.mods.ytchat.command.CommandChatAction;
-import stevekung.mods.ytchat.command.CommandPostMessage;
-import stevekung.mods.ytchat.command.CommandYouTubeChat;
-import stevekung.mods.ytchat.config.ConfigManagerYT;
-import stevekung.mods.ytchat.gui.GuiYouTubeChat;
-import stevekung.mods.ytchat.utils.LoggerYT;
 
-@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL, certificateFingerprint = YouTubeChatMod.CERTIFICATE)
+@Mod(modid = YouTubeChatMod.MOD_ID, name = YouTubeChatMod.NAME, version = YouTubeChatMod.VERSION, clientSideOnly = true, dependencies = YouTubeChatMod.DEPENDENCIES, updateJSON = YouTubeChatMod.JSON_URL)
 public class YouTubeChatMod
 {
     public static final String NAME = "YouTube Chat";
@@ -55,8 +52,7 @@ public class YouTubeChatMod
     public static final String VERSION = YouTubeChatMod.MAJOR_VERSION + "." + YouTubeChatMod.MINOR_VERSION + "." + YouTubeChatMod.BUILD_VERSION;
     private static final String FORGE_VERSION = "after:forge@[14.23.5.2768,);";
     protected static final String DEPENDENCIES = "required-after:stevekung's_lib@[1.0.6,); " + YouTubeChatMod.FORGE_VERSION;
-    protected static final String CERTIFICATE = "@FINGERPRINT@";
-    private static final String URL = "https://minecraft.curseforge.com/projects/youtube-chat";
+    private static final String URL = "https://www.curseforge.com/minecraft/mc-mods/youtube-chat";
     protected static final String JSON_URL = "https://raw.githubusercontent.com/SteveKunG/VersionCheckLibrary/master/youtube_chat_version.json";
 
     @Instance(YouTubeChatMod.MOD_ID)
@@ -78,8 +74,8 @@ public class YouTubeChatMod
     public void preInit(FMLPreInitializationEvent event)
     {
         YouTubeChatMod.initModInfo(event.getModMetadata());
-        Authentication.configDirectory = new File(event.getModConfigurationDirectory(), Authentication.CREDENTIALS_DIRECTORY);
-        Authentication.userDir = new File(Authentication.configDirectory, GameProfileUtils.getUUID().toString());
+        AuthService.CONFIG_DIR = new File(event.getModConfigurationDirectory(), AuthService.CREDENTIALS_DIRECTORY);
+        AuthService.USER_DIR = new File(AuthService.CONFIG_DIR, GameProfileUtils.getUUID().toString());
         ClientUtils.registerCommand(new CommandYouTubeChat());
         ClientUtils.registerCommand(new CommandChatAction());
         ClientUtils.registerCommand(new CommandPostMessage());
@@ -88,7 +84,7 @@ public class YouTubeChatMod
 
         YouTubeChatMod.CHECKER = new VersionChecker(YouTubeChatMod.INSTANCE, YouTubeChatMod.NAME, YouTubeChatMod.URL);
 
-        if (ConfigManagerYT.youtube_chat_general.enableVersionChecker)
+        if (ConfigManagerYT.YOUTUBE_CHAT_GENERAL.enableVersionChecker)
         {
             YouTubeChatMod.CHECKER.startCheck();
         }
@@ -97,20 +93,6 @@ public class YouTubeChatMod
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        GuiChatRegistry.register(new GuiYouTubeChat());
-    }
-
-    @EventHandler
-    public void onFingerprintViolation(FMLFingerprintViolationEvent event)
-    {
-        if (YouTubeChatMod.isDevelopment)
-        {
-            LoggerYT.info("Development environment detected! Ignore certificate check.");
-        }
-        else
-        {
-            throw new RuntimeException("Invalid fingerprint detected! This version will NOT be supported by the author!");
-        }
     }
 
     @SubscribeEvent

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.utils;
+package com.stevekung.mods.ytc.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.util.text.ITextComponent;
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.client.ClientUtils;
-import stevekung.mods.ytchat.config.ConfigManagerYT;
-import stevekung.mods.ytchat.core.EventHandlerYT;
 
 /**
  *
@@ -65,36 +63,26 @@ public class LoggerYT
         LoggerYT.LOG.warn(message, obj);
     }
 
+    public static void print(ITextComponent component)
+    {
+        ITextComponent message = JsonUtils.create("[YT] ").setStyle(JsonUtils.red()).appendSibling(component);
+        ClientUtils.printClientMessage(message);
+    }
+
     public static void printYTMessage(ITextComponent component)
     {
-        ITextComponent message = JsonUtils.create("[YTChat] ").setStyle(JsonUtils.red()).appendSibling(component);
-
-        if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
-        {
-            message = component.appendSibling(JsonUtils.create(" [YTChat]").setStyle(JsonUtils.red()));
-            EventHandlerYT.rightStreamGui.printYTChatMessage(message);
-        }
-        else
-        {
-            ClientUtils.printClientMessage(message);
-        }
+        ITextComponent message = JsonUtils.create("[YouTubeChat] ").setStyle(JsonUtils.red()).appendSibling(component);
+        ClientUtils.printClientMessage(message);
     }
 
     public static ITextComponent printYTOverlayMessage(ITextComponent component)
     {
-        ITextComponent message = JsonUtils.create("[YTChat] ").setStyle(JsonUtils.red()).appendSibling(component);
+        ITextComponent message = JsonUtils.create("[YouTubeChat] ").setStyle(JsonUtils.red()).appendSibling(component);
         return message;
     }
 
     public static void printExceptionMessage(String message)
     {
-        if (ConfigManagerYT.youtube_chat_chat.displayChatRightSide)
-        {
-            EventHandlerYT.rightStreamGui.printYTChatMessage(JsonUtils.create(message).setStyle(JsonUtils.darkRed()).appendSibling(JsonUtils.create(" [YTChatException]").setStyle(JsonUtils.red())));
-        }
-        else
-        {
-            ClientUtils.printClientMessage(JsonUtils.create("[YTChatException] ").setStyle(JsonUtils.red()).appendSibling(JsonUtils.create(message).setStyle(JsonUtils.darkRed())));
-        }
+        ClientUtils.printClientMessage(JsonUtils.create("[YouTubeChat] ").setStyle(JsonUtils.red()).appendSibling(JsonUtils.create(message).setStyle(JsonUtils.darkRed())));
     }
 }

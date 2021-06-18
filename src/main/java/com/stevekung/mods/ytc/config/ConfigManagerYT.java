@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.config;
+package com.stevekung.mods.ytc.config;
+
+import com.stevekung.mods.ytc.core.YouTubeChatMod;
 
 import net.minecraftforge.common.config.Config;
-import stevekung.mods.ytchat.core.YouTubeChatMod;
 
 @Config(modid = YouTubeChatMod.MOD_ID)
 public class ConfigManagerYT
 {
     @Config.LangKey(value = "youtube_chat_general")
-    public static final General youtube_chat_general = new General();
+    public static final General YOUTUBE_CHAT_GENERAL = new General();
 
     @Config.LangKey(value = "youtube_chat_chat")
-    public static final Chat youtube_chat_chat = new Chat();
+    public static final Chat YOUTUBE_CHAT_CHAT = new Chat();
 
     // Main Settings
     public static class General
@@ -43,12 +44,12 @@ public class ConfigManagerYT
     public static class Chat
     {
         @Config.Comment("Put your fancy unicode, it will display in front of your channel name")
-        @Config.Name(value = "Channel Owner Icon (Unicode)")
-        public String ownerUnicodeIcon = "";
+        @Config.Name(value = "Channel Owner Icon")
+        public String ownerIcon = "";
 
         @Config.Comment("Put your fancy unicode, it will display in front of moderator channel")
-        @Config.Name(value = "Moderator Icon (Unicode)")
-        public String moderatorUnicodeIcon = "";
+        @Config.Name(value = "Moderator Icon")
+        public String moderatorIcon = "";
 
         @Config.Comment("Put the list of rude word, this will be automatically ban user when message is received. split by \",\"")
         @Config.Name(value = "Banned Rude Word List")
@@ -60,21 +61,9 @@ public class ConfigManagerYT
 
         @Config.Comment("If the message contain rude word, this will does an action with selected action")
         @Config.Name(value = "Rude Word Action")
-        public EnumRudeWordAction rudeWordAction = EnumRudeWordAction.DELETE;
+        public RudeWordAction rudeWordAction = RudeWordAction.DELETE;
 
-        @Config.Comment("Display super chats only")
-        @Config.Name(value = "Show Super Chat Only")
-        public boolean showSuperChatOnly = false;
-
-        @Config.Comment("Move only YouTube Chat into Right Side of the screen, render same as Chat")
-        @Config.Name(value = "Display YouTube Chat on Right Side")
-        public boolean displayChatRightSide = false;
-
-        @Config.Comment("When you starting service, This will automatically subscribe YouTube Chat Service")
-        @Config.Name(value = "Automatic Receive Chat")
-        public boolean autoReceiveChat = true;
-
-        public static enum EnumRudeWordAction
+        public enum RudeWordAction
         {
             DELETE, TEMPORARY_BAN;
         }

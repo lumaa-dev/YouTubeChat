@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.utils;
+package com.stevekung.mods.ytc.service;
 
 import java.util.function.Consumer;
 
-import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
-import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
+import com.stevekung.mods.ytc.utils.event.ChatReceivedEvent;
 
 /**
  * An interface for other mods to subscribe to the live chat stream, post messages, or delete
  * messages.
  */
-public interface AbstractChatService
+public interface ChatService
 {
     /**
      * Notifies subscribers of chat message details when a message is received.
      */
-    interface YouTubeChatMessageListener
+    interface Listener
     {
-        void onMessageReceived(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String id, String message, String moderatorId);
+        void onChatReceived(ChatReceivedEvent event);
     }
 
     /**
@@ -43,17 +42,13 @@ public interface AbstractChatService
 
     /**
      * Subscribes to the live chat stream. Only safe to call on the Minecraft main thread.
-     *
-     * @param listener The listener to subscribe.
      */
-    void subscribe(YouTubeChatMessageListener listener);
+    void subscribe();
 
     /**
      * Unsubscribes from the live chat stream. Only safe to call on the Minecraft main thread.
-     *
-     * @param listener The listener to unsubscribe.
      */
-    void unsubscribe(YouTubeChatMessageListener listener);
+    void unsubscribe();
 
     /**
      * Posts a message to the live chat stream.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Google Inc.
+ * Copyright 2017-2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package stevekung.mods.ytchat.auth;
+package com.stevekung.mods.ytc.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,15 +33,14 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.stevekung.mods.ytc.utils.LoggerYT;
 
 import stevekung.mods.stevekunglib.utils.JsonUtils;
-import stevekung.mods.ytchat.utils.LoggerYT;
-import stevekung.mods.ytchat.utils.YouTubeChatService;
 
 /**
  * Contains methods for authorizing a user and caching credentials.
  */
-public class Authentication
+public class AuthService
 {
     /** Define a global instance of the HTTP transport. */
     public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
@@ -50,13 +49,16 @@ public class Authentication
     public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
     /**
-     * This is the directory that will be used under the user's home directory where OAuth tokens will
+     * This is the directory that will be used under the minecraft config directory where OAuth tokens will
      * be stored.
      */
     public static final String CREDENTIALS_DIRECTORY = ".ytc-oauth-credentials";
 
-    public static File configDirectory;
-    public static File userDir;
+    /** Define a config directory. */
+    public static File CONFIG_DIR;
+
+    /** Define a user directory by their UUID. */
+    public static File USER_DIR;
 
     /**
      * Authorizes the installed application to access user's protected data.
@@ -70,9 +72,9 @@ public class Authentication
         // Load client secrets
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
+        LoggerYT.info("Preparing authentication directory at {}", AuthService.USER_DIR.getPath());
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(Authentication.userDir);
-        LoggerYT.info("Preparing authentication directory at {}", Authentication.userDir.getPath());
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(AuthService.USER_DIR);
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
@@ -83,7 +85,7 @@ public class Authentication
 
     public static void clearCurrentCredentials() throws IOException
     {
-        File file = new File(Authentication.userDir, YouTubeChatService.currentLoginProfile);
+        File file = new File(AuthService.USER_DIR, YouTubeChatService.currentLoginProfile);
 
         if (file.delete())
         {
@@ -91,13 +93,13 @@ public class Authentication
         }
         else
         {
-            LoggerYT.printExceptionMessage("Cannot delete file or file not found!");
+            LoggerYT.printExceptionMessage("Couldn't delete file or file not found!");
         }
     }
 
     public static void clearCredentials(String fileName) throws IOException
     {
-        File file = new File(Authentication.userDir, fileName);
+        File file = new File(AuthService.USER_DIR, fileName);
 
         if (file.delete())
         {
@@ -105,7 +107,7 @@ public class Authentication
         }
         else
         {
-            LoggerYT.printExceptionMessage("Cannot delete file or file not found!");
+            LoggerYT.printExceptionMessage("Couldn't delete file or file not found!");
         }
     }
 }
