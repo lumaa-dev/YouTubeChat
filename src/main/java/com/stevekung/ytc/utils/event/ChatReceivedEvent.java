@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.utils.event;
+package com.stevekung.ytc.utils.event;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.service;
+package com.stevekung.ytc.service;
 
 import java.util.function.Consumer;
 
-import com.stevekung.mods.ytc.utils.event.ChatReceivedEvent;
+import com.stevekung.ytc.utils.event.ChatReceivedEvent;
 
 /**
  * An interface for other mods to subscribe to the live chat stream, post messages, or delete

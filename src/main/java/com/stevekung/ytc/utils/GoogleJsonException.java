@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.utils;
+package com.stevekung.ytc.utils;
 
 import com.google.gson.annotations.SerializedName;
 

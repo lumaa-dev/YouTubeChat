@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.core;
+package com.stevekung.ytc.core;
 
 import java.io.File;
 import java.util.Arrays;
 
-import com.stevekung.mods.ytc.command.CommandChatAction;
-import com.stevekung.mods.ytc.command.CommandPostMessage;
-import com.stevekung.mods.ytc.command.CommandYouTubeChat;
-import com.stevekung.mods.ytc.config.ConfigManagerYT;
-import com.stevekung.mods.ytc.service.AuthService;
+import com.stevekung.ytc.command.CommandChatAction;
+import com.stevekung.ytc.command.CommandPostMessage;
+import com.stevekung.ytc.command.CommandYouTubeChat;
+import com.stevekung.ytc.config.ConfigManagerYT;
+import com.stevekung.ytc.service.AuthService;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Config;

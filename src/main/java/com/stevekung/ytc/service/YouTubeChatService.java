@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.service;
+package com.stevekung.ytc.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,11 +35,11 @@ import com.google.api.services.youtube.model.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.stevekung.mods.ytc.core.YouTubeChatMod;
-import com.stevekung.mods.ytc.utils.GoogleJsonException;
-import com.stevekung.mods.ytc.utils.LoggerYT;
-import com.stevekung.mods.ytc.utils.PollingTask;
-import com.stevekung.mods.ytc.utils.YouTubeChatReceiver;
+import com.stevekung.ytc.core.YouTubeChatMod;
+import com.stevekung.ytc.utils.GoogleJsonException;
+import com.stevekung.ytc.utils.LoggerYT;
+import com.stevekung.ytc.utils.PollingTask;
+import com.stevekung.ytc.utils.YouTubeChatReceiver;
 
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 

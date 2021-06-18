@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.command;
+package com.stevekung.ytc.command;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.stevekung.mods.ytc.config.ConfigManagerYT;
-import com.stevekung.mods.ytc.core.EventHandlerYT;
-import com.stevekung.mods.ytc.service.AuthService;
-import com.stevekung.mods.ytc.service.YouTubeChatService;
-import com.stevekung.mods.ytc.utils.LoggerYT;
+import com.stevekung.ytc.config.ConfigManagerYT;
+import com.stevekung.ytc.core.EventHandlerYT;
+import com.stevekung.ytc.service.AuthService;
+import com.stevekung.ytc.service.YouTubeChatService;
+import com.stevekung.ytc.utils.LoggerYT;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

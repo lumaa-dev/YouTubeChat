@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.core;
+package com.stevekung.ytc.core;
 
-import com.stevekung.mods.ytc.service.YouTubeChatService;
+import com.stevekung.ytc.service.YouTubeChatService;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

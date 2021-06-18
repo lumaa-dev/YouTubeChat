@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.command;
+package com.stevekung.ytc.command;
 
-import com.stevekung.mods.ytc.gui.GuiChatAction;
+import com.stevekung.ytc.config.ConfigManagerYT;
+import com.stevekung.ytc.service.YouTubeChatService;
+import com.stevekung.ytc.utils.LoggerYT;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import stevekung.mods.stevekunglib.utils.JsonUtils;
 import stevekung.mods.stevekunglib.utils.client.ClientCommandBase;
 
-/**
- *
- * Do an action with current chat message. [Delete, Ban, Temporary Ban, Add Moderator]
- * Usage: /ytcaction <message_id> <channel_id>
- * @author SteveKunG
- *
- */
-public class CommandChatAction extends ClientCommandBase
+public class CommandPostMessage extends ClientCommandBase
 {
     @Override
     public String getName()
     {
-        return "ytcaction";
+        return "yt";
     }
 
     @Override
@@ -48,15 +44,27 @@ public class CommandChatAction extends ClientCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
+        String clientSecret = ConfigManagerYT.YOUTUBE_CHAT_GENERAL.clientSecret;
+        YouTubeChatService service = YouTubeChatService.getService();
+
+        if (clientSecret.isEmpty())
+        {
+            throw new CommandException("[YouTubeChat] No client secret configurated");
+        }
         if (args.length == 0)
         {
             throw new WrongUsageException(this.getUsage());
         }
-        new GuiChatAction(args[0], args[1], args[2], ClientCommandBase.getChatComponentFromNthArg(args, 3).createCopy().getUnformattedText()).display();
+        if (!service.hasExecutor())
+        {
+            throw new CommandException("[YouTubeChat] Service is not started");
+        }
+        String message = ClientCommandBase.getChatComponentFromNthArg(args, 0).createCopy().getUnformattedText();
+        service.postMessage(message, i -> LoggerYT.printYTOverlayMessage(JsonUtils.create("Message posted").setStyle(JsonUtils.green())));
     }
 
     private String getUsage()
     {
-        return "/ytcaction <message_id> <channel_id>";
+        return "/yt <message>";
     }
 }

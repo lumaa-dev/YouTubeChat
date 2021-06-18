@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.config;
+package com.stevekung.ytc.config;
 
-import com.stevekung.mods.ytc.core.YouTubeChatMod;
+import com.stevekung.ytc.core.YouTubeChatMod;
 
 import net.minecraftforge.common.config.Config;
 

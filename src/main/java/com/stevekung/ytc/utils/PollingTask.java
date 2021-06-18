@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.utils;
+package com.stevekung.ytc.utils;
 
 import java.util.TimerTask;
 
 import com.google.api.services.youtube.model.*;
 import com.google.common.collect.Lists;
-import com.stevekung.mods.ytc.service.YouTubeChatService;
-import com.stevekung.mods.ytc.utils.event.ChatReceivedEvent;
+import com.stevekung.ytc.service.YouTubeChatService;
+import com.stevekung.ytc.utils.event.ChatReceivedEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.service;
+package com.stevekung.ytc.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.stevekung.mods.ytc.utils.LoggerYT;
+import com.stevekung.ytc.utils.LoggerYT;
 
 import stevekung.mods.stevekunglib.utils.JsonUtils;
 

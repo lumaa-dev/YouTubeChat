@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.utils;
+package com.stevekung.ytc.utils;
 
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
-import com.stevekung.mods.ytc.config.ConfigManagerYT;
-import com.stevekung.mods.ytc.service.ChatService;
-import com.stevekung.mods.ytc.service.YouTubeChatService;
-import com.stevekung.mods.ytc.utils.event.ChatReceivedEvent;
+import com.stevekung.ytc.config.ConfigManagerYT;
+import com.stevekung.ytc.service.ChatService;
+import com.stevekung.ytc.service.YouTubeChatService;
+import com.stevekung.ytc.utils.event.ChatReceivedEvent;
 
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.event.ClickEvent;

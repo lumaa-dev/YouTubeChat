@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.utils;
+package com.stevekung.ytc.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

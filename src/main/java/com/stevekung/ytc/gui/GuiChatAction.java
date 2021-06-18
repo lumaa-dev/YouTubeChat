@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.mods.ytc.gui;
+package com.stevekung.ytc.gui;
 
 /**
  *
@@ -24,8 +24,8 @@ package com.stevekung.mods.ytc.gui;
  */
 import java.io.IOException;
 
-import com.stevekung.mods.ytc.service.YouTubeChatService;
-import com.stevekung.mods.ytc.utils.LoggerYT;
+import com.stevekung.ytc.service.YouTubeChatService;
+import com.stevekung.ytc.utils.LoggerYT;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

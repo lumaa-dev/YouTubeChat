@@ -24,7 +24,7 @@ apply plugin: "net.minecrell.licenser"
 def mcVersion = project.mc_version
 
 version = project.version
-group = "com.stevekung.mods.ytc"
+group = "com.stevekung.ytc"
 archivesBaseName = "YouTubeChat-" + mcVersion
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
 compileJava.options.encoding = "UTF-8"
@@ -80,11 +80,11 @@ license {
 }
 
 shadowJar {
-    relocate "com.fasterxml", "com.stevekung.mods.ytc.relocate.com.fasterxml"
-    relocate "com.google", "com.stevekung.mods.ytc.relocate.com.google"
-    relocate "io", "com.stevekung.mods.ytc.relocate.io"
-    relocate "javax", "com.stevekung.mods.ytc.relocate.javax"
-    relocate "org", "com.stevekung.mods.ytc.relocate.org"
+    relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
+    relocate "com.google", "com.stevekung.ytc.relocate.com.google"
+    relocate "io", "com.stevekung.ytc.relocate.io"
+    relocate "javax", "com.stevekung.ytc.relocate.javax"
+    relocate "org", "com.stevekung.ytc.relocate.org"
 
     classifier ""
 
