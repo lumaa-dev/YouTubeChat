@@ -1,0 +1,45 @@
+{
+    "schemaVersion": 1,
+    "id": "youtube_chat",
+    "version": "${version}",
+    "name": "YouTube Chat",
+    "description": "Enables interaction with YouTube Live Stream Chat!",
+    "authors": [
+        "SteveKunG",
+        "PeregrineZ",
+        "jimrogers"
+    ],
+    "contact": {
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/youtube-chat",
+        "sources": "https://github.com/SteveKunG/YouTubeChat",
+        "issues": "https://github.com/SteveKunG/YouTubeChat/issues"
+    },
+    "license": "Apache 2.0",
+    "icon": "logo.png",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "com.stevekung.ytc.core.YouTubeChatFabricMod"
+        ],
+        "modmenu": [
+            "com.stevekung.ytc.modmenu.ModMenuIntegrationYT"
+        ]
+    },
+    "depends": {
+        "fabricloader": ">=0.11",
+        "fabric": "*",
+        "minecraft": ">=1.16.5",
+        "stevekungs_lib": ">=4.1.3",
+        "architectury": ">=1.17"
+    },
+    "mixins": [
+        "mixins.youtube_chat.json"
+    ],
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/6JhEjeY"
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "_comment": "CONFIG",
+    "ui.youtube_chat.config.title": "YouTube Chat Configuration",
+    "youtube_chat.configgui.client_secret": "Client Secret",
+    "youtube_chat.configgui.enable_version_checker": "Enable Version Checker",
+    "youtube_chat.configgui.owner_icon": "Owner Icon",
+    "youtube_chat.configgui.moderator_icon": "Moderator Icon",
+    "youtube_chat.configgui.rude_words": "Rude Words",
+    "youtube_chat.configgui.banned_rude_words": "Banned Rude Words",
+    "youtube_chat.configgui.rude_word_action": "Rude Word Action",
+    "commands.ytprofile.not_found": "Authentication Profile not found"
+}

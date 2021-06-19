@@ -1,0 +1,179 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.matthewprenger.cursegradle"
+}
+
+configurations {
+    shadow
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+repositories {
+    flatDir {
+        dirs "libs"
+    }
+}
+
+loom {
+    mixinConfigs = ["mixins.youtube_chat.json", "mixins.youtube_chat_forge.json"]
+
+    launches {
+        client {
+            arg "--username", username, "--password", password
+        }
+    }
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.mc_version}-${rootProject.forge_version}"
+    modApi "me.shedaniel:architectury-forge:${rootProject.architectury_version}"
+
+    implementation(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
+        exclude(group: "com.google.guava")
+        exclude(group: "com.google.code.gson")
+    }
+    implementation(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
+        exclude(group: "com.google.guava")
+    }
+    implementation(group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
+        exclude(group: "com.google.guava")
+        exclude(group: "com.google.code.gson")
+    }
+    implementation(group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+    implementation(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+
+    shadow(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
+        exclude(group: "com.google.guava")
+        exclude(group: "com.google.code.gson")
+    }
+    shadow(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
+        exclude(group: "com.google.guava")
+    }
+    shadow(group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
+        exclude(group: "com.google.guava")
+        exclude(group: "com.google.code.gson")
+    }
+    shadow(group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+    shadow(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
+        exclude(group: "com.google.guava")
+    }
+
+    implementation(project(path: ":common")) {
+        transitive = false
+    }
+    developmentForge(project(path: ":common")) {
+        transitive = false
+    }
+    shadow(project(path: ":common", configuration: "transformProductionForge")) {
+        transitive = false
+    }
+
+    if (file("libs/SteveKunG's-Lib-mc${mc_version}-dev.jar").exists()) {
+        modImplementation(":SteveKunG's-Lib-mc${mc_version}-dev")
+        println("Use existing deobf artifact")
+    } else {
+        modCompile("curse.maven:stevekungs-lib-296019:${rootProject.stevekung_lib_forge_deobf}")
+        println("Use CurseForge deobf artifact")
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("META-INF/mods.toml") {
+        expand "version": project.version
+    }
+}
+
+String fileName = "${rootProject.archives_base_name}-mc${rootProject.mc_version}"
+
+jar {
+    version "v${project.version}"
+    baseName fileName
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+
+    relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
+    relocate "com.google", "com.stevekung.ytc.relocate.com.google"
+    relocate "io", "com.stevekung.ytc.relocate.io"
+    relocate "javax", "com.stevekung.ytc.relocate.javax"
+    relocate "org", "com.stevekung.ytc.relocate.org"
+
+    exclude "META-INF/maven/**"
+    exclude "META-INF/proguard/**"
+    exclude "META-INF/DEPENDENCIES"
+    exclude "mozilla/**"
+    exclude "module-info.class"
+    exclude "youtube.v3.json"
+    exclude "dummyThing"
+
+    classifier "dev"
+    version "v${project.version}"
+    baseName fileName
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+    classifier "source"
+    version "v${project.version}"
+    baseName fileName
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    classifier "forge"
+    version "v${project.version}"
+    baseName fileName
+}
+
+artifacts {
+    archives sourcesJar
+    archives shadowJar
+}
+
+curseforge {
+    if (project.hasProperty("upload_api_key")) {
+        apiKey = project.upload_api_key
+        project {
+            id = "302916"
+            changelog = file("../CHANGE_LOG.md")
+            changelogType = "markdown"
+            releaseType = "beta"
+            addGameVersion "Forge"
+            addGameVersion rootProject.mc_version
+
+            mainArtifact(remapJar.archiveFile) {
+                displayName = "[Forge] ${rootProject.archives_base_name}-mc${rootProject.mc_version}-v${project.version}"
+            }
+            relations {
+                requiredDependency "stevekungs-lib"
+                requiredDependency "architectury-forge"
+            }
+            afterEvaluate {
+                uploadTask.dependsOn(remapJar)
+            }
+            addArtifact sourcesJar
+            addArtifact shadowJar
+        }
+        options {
+            forgeGradleIntegration = false
+        }
+    }
+}

@@ -1,18 +1,18 @@
 # folder
-.gradle
+.architectury-transformer
 .settings
+.gradle
+.idea
+.vscode
 bin
 build
-eclipse
-library
+libs
 run
 
 # file
-*.launch
-*.txt
 *.bat
+*.launch
 .metadata
 .classpath
 .project
-stevekunglib_at.cfg
-client_secret*.json
+!gradlew.bat

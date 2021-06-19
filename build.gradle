@@ -1,126 +1,44 @@
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
-        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
-    }
-}
-
 plugins {
-    id "com.github.johnrengelman.shadow" version "4.0.4"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "net.minecrell.licenser" version "0.4.1"
+    id "architectury-plugin" version "3.2-SNAPSHOT"
+    id "dev.architectury.loom" version "0.7.2-SNAPSHOT" apply false
+    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
 }
 
-apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: "net.minecrell.licenser"
-def mcVersion = project.mc_version
-
-version = project.version
-group = "com.stevekung.ytc"
-archivesBaseName = "YouTubeChat-" + mcVersion
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = 1.8
-compileJava.options.encoding = "UTF-8"
-
-minecraft {
-    version = "${forge_version}"
-    runDir = "run"
-    mappings = "${mcp_mapping}"
-    makeObfSourceJar = false
+architectury {
+    minecraft = rootProject.mc_version
 }
 
-repositories {
-    // Curse Gradle
-    maven {
-        url "https://plugins.gradle.org/m2/"
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.mc_version}"
+        mappings loom.officialMojangMappings()
     }
 }
 
-configurations {
-    embed
-    compile.extendsFrom(embed)
-}
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
 
-dependencies {
-    embed (group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-    embed (group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
-        exclude(group: "com.google.guava")
-    }
-    embed (group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
-        exclude(group: "com.google.guava")
-    }
-    embed (group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-    embed (group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
+    archivesBaseName = rootProject.archives_base_name
+    version = rootProject.mod_version
+    group = rootProject.maven_group
 
-    compileOnly files("library/SteveKunG's-Lib.jar")
-}
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
 
-license {
-    header = file("LICENSE-header.txt")
-    include "com/stevekung/mods/ytc"
-
-    tasks {
-        main {
-            files = files("$rootDir/src/main/java")
+        def targetVersion = 8
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.release = targetVersion
         }
     }
-}
 
-shadowJar {
-    relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
-    relocate "com.google", "com.stevekung.ytc.relocate.com.google"
-    relocate "io", "com.stevekung.ytc.relocate.io"
-    relocate "javax", "com.stevekung.ytc.relocate.javax"
-    relocate "org", "com.stevekung.ytc.relocate.org"
-
-    classifier ""
-
-    exclude "META-INF/maven/**"
-    exclude "META-INF/proguard/**"
-    exclude "META-INF/DEPENDENCIES"
-    exclude "mozilla/**"
-    exclude "module-info.class"
-    exclude "youtube.v3.json"
-    exclude "dummyThing"
-}
-
-reobf {
-    shadowJar {}
-}
-
-jar {
-    from configurations.embed.collect {
-        it.isDirectory() ? it : zipTree(it)
+    java {
+        withSourcesJar()
     }
-}
-
-curseforge {
-    /*apiKey = api.youtube_chat
-    project {
-        id = "302916"
-        changelog = "Change Log"
-        changelogType = "markdown"
-        releaseType = "release"
-        addGameVersion mcVersion
-
-        mainArtifact(file("build/libs/YouTubeChat-" + mcVersion + "-" + version + ".jar")) {
-            displayName = "YouTubeChat-" + mcVersion + "-" + version
-            relations {
-                requiredLibrary "stevekungs-lib"
-            }
-        }
-    }*/
 }

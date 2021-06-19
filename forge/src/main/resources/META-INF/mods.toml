@@ -1,0 +1,36 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+license = "Apache 2.0"
+issueTrackerURL = "https://github.com/SteveKunG/YouTubeChat/issues"
+
+[[mods]]
+modId = "youtube_chat"
+version = "${version}"
+displayName = "YouTube Chat"
+description = "Enables interaction with YouTube Live Stream Chat!"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/youtube-chat"
+updateJSONURL = "https://raw.githubusercontent.com/SteveKunG/VersionCheckLibrary/master/youtube_chat_version.json"
+logoFile = "logo.png"
+authors = ["SteveKunG", "PeregrineZ", "jimrogers"]
+credits = "Thanks to PeregrineZ for implement example features"
+
+[[dependencies.youtube_chat]]
+modId = "forge"
+mandatory = true
+versionRange = "[36.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.youtube_chat]]
+modId = "architectury"
+mandatory = true
+versionRange = "[1.17,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.youtube_chat]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,)"
+ordering = "NONE"
+side = "BOTH"
