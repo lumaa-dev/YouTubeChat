@@ -1,6 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.matthewprenger.cursegradle"
+    id "org.cadixdev.licenser"
 }
 
 configurations {
@@ -24,6 +25,11 @@ repositories {
 
 loom {
     mixinConfig "mixins.youtube_chat.json"
+}
+
+license {
+    header = rootProject.file("LICENSE-header.txt")
+    include "**/*.java"
 }
 
 dependencies {
@@ -168,6 +174,7 @@ curseforge {
                 requiredDependency "architectury-fabric"
                 requiredDependency "stevekungs-lib"
                 requiredDependency "fabric-api"
+                requiredDependency "cloth-config"
             }
             afterEvaluate {
                 uploadTask.dependsOn(remapJar)

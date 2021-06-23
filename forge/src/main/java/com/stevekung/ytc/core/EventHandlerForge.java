@@ -34,11 +34,11 @@ public class EventHandlerForge
         {
             if (PlatformConfig.getEnableVersionCheck())
             {
-                if (!YouTubeChatForgeMod.CHECKER.hasChecked())
+                if (!YouTubeChatForge.CHECKER.hasChecked())
                 {
-                    YouTubeChatForgeMod.CHECKER.checkFail();
-                    YouTubeChatForgeMod.CHECKER.printInfo();
-                    YouTubeChatForgeMod.CHECKER.setChecked(true);
+                    YouTubeChatForge.CHECKER.checkFail();
+                    YouTubeChatForge.CHECKER.printInfo();
+                    YouTubeChatForge.CHECKER.setChecked(true);
                 }
             }
         }

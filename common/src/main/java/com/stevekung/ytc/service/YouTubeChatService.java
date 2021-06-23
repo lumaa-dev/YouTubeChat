@@ -36,7 +36,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.stevekung.stevekungslib.utils.TextComponentUtils;
-import com.stevekung.ytc.core.YouTubeChatMod;
+import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.GoogleJsonException;
 import com.stevekung.ytc.utils.PollingTask;
@@ -315,13 +315,13 @@ public class YouTubeChatService implements ChatService
             try
             {
                 // Authorize the request
-                String fileName = Strings.isNullOrEmpty(defaultAuthName) ? YouTubeChatMod.MOD_ID : defaultAuthName;
+                String fileName = Strings.isNullOrEmpty(defaultAuthName) ? YouTubeChat.MOD_ID : defaultAuthName;
                 // Build auth scopes
                 Credential credential = AuthService.authorize(Lists.newArrayList(YouTubeScopes.YOUTUBE_FORCE_SSL, YouTubeScopes.YOUTUBE), clientSecret, fileName);
                 YouTubeChatService.currentLoginProfile = fileName;
 
                 // This object is used to make YouTube Data API requests
-                this.youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.JSON_FACTORY, credential).setApplicationName(YouTubeChatMod.NAME).build();
+                this.youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.JSON_FACTORY, credential).setApplicationName(YouTubeChat.NAME).build();
 
                 YouTube.LiveBroadcasts.List broadcastList = this.getYoutube().liveBroadcasts().list(Collections.singletonList("snippet")).setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
 
@@ -332,7 +332,7 @@ public class YouTubeChatService implements ChatService
 
                     if (this.getLiveChatId() != null && !this.getLiveChatId().isEmpty())
                     {
-                        YouTubeChatMod.LOGGER.info("Live Chat ID: {}", this.getLiveChatId());
+                        YouTubeChat.LOGGER.info("Live Chat ID: {}", this.getLiveChatId());
                         break;
                     }
                 }

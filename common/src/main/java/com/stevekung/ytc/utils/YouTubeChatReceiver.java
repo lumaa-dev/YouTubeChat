@@ -30,7 +30,7 @@ import net.minecraft.network.chat.Style;
 
 /**
  *
- * The class that handled for YouTubeChatListener interface.
+ * The class that handled for ChatService.Listener interface.
  * @author SteveKunG
  *
  */
@@ -49,7 +49,6 @@ public class YouTubeChatReceiver implements ChatService.Listener
         boolean verified = author.getIsVerified();
         boolean moderator = author.getIsChatModerator();
         boolean ignoreCheck = !owner && !verified && !moderator;
-
         String unicode = "";
 
         if (owner)

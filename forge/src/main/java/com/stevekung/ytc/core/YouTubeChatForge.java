@@ -29,21 +29,21 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
-@Mod(YouTubeChatMod.MOD_ID)
-public class YouTubeChatForgeMod
+@Mod(YouTubeChat.MOD_ID)
+public class YouTubeChatForge
 {
-    public static final ModVersionChecker CHECKER = new ModVersionChecker(YouTubeChatMod.MOD_ID);
+    public static final ModVersionChecker CHECKER = new ModVersionChecker(YouTubeChat.MOD_ID);
 
-    public YouTubeChatForgeMod()
+    public YouTubeChatForge()
     {
-        EventBuses.registerModEventBus(YouTubeChatMod.MOD_ID, ForgeCommonUtils.getModEventBus());
-        YouTubeChatMod.init();
+        EventBuses.registerModEventBus(YouTubeChat.MOD_ID, ForgeCommonUtils.getModEventBus());
+        YouTubeChat.init();
         ForgeCommonUtils.registerClientOnly();
         ForgeCommonUtils.addModListener(this::phaseOne);
         ForgeCommonUtils.addModListener(this::loadComplete);
 
         ForgeCommonUtils.registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.GENERAL_BUILDER);
-        ForgeCommonUtils.registerConfigScreen(() -> (mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChatMod.MOD_ID, ModConfig.Type.CLIENT));
+        //ForgeCommonUtils.registerConfigScreen(() -> (mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChat.MOD_ID, ModConfig.Type.CLIENT));
         ForgeCommonUtils.registerModEventBus(YouTubeChatConfig.class);
         ForgeCommonUtils.registerEventHandler(new EventHandlerForge());
     }
@@ -57,7 +57,7 @@ public class YouTubeChatForgeMod
     {
         if (YouTubeChatConfig.GENERAL.enableVersionChecker.get())
         {
-            YouTubeChatForgeMod.CHECKER.startCheck();
+            YouTubeChatForge.CHECKER.startCheck();
         }
     }
 
@@ -66,6 +66,6 @@ public class YouTubeChatForgeMod
         ClientCommands.register(new ChatActionCommand());
         ClientCommands.register(new PostMessageCommand());
         ClientCommands.register(new YouTubeChatCommand());
-        YouTubeChatMod.LOGGER.info("Registering client side commands");
+        YouTubeChat.LOGGER.info("Registering client side commands");
     }
 }

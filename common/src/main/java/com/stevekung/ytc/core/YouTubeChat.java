@@ -23,7 +23,7 @@ import com.stevekung.stevekungslib.utils.LoggerBase;
 import com.stevekung.ytc.service.AuthService;
 import me.shedaniel.architectury.platform.Platform;
 
-public class YouTubeChatMod
+public class YouTubeChat
 {
     public static final String NAME = "YouTube Chat";
     public static final String MOD_ID = "youtube_chat";

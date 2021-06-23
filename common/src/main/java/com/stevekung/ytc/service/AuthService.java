@@ -34,7 +34,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.stevekung.stevekungslib.utils.TextComponentUtils;
-import com.stevekung.ytc.core.YouTubeChatMod;
+import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.ChatUtils;
 import net.minecraft.ChatFormatting;
 
@@ -73,7 +73,7 @@ public class AuthService
         // Load client secrets
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
-        YouTubeChatMod.LOGGER.info("Preparing authentication directory at {}", AuthService.USER_DIR.getPath());
+        YouTubeChat.LOGGER.info("Preparing authentication directory at {}", AuthService.USER_DIR.getPath());
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
         FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(AuthService.USER_DIR);
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);

@@ -1,6 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.matthewprenger.cursegradle"
+    id "org.cadixdev.licenser"
 }
 
 configurations {
@@ -26,6 +27,11 @@ loom {
             arg "--username", username, "--password", password
         }
     }
+}
+
+license {
+    header = rootProject.file("LICENSE-header.txt")
+    include "**/*.java"
 }
 
 dependencies {
