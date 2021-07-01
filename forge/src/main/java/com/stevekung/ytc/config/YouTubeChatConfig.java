@@ -27,13 +27,18 @@ import net.minecraftforge.fml.config.ModConfig;
 
 public class YouTubeChatConfig
 {
-    public static final ForgeConfigSpec.Builder GENERAL_BUILDER = new ForgeConfigSpec.Builder();
-    public static final YouTubeChatConfig.General GENERAL = new YouTubeChatConfig.General(YouTubeChatConfig.GENERAL_BUILDER);
-    public static final YouTubeChatConfig.Chat CHAT = new YouTubeChatConfig.Chat(YouTubeChatConfig.GENERAL_BUILDER);
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec SPEC;
+    public static final YouTubeChatConfig.General GENERAL = new YouTubeChatConfig.General(YouTubeChatConfig.BUILDER);
+    public static final YouTubeChatConfig.Chat CHAT = new YouTubeChatConfig.Chat(YouTubeChatConfig.BUILDER);
+
+    static
+    {
+        SPEC = BUILDER.build();
+    }
 
     public static class General
     {
-        // General
         public final ForgeConfigSpec.ConfigValue<String> clientSecret;
         public final ForgeConfigSpec.BooleanValue enableVersionChecker;
 
@@ -51,7 +56,6 @@ public class YouTubeChatConfig
 
     public static class Chat
     {
-        // General
         public final ForgeConfigSpec.ConfigValue<String> ownerIcon;
         public final ForgeConfigSpec.ConfigValue<String> moderatorIcon;
         public final ForgeConfigSpec.ConfigValue<List<String>> bannedRudeWords;
