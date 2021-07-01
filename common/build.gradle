@@ -1,3 +1,7 @@
+plugins {
+    id "org.cadixdev.licenser"
+}
+
 repositories {
     flatDir {
         dirs "libs"
@@ -26,6 +30,11 @@ dependencies {
     implementation(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
         exclude(group: "com.google.guava")
     }
+}
+
+license {
+    header = rootProject.file("LICENSE-header.txt")
+    include "**/*.java"
 }
 
 architectury {
