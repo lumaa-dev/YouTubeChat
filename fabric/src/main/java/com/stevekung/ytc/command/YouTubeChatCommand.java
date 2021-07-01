@@ -45,8 +45,8 @@ public class YouTubeChatCommand
                         .then(ClientCommandManager.argument("profile", AuthProfileArgumentType.create()).executes(requirement -> startService(AuthProfileArgumentType.getProfile(requirement, "profile")))))
                 .then(ClientCommandManager.literal("stop").executes(requirement -> stopService()))
                 .then(ClientCommandManager.literal("list").executes(requirement -> listProfile()))
-                .then(ClientCommandManager.literal("logout").then(ClientCommandManager.argument("profile", AuthProfileArgumentType.create()))
-                        .executes(requirement -> logout(AuthProfileArgumentType.getProfile(requirement, "profile")))));
+                .then(ClientCommandManager.literal("logout").executes(requirement -> logout(null))
+                        .then(ClientCommandManager.argument("profile", AuthProfileArgumentType.create()).executes(requirement -> logout(AuthProfileArgumentType.getProfile(requirement, "profile"))))));
     }
 
     private static int startService(String profile)
@@ -114,10 +114,14 @@ public class YouTubeChatCommand
             service.unsubscribe();
             service.stop(true);
         }
+        else
+        {
+            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] Service is not started"));
+        }
 
         try
         {
-            if (profile.isEmpty())
+            if (StringUtil.isNullOrEmpty(profile))
             {
                 AuthService.clearCurrentCredentials();
             }
