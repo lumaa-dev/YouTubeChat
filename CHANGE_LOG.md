@@ -2,4 +2,5 @@
 
 ### Please report if you found the issues!
 
-* * Update Architectury API to 1.17
+* * Update to 1.16.5! (Forge/Fabric)
+* * Rewrite and cleanup internal stuff
