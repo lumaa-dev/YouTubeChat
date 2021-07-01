@@ -43,7 +43,7 @@ public class YouTubeChatForge
         ForgeCommonUtils.addModListener(this::loadComplete);
 
         ForgeCommonUtils.registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.GENERAL_BUILDER);
-        //ForgeCommonUtils.registerConfigScreen(() -> (mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChat.MOD_ID, ModConfig.Type.CLIENT));
+        ForgeCommonUtils.registerConfigScreen(() -> (mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChat.MOD_ID, ModConfig.Type.CLIENT));
         ForgeCommonUtils.registerModEventBus(YouTubeChatConfig.class);
         ForgeCommonUtils.registerEventHandler(new EventHandlerForge());
     }
