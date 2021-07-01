@@ -25,7 +25,7 @@ import com.stevekung.stevekungslib.utils.client.ClientUtils;
 import com.stevekung.stevekungslib.utils.client.command.ClientCommands;
 import com.stevekung.stevekungslib.utils.client.command.IClientCommand;
 import com.stevekung.stevekungslib.utils.client.command.IClientSharedSuggestionProvider;
-import com.stevekung.ytc.command.arguments.ProfileNameArgumentType;
+import com.stevekung.ytc.command.arguments.AuthProfileArgumentType;
 import com.stevekung.ytc.service.AuthService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
@@ -44,11 +44,11 @@ public class YouTubeChatCommand implements IClientCommand
     {
         dispatcher.register(ClientCommands.literal("ytc")
                 .then(ClientCommands.literal("start").executes(requirement -> startService(null))
-                        .then(ClientCommands.argument("profile", com.stevekung.ytc.command.arguments.ProfileNameArgumentType.create()).executes(requirement -> startService(ProfileNameArgumentType.getProfile(requirement, "profile")))))
+                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(requirement -> startService(AuthProfileArgumentType.getProfile(requirement, "profile")))))
                 .then(ClientCommands.literal("stop").executes(requirement -> stopService()))
                 .then(ClientCommands.literal("list").executes(requirement -> listProfile()))
-                .then(ClientCommands.literal("logout").then(ClientCommands.argument("profile", com.stevekung.ytc.command.arguments.ProfileNameArgumentType.create()))
-                        .executes(requirement -> logout(com.stevekung.ytc.command.arguments.ProfileNameArgumentType.getProfile(requirement, "profile")))));
+                .then(ClientCommands.literal("logout").then(ClientCommands.argument("profile", AuthProfileArgumentType.create()))
+                        .executes(requirement -> logout(AuthProfileArgumentType.getProfile(requirement, "profile")))));
     }
 
     private static int startService(String profile)

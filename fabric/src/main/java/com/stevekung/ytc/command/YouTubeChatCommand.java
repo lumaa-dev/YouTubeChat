@@ -22,7 +22,7 @@ import java.io.IOException;
 import com.mojang.brigadier.CommandDispatcher;
 import com.stevekung.stevekungslib.utils.TextComponentUtils;
 import com.stevekung.stevekungslib.utils.client.ClientUtils;
-import com.stevekung.ytc.command.arguments.ProfileNameArgumentType;
+import com.stevekung.ytc.command.arguments.AuthProfileArgumentType;
 import com.stevekung.ytc.service.AuthService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
@@ -42,11 +42,11 @@ public class YouTubeChatCommand
     {
         dispatcher.register(ClientCommandManager.literal("ytc")
                 .then(ClientCommandManager.literal("start").executes(requirement -> startService(null))
-                        .then(ClientCommandManager.argument("profile", com.stevekung.ytc.command.arguments.ProfileNameArgumentType.create()).executes(requirement -> startService(com.stevekung.ytc.command.arguments.ProfileNameArgumentType.getProfile(requirement, "profile")))))
+                        .then(ClientCommandManager.argument("profile", AuthProfileArgumentType.create()).executes(requirement -> startService(AuthProfileArgumentType.getProfile(requirement, "profile")))))
                 .then(ClientCommandManager.literal("stop").executes(requirement -> stopService()))
                 .then(ClientCommandManager.literal("list").executes(requirement -> listProfile()))
-                .then(ClientCommandManager.literal("logout").then(ClientCommandManager.argument("profile", com.stevekung.ytc.command.arguments.ProfileNameArgumentType.create()))
-                        .executes(requirement -> logout(ProfileNameArgumentType.getProfile(requirement, "profile")))));
+                .then(ClientCommandManager.literal("logout").then(ClientCommandManager.argument("profile", AuthProfileArgumentType.create()))
+                        .executes(requirement -> logout(AuthProfileArgumentType.getProfile(requirement, "profile")))));
     }
 
     private static int startService(String profile)

@@ -11,7 +11,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -20,14 +19,15 @@ import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-public class ProfileNameArgumentType implements ArgumentType<String>
+public class AuthProfileArgumentType implements ArgumentType<String>
 {
-    private static final DynamicCommandExceptionType PROFILE_NOT_FOUND = new DynamicCommandExceptionType(obj -> new TranslatableComponent("commands.ytprofile.not_found", obj));
     private static final SimpleCommandExceptionType INVALID_ARGS = new SimpleCommandExceptionType(new TranslatableComponent("argument.id.invalid"));
 
-    public static ProfileNameArgumentType create()
+    private AuthProfileArgumentType() {}
+
+    public static AuthProfileArgumentType create()
     {
-        return new ProfileNameArgumentType();
+        return new AuthProfileArgumentType();
     }
 
     public static String getProfile(CommandContext<?> context, String name)
@@ -43,7 +43,7 @@ public class ProfileNameArgumentType implements ArgumentType<String>
         if (AuthService.USER_DIR.listFiles() != null)
         {
             List<String> resList = Arrays.stream(AuthService.USER_DIR.listFiles()).map(File::getName).collect(Collectors.toList());
-            suggestions = ProfileNameArgumentType.suggestIterable(resList, builder);
+            suggestions = AuthProfileArgumentType.suggestIterable(resList, builder);
         }
         return suggestions;
     }
@@ -51,37 +51,7 @@ public class ProfileNameArgumentType implements ArgumentType<String>
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException
     {
-        String fileName = ProfileNameArgumentType.read(reader);
-        boolean exist = false;
-
-        if (AuthService.USER_DIR.exists())
-        {
-            for (File file : AuthService.USER_DIR.listFiles())
-            {
-                String name = file.getName();
-
-                if (name.equals(fileName))
-                {
-                    exist = true;
-                }
-            }
-        }
-
-        try
-        {
-            if (exist)
-            {
-                return fileName;
-            }
-            else
-            {
-                throw ProfileNameArgumentType.PROFILE_NOT_FOUND.create(fileName);
-            }
-        }
-        catch (Exception e)
-        {
-            return fileName;
-        }
+        return AuthProfileArgumentType.read(reader);
     }
 
     @Override
@@ -93,7 +63,7 @@ public class ProfileNameArgumentType implements ArgumentType<String>
     private static CompletableFuture<Suggestions> suggestIterable(Iterable<String> iterable, SuggestionsBuilder builder)
     {
         String typedString = builder.getRemaining().toLowerCase(Locale.ROOT);
-        ProfileNameArgumentType.applySuggest(iterable, typedString, string1 -> string1, builder::suggest);
+        AuthProfileArgumentType.applySuggest(iterable, typedString, string1 -> string1, builder::suggest);
         return builder.buildFuture();
     }
 
@@ -128,7 +98,7 @@ public class ProfileNameArgumentType implements ArgumentType<String>
         catch (ResourceLocationException e)
         {
             reader.setCursor(cursor);
-            throw ProfileNameArgumentType.INVALID_ARGS.createWithContext(reader);
+            throw AuthProfileArgumentType.INVALID_ARGS.createWithContext(reader);
         }
     }
 }
