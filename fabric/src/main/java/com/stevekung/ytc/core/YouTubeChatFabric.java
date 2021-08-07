@@ -20,20 +20,25 @@ import com.stevekung.stevekungslib.utils.CommonUtils;
 import com.stevekung.ytc.command.ChatActionCommand;
 import com.stevekung.ytc.command.PostMessageCommand;
 import com.stevekung.ytc.command.YouTubeChatCommand;
-import com.stevekung.ytc.config.ConfigHandlerYT;
+import com.stevekung.ytc.config.YouTubeChatConfig;
 import com.stevekung.ytc.service.YouTubeChatService;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 
 public class YouTubeChatFabric implements ClientModInitializer
 {
-    public static final ConfigHandlerYT CONFIG = new ConfigHandlerYT();
+    public static YouTubeChatConfig CONFIG;
 
     @Override
     public void onInitializeClient()
     {
         YouTubeChat.init();
+
+        AutoConfig.register(YouTubeChatConfig.class, GsonConfigSerializer::new);
+        YouTubeChatFabric.CONFIG = AutoConfig.getConfigHolder(YouTubeChatConfig.class).getConfig();
 
         new ChatActionCommand(ClientCommandManager.DISPATCHER);
         new PostMessageCommand(ClientCommandManager.DISPATCHER);

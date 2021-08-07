@@ -46,9 +46,9 @@ public class YouTubeChatConfig
         {
             builder.comment("General settings").push("general");
 
-            this.clientSecret = builder.comment("The client secret from Google API console").translation("youtube_chat.configgui.client_secret").define("clientSecret", "");
+            this.clientSecret = builder.comment("The client secret from Google API console").translation("text.autoconfig.youtube_chat.option.general.clientSecret").define("clientSecret", "");
 
-            this.enableVersionChecker = builder.translation("youtube_chat.configgui.enable_version_checker").define("enableVersionChecker", true);
+            this.enableVersionChecker = builder.translation("text.autoconfig.youtube_chat.option.general.enableVersionChecker").define("enableVersionChecker", true);
 
             builder.pop();
         }
@@ -66,15 +66,15 @@ public class YouTubeChatConfig
         {
             builder.comment("Chat settings").push("chat");
 
-            this.ownerIcon = builder.comment("Display unicode in front of Owner").translation("youtube_chat.configgui.owner_icon").define("ownerIcon", "");
+            this.ownerIcon = builder.comment("Display unicode in front of Owner").translation("text.autoconfig.youtube_chat.option.chat.ownerIcon").define("ownerIcon", "");
 
-            this.moderatorIcon = builder.comment("Display unicode in front of Moderators").translation("youtube_chat.configgui.moderator_icon").define("moderatorIcon", "");
+            this.moderatorIcon = builder.comment("Display unicode in front of Moderators").translation("text.autoconfig.youtube_chat.option.chat.moderatorIcon").define("moderatorIcon", "");
 
-            this.rudeWords = builder.comment("List of rude words, this will be automatically do a selected action (delete or timeout) to the users").translation("youtube_chat.configgui.rude_words").define("rudeWords", Collections.emptyList());
+            this.rudeWords = builder.comment("List of rude words, this will be automatically do a selected action (delete or timeout) to the users").translation("text.autoconfig.youtube_chat.option.chat.rudeWords").define("rudeWords", Collections.emptyList());
 
-            this.bannedRudeWords = builder.comment("List of rude words, this will be automatically ban user when message is received").translation("youtube_chat.configgui.banned_rude_words").define("bannedRudeWords", Collections.emptyList());
+            this.bannedRudeWords = builder.comment("List of rude words, this will be automatically ban user when message is received").translation("text.autoconfig.youtube_chat.option.chat.bannedRudeWords").define("bannedRudeWords", Collections.emptyList());
 
-            this.rudeWordAction = builder.comment("Select an action to do with rude words").translation("youtube_chat.configgui.rude_word_action").defineEnum("rudeWordAction", RudeWordAction.DELETE);
+            this.rudeWordAction = builder.comment("Select an action to do with rude words").translation("text.autoconfig.youtube_chat.option.chat.rudeWordAction").defineEnum("rudeWordAction", RudeWordAction.DELETE);
 
             builder.pop();
         }

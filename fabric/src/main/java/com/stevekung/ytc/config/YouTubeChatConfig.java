@@ -20,14 +20,49 @@ import java.util.Collections;
 import java.util.List;
 
 import com.stevekung.ytc.utils.RudeWordAction;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-public class YouTubeChatConfig
+@Config(name = "youtube_chat")
+@Config.Gui.Background("minecraft:textures/block/red_concrete.png")
+public final class YouTubeChatConfig implements ConfigData
 {
-    public String clientSecret = "";
-    public boolean enableVersionChecker = true;
-    public String ownerIcon = "";
-    public String moderatorIcon = "";
-    public List<String> bannedRudeWords = Collections.emptyList();
-    public List<String> rudeWords = Collections.emptyList();
-    public RudeWordAction rudeWordAction = RudeWordAction.DELETE;
+    @ConfigEntry.Category("general")
+    @ConfigEntry.Gui.TransitiveObject
+    public GeneralCategory general;
+
+    @ConfigEntry.Category("chat")
+    @ConfigEntry.Gui.TransitiveObject
+    public ChatCategory chat;
+
+    public YouTubeChatConfig()
+    {
+        this.general = new GeneralCategory();
+        this.chat = new ChatCategory();
+    }
+
+    public static class GeneralCategory
+    {
+        @Comment("The client secret from Google API console.\n" + "(default value: empty)")
+        public String clientSecret = "";
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableVersionChecker = true;
+    }
+
+    public static class ChatCategory
+    {
+        @Comment("Display unicode in front of Owner.\n" + "(default value: empty)")
+        public String ownerIcon = "";
+        @Comment("Display unicode in front of Moderators.\n" + "(default value: empty)")
+        public String moderatorIcon = "";
+        @Comment("List of rude words, this will be automatically do a selected action (delete or timeout) to the users.\n" + "(default value: empty)")
+        public List<String> rudeWords = Collections.emptyList();
+        @Comment("List of rude words, this will be automatically ban user when message is received.\n" + "(default value: empty)")
+        public List<String> bannedRudeWords = Collections.emptyList();
+        @Comment("Select an action to do with rude words.\n" + "(default value: DELETE)")
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public RudeWordAction rudeWordAction = RudeWordAction.DELETE;
+    }
 }

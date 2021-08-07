@@ -1,12 +1,14 @@
 {
     "_comment": "CONFIG",
-    "ui.youtube_chat.config.title": "YouTube Chat Configuration",
-    "youtube_chat.configgui.client_secret": "Client Secret",
-    "youtube_chat.configgui.enable_version_checker": "Enable Version Checker",
-    "youtube_chat.configgui.owner_icon": "Owner Icon",
-    "youtube_chat.configgui.moderator_icon": "Moderator Icon",
-    "youtube_chat.configgui.rude_words": "Rude Words",
-    "youtube_chat.configgui.banned_rude_words": "Banned Rude Words",
-    "youtube_chat.configgui.rude_word_action": "Rude Word Action",
+    "text.autoconfig.youtube_chat.title": "YouTube Chat Config",
+    "text.autoconfig.youtube_chat.category.general": "General",
+    "text.autoconfig.youtube_chat.category.chat": "Chat",
+    "text.autoconfig.youtube_chat.option.general.clientSecret": "Client Secret",
+    "text.autoconfig.youtube_chat.option.general.enableVersionChecker": "Enable Version Checker",
+    "text.autoconfig.youtube_chat.option.chat.ownerIcon": "Owner Icon",
+    "text.autoconfig.youtube_chat.option.chat.moderatorIcon": "Moderator Icon",
+    "text.autoconfig.youtube_chat.option.chat.rudeWords": "Rude Words",
+    "text.autoconfig.youtube_chat.option.chat.bannedRudeWords": "Banned Rude Words",
+    "text.autoconfig.youtube_chat.option.chat.rudeWordAction": "Rude Word Action",
     "commands.ytprofile.not_found": "Authentication Profile not found"
 }
