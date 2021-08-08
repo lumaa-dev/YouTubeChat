@@ -23,7 +23,7 @@ import com.stevekung.ytc.command.ChatActionCommand;
 import com.stevekung.ytc.command.PostMessageCommand;
 import com.stevekung.ytc.command.YouTubeChatCommand;
 import com.stevekung.ytc.config.YouTubeChatConfig;
-import me.shedaniel.architectury.platform.forge.EventBuses;
+import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,7 +43,7 @@ public class YouTubeChatForge
         ForgeCommonUtils.addModListener(this::loadComplete);
 
         ForgeCommonUtils.registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.SPEC);
-        ForgeCommonUtils.registerConfigScreen(() -> (mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChat.MOD_ID, ModConfig.Type.CLIENT));
+        ForgeCommonUtils.registerConfigScreen((mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChat.MOD_ID, ModConfig.Type.CLIENT));
         ForgeCommonUtils.registerModEventBus(YouTubeChatConfig.class);
         ForgeCommonUtils.registerEventHandler(new EventHandlerForge());
     }

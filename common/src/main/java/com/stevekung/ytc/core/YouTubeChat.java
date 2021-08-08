@@ -21,7 +21,7 @@ import java.io.File;
 import com.stevekung.stevekungslib.utils.GameProfileUtils;
 import com.stevekung.stevekungslib.utils.LoggerBase;
 import com.stevekung.ytc.service.AuthService;
-import me.shedaniel.architectury.platform.Platform;
+import dev.architectury.platform.Platform;
 
 public class YouTubeChat
 {

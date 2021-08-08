@@ -23,7 +23,7 @@ import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.RudeWordAction;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 public class YouTubeChatConfig
 {
@@ -81,13 +81,13 @@ public class YouTubeChatConfig
     }
 
     @SubscribeEvent
-    public static void onLoad(ModConfig.Loading event)
+    public static void onLoad(ModConfigEvent.Loading event)
     {
         YouTubeChat.LOGGER.info("Loaded config file {}", event.getConfig().getFileName());
     }
 
     @SubscribeEvent
-    public static void onFileChange(ModConfig.Reloading event)
+    public static void onFileChange(ModConfigEvent.Reloading event)
     {
         YouTubeChat.LOGGER.info("YouTube Chat config just got changed on the file system");
     }

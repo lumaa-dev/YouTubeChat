@@ -63,34 +63,34 @@ public class ChatActionScreen extends Screen
         Button addModerator;
         Button removeModerator;
 
-        this.addButton(new Button(xChat, yChat - 30, 120, 20, LangUtils.translate("menu.delete"), button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Message deleted!", ChatFormatting.GREEN)))));
-        this.addButton(temporaryBanButton = new Button(xChat, yChat - 8, 120, 20, LangUtils.translate("menu.temporary_ban"), button ->
+        this.addRenderableWidget(new Button(xChat, yChat - 30, 120, 20, LangUtils.translate("menu.delete"), button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Message deleted!", ChatFormatting.GREEN)))));
+        this.addRenderableWidget(temporaryBanButton = new Button(xChat, yChat - 8, 120, 20, LangUtils.translate("menu.temporary_ban"), button ->
         {
             Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was temporary banned!", ChatFormatting.GREEN))));
             YouTubeChatService.getService().banUser(this.channelId, response, true);
         }));
-        this.addButton(banButton = new Button(xChat, yChat + 14, 120, 20, LangUtils.translate("menu.ban"), button ->
+        this.addRenderableWidget(banButton = new Button(xChat, yChat + 14, 120, 20, LangUtils.translate("menu.ban"), button ->
         {
             Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was banned!", ChatFormatting.GREEN))));
             YouTubeChatService.getService().banUser(this.channelId, response, false);
         }));
-        this.addButton(unbanButton = new Button(xChat, yChat + 36, 120, 20, LangUtils.translate("menu.unban"), button ->
+        this.addRenderableWidget(unbanButton = new Button(xChat, yChat + 36, 120, 20, LangUtils.translate("menu.unban"), button ->
         {
             Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("has been unbanned!", ChatFormatting.GREEN))));
             YouTubeChatService.getService().unbanUser(this.channelId, response);
         }));
 
-        this.addButton(addModerator = new Button(xMod, yChat - 30, 120, 20, LangUtils.translate("menu.add_moderator"), button ->
+        this.addRenderableWidget(addModerator = new Button(xMod, yChat - 30, 120, 20, LangUtils.translate("menu.add_moderator"), button ->
         {
             Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Added ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.BLUE).append(TextComponentUtils.formatted("to moderator!", ChatFormatting.GREEN))));
             YouTubeChatService.getService().addModerator(this.channelId, response);
         }));
-        this.addButton(removeModerator = new Button(xMod, yChat - 8, 120, 20, LangUtils.translate("menu.remove_moderator"), button ->
+        this.addRenderableWidget(removeModerator = new Button(xMod, yChat - 8, 120, 20, LangUtils.translate("menu.remove_moderator"), button ->
         {
             Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Removed ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.BLUE).append(TextComponentUtils.formatted("from moderator!", ChatFormatting.GREEN))));
             YouTubeChatService.getService().removeModerator(this.moderatorId, response);
         }));
-        this.addButton(new Button(this.width / 2 - 100, this.height / 2 + 60, 160, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));
+        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 2 + 60, 160, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));
 
         if (YouTubeChatService.ownerChannelId.equals(this.channelId))
         {
