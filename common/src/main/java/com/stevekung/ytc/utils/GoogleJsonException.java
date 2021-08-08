@@ -18,25 +18,4 @@ package com.stevekung.ytc.utils;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GoogleJsonException
-{
-    @SerializedName("code")
-    private final int errorCode;
-    private final String message;
-
-    public GoogleJsonException(int errorCode, String message)
-    {
-        this.errorCode = errorCode;
-        this.message = message;
-    }
-
-    public int getErrorCode()
-    {
-        return this.errorCode;
-    }
-
-    public String getMessage()
-    {
-        return this.message;
-    }
-}
+public record GoogleJsonException(@SerializedName("code") int errorCode, String message) {}

@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeScopes;
@@ -35,6 +34,8 @@ import com.google.api.services.youtube.model.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.stevekung.stevekungslib.utils.RecordTypeAdapterFactory;
 import com.stevekung.stevekungslib.utils.TextComponentUtils;
 import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.ChatUtils;
@@ -51,7 +52,7 @@ public class YouTubeChatService implements ChatService
 {
     public static final String LIVE_CHAT_FIELDS = "items(authorDetails(channelId,displayName,isChatModerator,isChatOwner,isChatSponsor,isVerified),snippet(displayMessage,superChatDetails),id),nextPageToken,pollingIntervalMillis";
     public static boolean receiveChat;
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapterFactory(new RecordTypeAdapterFactory()).create();
     private ExecutorService executor;
     private YouTube youtube;
     private String liveChatId;
@@ -113,16 +114,16 @@ public class YouTubeChatService implements ChatService
         {
             try
             {
-                LiveChatMessage liveChatMessage = new LiveChatMessage();
-                LiveChatMessageSnippet snippet = new LiveChatMessageSnippet();
+                var liveChatMessage = new LiveChatMessage();
+                var snippet = new LiveChatMessageSnippet();
                 snippet.setType("textMessageEvent");
                 snippet.setLiveChatId(this.getLiveChatId());
-                LiveChatTextMessageDetails details = new LiveChatTextMessageDetails();
+                var details = new LiveChatTextMessageDetails();
                 details.setMessageText(message);
                 snippet.setTextMessageDetails(details);
                 liveChatMessage.setSnippet(snippet);
-                YouTube.LiveChatMessages.Insert liveChatInsert = this.getYoutube().liveChatMessages().insert(Collections.singletonList("snippet"), liveChatMessage);
-                LiveChatMessage response = liveChatInsert.execute();
+                var liveChatInsert = this.getYoutube().liveChatMessages().insert(Collections.singletonList("snippet"), liveChatMessage);
+                var response = liveChatInsert.execute();
                 onComplete.accept(response.getId());
             }
             catch (GoogleJsonResponseException e)
@@ -151,7 +152,7 @@ public class YouTubeChatService implements ChatService
         {
             try
             {
-                YouTube.LiveChatMessages.Delete liveChatDelete = this.getYoutube().liveChatMessages().delete(messageId);
+                var liveChatDelete = this.getYoutube().liveChatMessages().delete(messageId);
                 liveChatDelete.execute();
                 onComplete.run();
             }
@@ -181,16 +182,16 @@ public class YouTubeChatService implements ChatService
         {
             try
             {
-                LiveChatBan liveChatBan = new LiveChatBan();
-                LiveChatBanSnippet snippet = new LiveChatBanSnippet();
-                ChannelProfileDetails details = new ChannelProfileDetails();
+                var liveChatBan = new LiveChatBan();
+                var snippet = new LiveChatBanSnippet();
+                var details = new ChannelProfileDetails();
                 snippet.setType(temporary ? "temporary" : "permanent");
                 snippet.setLiveChatId(this.getLiveChatId());
                 snippet.setBanDurationSeconds(BigInteger.valueOf(300));
                 details.setChannelId(channelId);
                 snippet.setBannedUserDetails(details);
                 liveChatBan.setSnippet(snippet);
-                YouTube.LiveChatBans.Insert liveChatBanInsert = this.getYoutube().liveChatBans().insert(Collections.singletonList("snippet"), liveChatBan);
+                var liveChatBanInsert = this.getYoutube().liveChatBans().insert(Collections.singletonList("snippet"), liveChatBan);
                 liveChatBanInsert.execute();
                 onComplete.run();
             }
@@ -220,14 +221,14 @@ public class YouTubeChatService implements ChatService
         {
             try
             {
-                LiveChatModerator liveChatMod = new LiveChatModerator();
-                LiveChatModeratorSnippet snippet = new LiveChatModeratorSnippet();
-                ChannelProfileDetails details = new ChannelProfileDetails();
+                var liveChatMod = new LiveChatModerator();
+                var snippet = new LiveChatModeratorSnippet();
+                var details = new ChannelProfileDetails();
                 snippet.setLiveChatId(this.getLiveChatId());
                 details.setChannelId(channelId);
                 snippet.setModeratorDetails(details);
                 liveChatMod.setSnippet(snippet);
-                YouTube.LiveChatModerators.Insert liveChatModInsert = this.getYoutube().liveChatModerators().insert(Collections.singletonList("snippet"), liveChatMod);
+                var liveChatModInsert = this.getYoutube().liveChatModerators().insert(Collections.singletonList("snippet"), liveChatMod);
                 liveChatModInsert.execute();
                 onComplete.run();
             }
@@ -257,7 +258,7 @@ public class YouTubeChatService implements ChatService
         {
             try
             {
-                YouTube.LiveChatBans.Delete liveChatBanDelete = this.getYoutube().liveChatBans().delete(id);
+                var liveChatBanDelete = this.getYoutube().liveChatBans().delete(id);
                 liveChatBanDelete.setId(id);
                 liveChatBanDelete.execute();
                 onComplete.run();
@@ -288,7 +289,7 @@ public class YouTubeChatService implements ChatService
         {
             try
             {
-                YouTube.LiveChatModerators.Delete liveChatModDelete = this.getYoutube().liveChatModerators().delete(moderatorId);
+                var liveChatModDelete = this.getYoutube().liveChatModerators().delete(moderatorId);
                 liveChatModDelete.setId(moderatorId);
                 liveChatModDelete.execute();
                 onComplete.run();
@@ -315,17 +316,17 @@ public class YouTubeChatService implements ChatService
             try
             {
                 // Authorize the request
-                String fileName = Strings.isNullOrEmpty(defaultAuthName) ? YouTubeChat.MOD_ID : defaultAuthName;
+                var fileName = Strings.isNullOrEmpty(defaultAuthName) ? YouTubeChat.MOD_ID : defaultAuthName;
                 // Build auth scopes
-                Credential credential = AuthService.authorize(Lists.newArrayList(YouTubeScopes.YOUTUBE_FORCE_SSL, YouTubeScopes.YOUTUBE), clientSecret, fileName);
+                var credential = AuthService.authorize(Lists.newArrayList(YouTubeScopes.YOUTUBE_FORCE_SSL, YouTubeScopes.YOUTUBE), clientSecret, fileName);
                 YouTubeChatService.currentLoginProfile = fileName;
 
                 // This object is used to make YouTube Data API requests
                 this.youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.JSON_FACTORY, credential).setApplicationName(YouTubeChat.NAME).build();
 
-                YouTube.LiveBroadcasts.List broadcastList = this.getYoutube().liveBroadcasts().list(Collections.singletonList("snippet")).setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
+                var broadcastList = this.getYoutube().liveBroadcasts().list(Collections.singletonList("snippet")).setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
 
-                for (LiveBroadcast broadcast : broadcastList.execute().getItems())
+                for (var broadcast : broadcastList.execute().getItems())
                 {
                     this.liveChatId = broadcast.getSnippet().getLiveChatId();
                     YouTubeChatService.ownerChannelId = broadcast.getSnippet().getChannelId();
@@ -345,7 +346,7 @@ public class YouTubeChatService implements ChatService
                 }
 
                 // Initialize next page token
-                LiveChatMessageListResponse response = this.getYoutube().liveChatMessages().list(this.getLiveChatId(), Collections.singletonList("snippet")).setFields("nextPageToken, pollingIntervalMillis").execute();
+                var response = this.getYoutube().liveChatMessages().list(this.getLiveChatId(), Collections.singletonList("snippet")).setFields("nextPageToken, pollingIntervalMillis").execute();
                 this.setNextPageToken(response.getNextPageToken());
                 this.initialized = true;
 
@@ -407,8 +408,8 @@ public class YouTubeChatService implements ChatService
     {
         try
         {
-            URL url = new URL("https://www.youtube.com/live_stats?v=" + YouTubeChatService.liveVideoId);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
+            var url = new URL("https://www.youtube.com/live_stats?v=" + YouTubeChatService.liveVideoId);
+            var reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
             String view;
 
             while ((view = reader.readLine()) != null)
@@ -453,9 +454,9 @@ public class YouTubeChatService implements ChatService
     {
         try
         {
-            GoogleJsonException googleEx = GSON.fromJson(e.getDetails().toPrettyString(), GoogleJsonException.class);
-            ChatUtils.printExceptionMessage("Error Code: " + googleEx.getErrorCode());
-            ChatUtils.printExceptionMessage("Message: " + googleEx.getMessage());
+            var googleEx = GSON.fromJson(e.getDetails().toPrettyString(), GoogleJsonException.class);
+            ChatUtils.printExceptionMessage("Error Code: " + googleEx.errorCode());
+            ChatUtils.printExceptionMessage("Message: " + googleEx.message());
         }
         catch (IOException ignored) {}
         e.printStackTrace();

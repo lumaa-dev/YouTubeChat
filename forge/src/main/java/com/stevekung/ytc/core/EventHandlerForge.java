@@ -28,7 +28,7 @@ public class EventHandlerForge
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
-        Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
 
         if (mc.player != null)
         {
@@ -48,7 +48,7 @@ public class EventHandlerForge
     @SubscribeEvent
     public void onClientSendChat(ClientChatEvent event)
     {
-        String message = event.getMessage();
+        var message = event.getMessage();
 
         if (message.contains("$set_live"))
         {

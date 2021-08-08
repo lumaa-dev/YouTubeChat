@@ -18,7 +18,6 @@ package com.stevekung.ytc.utils;
 
 import java.util.TimerTask;
 
-import com.google.api.services.youtube.model.*;
 import com.google.common.collect.Lists;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.event.ChatReceivedEvent;
@@ -32,7 +31,7 @@ public class PollingTask extends TimerTask
     {
         try
         {
-            YouTubeChatService service = YouTubeChatService.getService();
+            var service = YouTubeChatService.getService();
 
             // Get current live view count
             if (!YouTubeChatService.liveVideoId.isEmpty())
@@ -48,18 +47,18 @@ public class PollingTask extends TimerTask
             }
 
             // Get chat messages from YouTube
-            LiveChatMessageListResponse chatResponse = service.getYoutube().liveChatMessages().list(service.getLiveChatId(), Lists.newArrayList("snippet", "authorDetails")).setPageToken(service.getNextPageToken()).setFields(YouTubeChatService.LIVE_CHAT_FIELDS).execute();
+            var chatResponse = service.getYoutube().liveChatMessages().list(service.getLiveChatId(), Lists.newArrayList("snippet", "authorDetails")).setPageToken(service.getNextPageToken()).setFields(YouTubeChatService.LIVE_CHAT_FIELDS).execute();
             // Get moderators list from YouTube
-            LiveChatModeratorListResponse moderatorResponse = service.getYoutube().liveChatModerators().list(service.getLiveChatId(), Lists.newArrayList("snippet", "id")).setFields("items(id,snippet(moderatorDetails(channelId)))").execute();
+            var moderatorResponse = service.getYoutube().liveChatModerators().list(service.getLiveChatId(), Lists.newArrayList("snippet", "id")).setFields("items(id,snippet(moderatorDetails(channelId)))").execute();
             service.setNextPageToken(chatResponse.getNextPageToken());
 
             // Broadcast message to listeners on main thread
-            for (LiveChatMessage message : chatResponse.getItems())
+            for (var message : chatResponse.getItems())
             {
-                LiveChatMessageSnippet snippet = message.getSnippet();
-                String moderatorId = "";
+                var snippet = message.getSnippet();
+                var moderatorId = "";
 
-                for (LiveChatModerator moderator : moderatorResponse.getItems())
+                for (var moderator : moderatorResponse.getItems())
                 {
                     if (message.getAuthorDetails().getChannelId().equals(moderator.getSnippet().getModeratorDetails().getChannelId()))
                     {

@@ -16,8 +16,6 @@
 
 package com.stevekung.ytc.utils;
 
-import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
-import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
 import com.stevekung.stevekungslib.utils.TextComponentUtils;
 import com.stevekung.ytc.service.ChatService;
 import com.stevekung.ytc.service.YouTubeChatService;
@@ -25,7 +23,6 @@ import com.stevekung.ytc.utils.event.ChatReceivedEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
 /**
@@ -41,15 +38,15 @@ public class YouTubeChatReceiver implements ChatService.Listener
     @Override
     public void onChatReceived(ChatReceivedEvent event)
     {
-        LiveChatMessageAuthorDetails author = event.getAuthor();
-        LiveChatSuperChatDetails superChatDetails = event.getSuperChatDetails();
-        String message = event.getMessage();
-        String userDisplayName = author.getDisplayName();
-        boolean owner = author.getIsChatOwner();
-        boolean verified = author.getIsVerified();
-        boolean moderator = author.getIsChatModerator();
-        boolean ignoreCheck = !owner && !verified && !moderator;
-        String unicode = "";
+        var author = event.author();
+        var superChatDetails = event.superChatDetails();
+        var message = event.message();
+        var userDisplayName = author.getDisplayName();
+        var owner = author.getIsChatOwner();
+        var verified = author.getIsVerified();
+        var moderator = author.getIsChatModerator();
+        var ignoreCheck = !owner && !verified && !moderator;
+        var unicode = "";
 
         if (owner)
         {
@@ -71,7 +68,7 @@ public class YouTubeChatReceiver implements ChatService.Listener
 
         if (!PlatformConfig.getBannedRudeWords().isEmpty())
         {
-            for (String word : PlatformConfig.getBannedRudeWords())
+            for (var word : PlatformConfig.getBannedRudeWords())
             {
                 if (message.contains(word) && ignoreCheck)
                 {
@@ -82,28 +79,25 @@ public class YouTubeChatReceiver implements ChatService.Listener
         }
         if (!PlatformConfig.getRudeWords().isEmpty())
         {
-            for (String word : PlatformConfig.getRudeWords())
+            for (var word : PlatformConfig.getRudeWords())
             {
                 if (message.contains(word) && ignoreCheck)
                 {
                     switch (PlatformConfig.getRudeWordAction())
                     {
-                        default:
-                        case DELETE:
-                            YouTubeChatService.getService().deleteMessage(event.getMessageId(), () -> {});
-                            break;
-                        case TEMPORARY_BAN:
-                            YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(userDisplayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was automatically temporary banned!", ChatFormatting.DARK_RED)))), false);
-                            break;
+                        case DELETE -> YouTubeChatService.getService().deleteMessage(event.messageId(), () ->
+                        {
+                        });
+                        case TEMPORARY_BAN -> YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(userDisplayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was automatically temporary banned!", ChatFormatting.DARK_RED)))), false);
                     }
                     return;
                 }
             }
         }
 
-        ChatFormatting color = owner ? ChatFormatting.GOLD : moderator ? ChatFormatting.BLUE : ChatFormatting.GRAY;
-        MutableComponent formatted = TextComponentUtils.formatted(unicode + userDisplayName, color);
-        ChatUtils.print(formatted.setStyle(formatted.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.getMessageId() + " " + author.getChannelId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE)))).append(TextComponentUtils.formatted(": " + message, ChatFormatting.WHITE).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.getMessageId() + " " + author.getChannelId() + " " + event.getModeratorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE))))));
+        var color = owner ? ChatFormatting.GOLD : moderator ? ChatFormatting.BLUE : ChatFormatting.GRAY;
+        var formatted = TextComponentUtils.formatted(unicode + userDisplayName, color);
+        ChatUtils.print(formatted.setStyle(formatted.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.messageId() + " " + author.getChannelId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE)))).append(TextComponentUtils.formatted(": " + message, ChatFormatting.WHITE).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.messageId() + " " + author.getChannelId() + " " + event.moderatorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE))))));
 
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {

@@ -53,9 +53,9 @@ public class ChatActionScreen extends Screen
     @Override
     public void init()
     {
-        int xChat = this.width / 2 - 120;
-        int yChat = this.height / 2 - 25;
-        int xMod = this.width / 2 + 4;
+        var xChat = this.width / 2 - 120;
+        var yChat = this.height / 2 - 25;
+        var xMod = this.width / 2 + 4;
 
         Button temporaryBanButton;
         Button banButton;

@@ -40,8 +40,8 @@ public class PostMessageCommand implements IClientCommand
 
     private static int postMessage(String message)
     {
-        String clientSecret = PlatformConfig.getClientSecret();
-        YouTubeChatService service = YouTubeChatService.getService();
+        var clientSecret = PlatformConfig.getClientSecret();
+        var service = YouTubeChatService.getService();
 
         if (clientSecret.isEmpty())
         {

@@ -19,45 +19,4 @@ package com.stevekung.ytc.utils.event;
 import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
 import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
 
-public class ChatReceivedEvent
-{
-    private final LiveChatMessageAuthorDetails author;
-    private final LiveChatSuperChatDetails superChatDetails;
-    private final String messageId;
-    private final String message;
-    private final String moderatorId;
-
-    public ChatReceivedEvent(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String messageId, String message, String moderatorId)
-    {
-        this.author = author;
-        this.superChatDetails = superChatDetails;
-        this.messageId = messageId;
-        this.message = message;
-        this.moderatorId = moderatorId;
-    }
-
-    public LiveChatMessageAuthorDetails getAuthor()
-    {
-        return this.author;
-    }
-
-    public LiveChatSuperChatDetails getSuperChatDetails()
-    {
-        return this.superChatDetails;
-    }
-
-    public String getMessageId()
-    {
-        return this.messageId;
-    }
-
-    public String getMessage()
-    {
-        return this.message;
-    }
-
-    public String getModeratorId()
-    {
-        return this.moderatorId;
-    }
-}
+public record ChatReceivedEvent(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String messageId, String message, String moderatorId) {}

@@ -17,7 +17,10 @@
 package com.stevekung.ytc.command.arguments;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -54,11 +57,11 @@ public class AuthProfileArgumentType implements ArgumentType<String>
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
     {
-        CompletableFuture<Suggestions> suggestions = Suggestions.empty();
+        var suggestions = Suggestions.empty();
 
         if (AuthService.USER_DIR.listFiles() != null)
         {
-            List<String> resList = Arrays.stream(AuthService.USER_DIR.listFiles()).map(File::getName).collect(Collectors.toList());
+            var resList = Arrays.stream(AuthService.USER_DIR.listFiles()).map(File::getName).collect(Collectors.toList());
             suggestions = AuthProfileArgumentType.suggestIterable(resList, builder);
         }
         return suggestions;
@@ -78,16 +81,16 @@ public class AuthProfileArgumentType implements ArgumentType<String>
 
     private static CompletableFuture<Suggestions> suggestIterable(Iterable<String> iterable, SuggestionsBuilder builder)
     {
-        String typedString = builder.getRemaining().toLowerCase(Locale.ROOT);
+        var typedString = builder.getRemaining().toLowerCase(Locale.ROOT);
         AuthProfileArgumentType.applySuggest(iterable, typedString, string1 -> string1, builder::suggest);
         return builder.buildFuture();
     }
 
     private static void applySuggest(Iterable<String> iterable, String typedString, Function<String, String> function, Consumer<String> consumer)
     {
-        for (String name : iterable)
+        for (var name : iterable)
         {
-            String name2 = function.apply(name);
+            var name2 = function.apply(name);
 
             if (name2.startsWith(typedString))
             {
@@ -98,14 +101,14 @@ public class AuthProfileArgumentType implements ArgumentType<String>
 
     private static String read(StringReader reader) throws CommandSyntaxException
     {
-        int cursor = reader.getCursor();
+        var cursor = reader.getCursor();
 
         while (reader.canRead() && ResourceLocation.isAllowedInResourceLocation(reader.peek()))
         {
             reader.skip();
         }
 
-        String string = reader.getString().substring(cursor, reader.getCursor());
+        var string = reader.getString().substring(cursor, reader.getCursor());
 
         try
         {

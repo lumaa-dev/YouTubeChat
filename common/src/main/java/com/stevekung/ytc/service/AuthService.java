@@ -31,7 +31,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.stevekung.stevekungslib.utils.TextComponentUtils;
 import com.stevekung.ytc.core.YouTubeChat;
@@ -71,14 +70,14 @@ public class AuthService
     public static Credential authorize(Collection<String> scopes, String clientSecret, String credentialDatastore) throws IOException
     {
         // Load client secrets
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
+        var clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecret));
 
         YouTubeChat.LOGGER.info("Preparing authentication directory at {}", AuthService.USER_DIR.getPath());
         // This creates the credentials datastore at mods/.ytc-oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(AuthService.USER_DIR);
-        DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
+        var fileDataStoreFactory = new FileDataStoreFactory(AuthService.USER_DIR);
+        var datastore = fileDataStoreFactory.<StoredCredential>getDataStore(credentialDatastore);
 
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
+        var flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore).build();
 
         // authorize
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
@@ -86,7 +85,7 @@ public class AuthService
 
     public static void clearCurrentCredentials() throws IOException
     {
-        File file = new File(AuthService.USER_DIR, YouTubeChatService.currentLoginProfile);
+        var file = new File(AuthService.USER_DIR, YouTubeChatService.currentLoginProfile);
 
         if (file.delete())
         {
@@ -100,7 +99,7 @@ public class AuthService
 
     public static void clearCredentials(String fileName) throws IOException
     {
-        File file = new File(AuthService.USER_DIR, fileName);
+        var file = new File(AuthService.USER_DIR, fileName);
 
         if (file.delete())
         {

@@ -16,7 +16,6 @@
 
 package com.stevekung.ytc.command;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -51,8 +50,8 @@ public class YouTubeChatCommand
 
     private static int startService(String profile)
     {
-        String clientSecret = PlatformConfig.getClientSecret();
-        YouTubeChatService service = YouTubeChatService.getService();
+        var clientSecret = PlatformConfig.getClientSecret();
+        var service = YouTubeChatService.getService();
 
         if (clientSecret.isEmpty())
         {
@@ -71,7 +70,7 @@ public class YouTubeChatCommand
 
     private static int stopService()
     {
-        YouTubeChatService service = YouTubeChatService.getService();
+        var service = YouTubeChatService.getService();
 
         if (!service.hasExecutor())
         {
@@ -98,7 +97,7 @@ public class YouTubeChatCommand
         {
             ClientUtils.printClientMessage(TextComponentUtils.formatted("- Empty login profiles!", ChatFormatting.RED));
         }
-        for (File file : AuthService.USER_DIR.listFiles())
+        for (var file : AuthService.USER_DIR.listFiles())
         {
             ClientUtils.printClientMessage(TextComponentUtils.component("- ").append(TextComponentUtils.formatted(file.getName(), ChatFormatting.GOLD)));
         }
@@ -107,7 +106,7 @@ public class YouTubeChatCommand
 
     private static int logout(String profile)
     {
-        YouTubeChatService service = YouTubeChatService.getService();
+        var service = YouTubeChatService.getService();
 
         if (service.hasExecutor())
         {
