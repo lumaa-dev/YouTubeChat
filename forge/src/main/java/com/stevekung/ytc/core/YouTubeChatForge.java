@@ -16,6 +16,7 @@
 
 package com.stevekung.ytc.core;
 
+import com.stevekung.stevekungslib.utils.CommonUtils;
 import com.stevekung.stevekungslib.utils.ForgeCommonUtils;
 import com.stevekung.stevekungslib.utils.ModVersionChecker;
 import com.stevekung.stevekungslib.utils.client.command.ClientCommands;
@@ -24,6 +25,7 @@ import com.stevekung.ytc.command.PostMessageCommand;
 import com.stevekung.ytc.command.YouTubeChatCommand;
 import com.stevekung.ytc.config.YouTubeChatConfig;
 import me.shedaniel.architectury.platform.forge.EventBuses;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -51,6 +53,7 @@ public class YouTubeChatForge
     private void phaseOne(FMLClientSetupEvent event)
     {
         this.registerClientCommands();
+        CommonUtils.initAntisteal(YouTubeChat.MOD_ID, YouTubeChatForge.class, Minecraft.getInstance()::close);
     }
 
     private void loadComplete(FMLLoadCompleteEvent event)
