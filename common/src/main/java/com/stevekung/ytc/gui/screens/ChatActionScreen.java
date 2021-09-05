@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.gui;
+package com.stevekung.ytc.gui.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.stevekung.stevekungslib.utils.LangUtils;

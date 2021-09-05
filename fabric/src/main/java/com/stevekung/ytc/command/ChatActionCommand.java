@@ -19,7 +19,7 @@ package com.stevekung.ytc.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.stevekung.stevekungslib.utils.CommonUtils;
-import com.stevekung.ytc.gui.ChatActionScreen;
+import com.stevekung.ytc.gui.screens.ChatActionScreen;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
