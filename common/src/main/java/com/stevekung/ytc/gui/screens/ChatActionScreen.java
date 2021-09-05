@@ -90,7 +90,7 @@ public class ChatActionScreen extends Screen
             Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Removed ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.BLUE).append(TextComponentUtils.formatted("from moderator!", ChatFormatting.GREEN))));
             YouTubeChatService.getService().removeModerator(this.moderatorId, response);
         }));
-        this.addButton(new Button(this.width / 2 - 100, this.height / 2 + 60, 160, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));
+        this.addButton(new Button(this.width / 2 - 100, this.height / 2 + 60, 200, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));
 
         if (YouTubeChatService.ownerChannelId.equals(this.channelId))
         {
