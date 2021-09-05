@@ -103,7 +103,8 @@ public class YouTubeChatReceiver implements ChatService.Listener
 
         ChatFormatting color = owner ? ChatFormatting.GOLD : moderator ? ChatFormatting.BLUE : ChatFormatting.GRAY;
         MutableComponent formatted = TextComponentUtils.formatted(unicode + userDisplayName, color);
-        ChatUtils.print(formatted.setStyle(formatted.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.getMessageId() + " " + author.getChannelId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE)))).append(TextComponentUtils.formatted(": " + message, ChatFormatting.WHITE).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.getMessageId() + " " + author.getChannelId() + " " + event.getModeratorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE))))));
+        Style runAction = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.getMessageId() + " " + author.getChannelId() + " " + event.getModeratorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE)));
+        ChatUtils.print(formatted.append(TextComponentUtils.formatted(": " + message, ChatFormatting.WHITE)).withStyle(runAction));
 
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {
