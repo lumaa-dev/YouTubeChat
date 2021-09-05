@@ -22,7 +22,7 @@ import com.stevekung.stevekungslib.utils.CommonUtils;
 import com.stevekung.stevekungslib.utils.client.command.ClientCommands;
 import com.stevekung.stevekungslib.utils.client.command.IClientCommand;
 import com.stevekung.stevekungslib.utils.client.command.IClientSharedSuggestionProvider;
-import com.stevekung.ytc.gui.ChatActionScreen;
+import com.stevekung.ytc.gui.screens.ChatActionScreen;
 import net.minecraft.client.Minecraft;
 
 /**

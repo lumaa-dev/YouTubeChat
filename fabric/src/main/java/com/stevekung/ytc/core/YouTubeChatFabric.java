@@ -27,6 +27,7 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
+import net.minecraft.client.Minecraft;
 
 public class YouTubeChatFabric implements ClientModInitializer
 {
@@ -36,6 +37,7 @@ public class YouTubeChatFabric implements ClientModInitializer
     public void onInitializeClient()
     {
         YouTubeChat.init();
+        CommonUtils.initAntisteal(YouTubeChat.MOD_ID, YouTubeChatFabric.class, Minecraft.getInstance()::close);
 
         AutoConfig.register(YouTubeChatConfig.class, GsonConfigSerializer::new);
         YouTubeChatFabric.CONFIG = AutoConfig.getConfigHolder(YouTubeChatConfig.class).getConfig();

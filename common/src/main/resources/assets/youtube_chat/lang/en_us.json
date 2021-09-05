@@ -10,5 +10,14 @@
     "text.autoconfig.youtube_chat.option.chat.rudeWords": "Rude Words",
     "text.autoconfig.youtube_chat.option.chat.bannedRudeWords": "Banned Rude Words",
     "text.autoconfig.youtube_chat.option.chat.rudeWordAction": "Rude Word Action",
-    "commands.ytprofile.not_found": "Authentication Profile not found"
+    "_comment": "COMMAND",
+    "commands.ytprofile.not_found": "Authentication Profile not found",
+    "_comment": "GUI",
+    "menu.select_action": "Select an action",
+    "menu.delete": "Delete",
+    "menu.temporary_ban": "Temporary Ban",
+    "menu.ban": "Ban",
+    "menu.unban": "Unban",
+    "menu.add_moderator": "Add Moderator",
+    "menu.remove_moderator": "Remove Moderator"
 }
