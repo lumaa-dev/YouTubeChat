@@ -1,6 +1,6 @@
 plugins {
-    id "architectury-plugin" version "3.3-SNAPSHOT"
-    id "dev.architectury.loom" version "0.7.4-SNAPSHOT" apply false
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "0.10.0-SNAPSHOT" apply false
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "org.cadixdev.licenser" version "0.6.1"
 }
@@ -16,9 +16,19 @@ subprojects {
         silentMojangMappingsLicense()
     }
 
+    repositories {
+        maven {
+            name "ParchmentMC"
+            url "https://maven.parchmentmc.org"
+        }
+    }
+
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.mc_version}"
-        mappings loom.officialMojangMappings()
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${rootProject.mc_version}:${rootProject.parchmentmc_version}@zip")
+        }
     }
 }
 
@@ -29,6 +39,16 @@ allprojects {
     archivesBaseName = rootProject.archives_base_name
     version = rootProject.mod_version
     group = rootProject.maven_group
+
+    repositories {
+        maven {
+            name "CurseMaven"
+            url "https://www.cursemaven.com/"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
+    }
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"

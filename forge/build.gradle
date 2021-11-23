@@ -1,16 +1,7 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
     id "com.matthewprenger.cursegradle"
     id "org.cadixdev.licenser"
-}
-
-configurations {
-    shadow
-}
-
-architectury {
-    platformSetupLoomIde()
-    forge()
 }
 
 repositories {
@@ -19,12 +10,31 @@ repositories {
     }
 }
 
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
 loom {
-    mixinConfigs = ["mixins.youtube_chat.json", "mixins.youtube_chat_forge.json"]
+    forge {
+        mixinConfigs = ["mixins.youtube_chat.json", "mixins.youtube_chat_forge.json"]
+    }
+
+    mixin {
+        defaultRefmapName = "mixins.youtube_chat_forge.refmap.json"
+    }
 
     launches {
         client {
-            //arg "--username", username, "--password", password
+            arg "--username", "${username}", "--uuid", "${uuid}"
         }
     }
 }
@@ -74,23 +84,18 @@ dependencies {
         exclude(group: "com.google.guava")
     }
 
-    implementation(project(path: ":common")) {
-        transitive = false
-    }
-    developmentForge(project(path: ":common")) {
-        transitive = false
-    }
-    shadow(project(path: ":common", configuration: "transformProductionForge")) {
-        transitive = false
-    }
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
 
-    if (file("libs/SteveKunG's-Lib-mc${mc_version}-forge.jar").exists()) {
-        modImplementation(":SteveKunG's-Lib-mc${mc_version}-forge")
-        println("Use existing deobf artifact")
+    String lib = ":stevekung-lib-forge"
+
+    if (!file("libs/stevekung-lib-forge.jar").exists()) {
+        lib = "curse.maven:stevekungs-lib-296019:${rootProject.stevekung_lib_forge}"
+        println("Use CurseForge artifact")
     } else {
-        modCompile("curse.maven:stevekungs-lib-296019:${rootProject.stevekung_lib_forge_deobf}")
-        println("Use CurseForge deobf artifact")
+        println("Use existing artifact")
     }
+    modImplementation(lib)
 }
 
 processResources {
@@ -104,13 +109,14 @@ processResources {
 String fileName = "${rootProject.archives_base_name}-mc${rootProject.mc_version}"
 
 jar {
+    classifier "dev"
     version "v${project.version}"
     baseName fileName
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 shadowJar {
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowCommon]
 
     relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
     relocate "com.google.api", "com.stevekung.ytc.relocate.com.google.api"
@@ -127,7 +133,7 @@ shadowJar {
     exclude "youtube.v3.json"
     exclude "dummyThing"
 
-    classifier "dev"
+    classifier "dev-shadow"
     version "v${project.version}"
     baseName fileName
 }
@@ -164,10 +170,11 @@ curseforge {
             changelogType = "markdown"
             releaseType = "release"
             addGameVersion "Forge"
+            addGameVersion "Java 16"
             addGameVersion rootProject.mc_version
 
             mainArtifact(remapJar.archiveFile) {
-                displayName = "[Forge] ${rootProject.archives_base_name}-mc${rootProject.mc_version}-v${project.version}"
+                displayName = "[Forge] " + fileName + "-v${project.version}"
             }
             relations {
                 requiredDependency "stevekungs-lib"

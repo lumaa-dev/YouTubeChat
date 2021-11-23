@@ -1,16 +1,32 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.0"
     id "com.matthewprenger.cursegradle"
     id "org.cadixdev.licenser"
 }
 
-configurations {
-    shadow
+loom {
+    mixin {
+        defaultRefmapName = "mixins.youtube_chat.refmap.json"
+    }
+
+    launches {
+        client {
+            arg "--username", "${username}", "--uuid", "${uuid}"
+        }
+    }
 }
 
 architectury {
     platformSetupLoomIde()
     fabric()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
 }
 
 repositories {
@@ -21,11 +37,6 @@ repositories {
         name "ModMenu Maven"
         url "https://maven.terraformersmc.com/releases/"
     }
-    maven { url 'https://jitpack.io' }
-}
-
-loom {
-    mixinConfig "mixins.youtube_chat.json"
 }
 
 license {
@@ -38,7 +49,6 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
     modApi "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
-    implementation("com.github.i-am-cal:antisteal:${rootProject.antisteal_version}")
 
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -80,43 +90,31 @@ dependencies {
         exclude(group: "com.google.guava")
     }
 
-    implementation(project(path: ":common")) {
-        transitive = false
-    }
-    developmentFabric(project(path: ":common")) {
-        transitive = false
-    }
-    shadow(project(path: ":common", configuration: "transformProductionFabric")) {
-        transitive = false
-    }
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    if (file("libs/SteveKunG's-Lib-mc${mc_version}-fabric.jar").exists()) {
-        modImplementation(":SteveKunG's-Lib-mc${mc_version}-fabric")
-        include ":SteveKunG's-Lib-mc${mc_version}-fabric"
-        println("Use existing deobf artifact")
+    String lib = ":stevekung-lib-fabric"
+
+    if (!file("libs/stevekung-lib-fabric.jar").exists()) {
+        lib = "curse.maven:stevekungs-lib-296019:${rootProject.stevekung_lib_fabric}"
+        println("Use CurseForge artifact")
     } else {
-        modCompile("curse.maven:stevekungs-lib-296019:${rootProject.stevekung_lib_fabric_deobf}")
-        println("Use CurseForge deobf artifact")
+        println("Use existing artifact")
     }
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+    modImplementation(lib)
+    include lib
 }
 
 String fileName = "${rootProject.archives_base_name}-mc${rootProject.mc_version}"
 
 jar {
+    classifier "dev"
     version "v${project.version}"
     baseName fileName
 }
 
 shadowJar {
-    configurations = [project.configurations.shadow]
+    configurations = [project.configurations.shadowCommon]
 
     relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
     relocate "com.google.api", "com.stevekung.ytc.relocate.com.google.api"
@@ -133,7 +131,7 @@ shadowJar {
     exclude "youtube.v3.json"
     exclude "dummyThing"
 
-    classifier "dev"
+    classifier "dev-shadow"
     version "v${project.version}"
     baseName fileName
 }
@@ -169,10 +167,11 @@ curseforge {
             changelogType = "markdown"
             releaseType = "release"
             addGameVersion "Fabric"
+            addGameVersion "Java 16"
             addGameVersion rootProject.mc_version
 
             mainArtifact(remapJar.archiveFile) {
-                displayName = "[Fabric] ${rootProject.archives_base_name}-mc${rootProject.mc_version}-v${project.version}"
+                displayName = "[Fabric] " + fileName + "-v${project.version}"
             }
             relations {
                 requiredDependency "architectury-fabric"
