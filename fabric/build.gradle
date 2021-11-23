@@ -5,10 +5,6 @@ plugins {
 }
 
 loom {
-    mixin {
-        defaultRefmapName = "mixins.youtube_chat.refmap.json"
-    }
-
     launches {
         client {
             arg "--username", "${username}", "--uuid", "${uuid}"
@@ -72,24 +68,6 @@ dependencies {
         exclude(group: "com.google.guava")
     }
 
-    shadow(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
-        exclude(group: "com.google.guava")
-        exclude(group: "com.google.code.gson")
-    }
-    shadow(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
-        exclude(group: "com.google.guava")
-    }
-    shadow(group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
-        exclude(group: "com.google.guava")
-        exclude(group: "com.google.code.gson")
-    }
-    shadow(group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-    shadow(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
@@ -114,7 +92,8 @@ jar {
 }
 
 shadowJar {
-    configurations = [project.configurations.shadowCommon]
+    project.configurations.implementation.canBeResolved true
+    configurations = [project.configurations.shadowCommon, project.configurations.implementation]
 
     relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
     relocate "com.google.api", "com.stevekung.ytc.relocate.com.google.api"

@@ -48,39 +48,21 @@ dependencies {
     forge "net.minecraftforge:forge:${rootProject.mc_version}-${rootProject.forge_version}"
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
-    implementation(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0"))) {
         exclude(group: "com.google.guava")
         exclude(group: "com.google.code.gson")
     }
-    implementation(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5"))) {
         exclude(group: "com.google.guava")
     }
-    implementation(group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
-        exclude(group: "com.google.guava")
-        exclude(group: "com.google.code.gson")
-    }
-    implementation(group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-    implementation(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-
-    shadow(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0") {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.api-client", name: "google-api-client", version: "1.31.5"))) {
         exclude(group: "com.google.guava")
         exclude(group: "com.google.code.gson")
     }
-    shadow(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5") {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client", version: "1.31.0"))) {
         exclude(group: "com.google.guava")
     }
-    shadow(group: "com.google.api-client", name: "google-api-client", version: "1.31.5") {
-        exclude(group: "com.google.guava")
-        exclude(group: "com.google.code.gson")
-    }
-    shadow(group: "com.google.http-client", name: "google-http-client", version: "1.31.0") {
-        exclude(group: "com.google.guava")
-    }
-    shadow(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0") {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0"))) {
         exclude(group: "com.google.guava")
     }
 

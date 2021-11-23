@@ -8,6 +8,12 @@ repositories {
     }
 }
 
+loom {
+    mixin {
+        defaultRefmapName = "mixins.youtube_chat.refmap.json"
+    }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
