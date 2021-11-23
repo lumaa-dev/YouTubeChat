@@ -24,7 +24,7 @@ side = "BOTH"
 [[dependencies.youtube_chat]]
 modId = "architectury"
 mandatory = true
-versionRange = "[2.3,)"
+versionRange = "[2.6,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -36,8 +36,8 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.youtube_chat]]
-modId = "stevekungs_lib"
+modId = "stevekung_lib"
 mandatory = true
-versionRange = "[5.0.0,)"
+versionRange = "[5.0.1,)"
 ordering = "NONE"
 side = "CLIENT"
