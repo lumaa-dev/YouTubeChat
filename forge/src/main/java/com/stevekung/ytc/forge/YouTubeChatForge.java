@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.core;
+package com.stevekung.ytc.forge;
 
 import com.stevekung.stevekunglib.forge.utils.ForgeCommonUtils;
 import com.stevekung.stevekunglib.forge.utils.ModVersionChecker;
 import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
-import com.stevekung.ytc.command.ChatActionCommand;
-import com.stevekung.ytc.command.PostMessageCommand;
-import com.stevekung.ytc.command.YouTubeChatCommand;
-import com.stevekung.ytc.config.YouTubeChatConfig;
+import com.stevekung.ytc.forge.command.ChatActionCommand;
+import com.stevekung.ytc.forge.command.PostMessageCommand;
+import com.stevekung.ytc.forge.command.YouTubeChatCommand;
+import com.stevekung.ytc.forge.config.YouTubeChatConfig;
+import com.stevekung.ytc.forge.event.EventHandlerForge;
+import com.stevekung.ytc.core.YouTubeChat;
 import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;

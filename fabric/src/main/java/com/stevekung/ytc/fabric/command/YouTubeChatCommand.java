@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.command;
+package com.stevekung.ytc.fabric.command;
 
 import java.io.IOException;
 

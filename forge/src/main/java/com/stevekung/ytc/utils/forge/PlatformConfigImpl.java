@@ -18,7 +18,7 @@ package com.stevekung.ytc.utils.forge;
 
 import java.util.List;
 
-import com.stevekung.ytc.config.YouTubeChatConfig;
+import com.stevekung.ytc.forge.config.YouTubeChatConfig;
 import com.stevekung.ytc.utils.RudeWordAction;
 
 public class PlatformConfigImpl

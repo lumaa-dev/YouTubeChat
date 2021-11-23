@@ -19,10 +19,10 @@
     "environment": "client",
     "entrypoints": {
         "client": [
-            "com.stevekung.ytc.core.YouTubeChatFabric"
+            "com.stevekung.ytc.fabric.core.YouTubeChatFabric"
         ],
         "modmenu": [
-            "com.stevekung.ytc.modmenu.ModMenuIntegrationYT"
+            "com.stevekung.ytc.fabric.modmenu.ModMenuIntegrationYT"
         ]
     },
     "depends": {

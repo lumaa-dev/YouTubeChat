@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.command;
+package com.stevekung.ytc.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
+import com.stevekung.stevekunglib.forge.utils.client.command.IClientCommand;
+import com.stevekung.stevekunglib.forge.utils.client.command.IClientSharedSuggestionProvider;
 import com.stevekung.stevekunglib.utils.CommonUtils;
 import com.stevekung.ytc.gui.screens.ChatActionScreen;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -30,15 +31,16 @@ import net.minecraft.client.Minecraft;
  * @author SteveKunG
  *
  */
-public class ChatActionCommand
+public class ChatActionCommand implements IClientCommand
 {
-    public ChatActionCommand(CommandDispatcher<FabricClientCommandSource> dispatcher)
+    @Override
+    public void register(CommandDispatcher<IClientSharedSuggestionProvider> dispatcher)
     {
-        dispatcher.register(ClientCommandManager.literal("ytcaction")
-                .then(ClientCommandManager.argument("messageId", StringArgumentType.word())
-                        .then(ClientCommandManager.argument("channelId", StringArgumentType.word())
-                                .then(ClientCommandManager.argument("moderatorId", StringArgumentType.word())
-                                        .then(ClientCommandManager.argument("displayName", StringArgumentType.word())
+        dispatcher.register(ClientCommands.literal("ytcaction")
+                .then(ClientCommands.argument("messageId", StringArgumentType.word())
+                        .then(ClientCommands.argument("channelId", StringArgumentType.word())
+                                .then(ClientCommands.argument("moderatorId", StringArgumentType.word())
+                                        .then(ClientCommands.argument("displayName", StringArgumentType.word())
                                                 .executes(requirement -> doChatAction(StringArgumentType.getString(requirement, "messageId"), StringArgumentType.getString(requirement, "channelId"), StringArgumentType.getString(requirement, "moderatorId"), StringArgumentType.getString(requirement, "displayName"))))))));
     }
 

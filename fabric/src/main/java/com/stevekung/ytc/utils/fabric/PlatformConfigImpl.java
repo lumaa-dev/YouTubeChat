@@ -18,7 +18,7 @@ package com.stevekung.ytc.utils.fabric;
 
 import java.util.List;
 
-import com.stevekung.ytc.core.YouTubeChatFabric;
+import com.stevekung.ytc.fabric.core.YouTubeChatFabric;
 import com.stevekung.ytc.utils.RudeWordAction;
 
 public class PlatformConfigImpl

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.core;
+package com.stevekung.ytc.forge.event;
 
+import com.stevekung.ytc.forge.YouTubeChatForge;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.PlatformConfig;
 import net.minecraft.client.Minecraft;

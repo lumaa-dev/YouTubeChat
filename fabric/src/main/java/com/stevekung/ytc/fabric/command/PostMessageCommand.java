@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.command;
+package com.stevekung.ytc.fabric.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;

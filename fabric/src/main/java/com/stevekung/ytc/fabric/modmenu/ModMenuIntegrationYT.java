@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.modmenu;
+package com.stevekung.ytc.fabric.modmenu;
 
-import com.stevekung.ytc.config.YouTubeChatConfig;
+import com.stevekung.ytc.fabric.config.YouTubeChatConfig;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.autoconfig.AutoConfig;

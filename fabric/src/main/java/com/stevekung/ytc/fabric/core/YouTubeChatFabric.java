@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.core;
+package com.stevekung.ytc.fabric.core;
 
 import com.stevekung.stevekunglib.utils.CommonUtils;
-import com.stevekung.ytc.command.ChatActionCommand;
-import com.stevekung.ytc.command.PostMessageCommand;
-import com.stevekung.ytc.command.YouTubeChatCommand;
-import com.stevekung.ytc.config.YouTubeChatConfig;
+import com.stevekung.ytc.core.YouTubeChat;
+import com.stevekung.ytc.fabric.command.ChatActionCommand;
+import com.stevekung.ytc.fabric.command.PostMessageCommand;
+import com.stevekung.ytc.fabric.command.YouTubeChatCommand;
+import com.stevekung.ytc.fabric.config.YouTubeChatConfig;
 import com.stevekung.ytc.service.YouTubeChatService;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;

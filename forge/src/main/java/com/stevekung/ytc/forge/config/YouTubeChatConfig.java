@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.config;
+package com.stevekung.ytc.forge.config;
 
 import java.util.Collections;
 import java.util.List;
