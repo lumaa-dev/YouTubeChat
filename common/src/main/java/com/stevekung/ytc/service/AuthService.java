@@ -32,7 +32,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.stevekung.stevekungslib.utils.TextComponentUtils;
+import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.ChatUtils;
 import net.minecraft.ChatFormatting;

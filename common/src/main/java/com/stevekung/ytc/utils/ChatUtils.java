@@ -16,8 +16,8 @@
 
 package com.stevekung.ytc.utils;
 
-import com.stevekung.stevekungslib.utils.TextComponentUtils;
-import com.stevekung.stevekungslib.utils.client.ClientUtils;
+import com.stevekung.stevekunglib.utils.TextComponentUtils;
+import com.stevekung.stevekunglib.utils.client.ClientUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

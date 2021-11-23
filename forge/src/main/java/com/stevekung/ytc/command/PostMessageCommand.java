@@ -18,10 +18,10 @@ package com.stevekung.ytc.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.stevekung.stevekungslib.utils.TextComponentUtils;
-import com.stevekung.stevekungslib.utils.client.command.ClientCommands;
-import com.stevekung.stevekungslib.utils.client.command.IClientCommand;
-import com.stevekung.stevekungslib.utils.client.command.IClientSharedSuggestionProvider;
+import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
+import com.stevekung.stevekunglib.forge.utils.client.command.IClientCommand;
+import com.stevekung.stevekunglib.forge.utils.client.command.IClientSharedSuggestionProvider;
+import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.PlatformConfig;

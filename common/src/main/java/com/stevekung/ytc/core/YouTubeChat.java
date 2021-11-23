@@ -18,8 +18,8 @@ package com.stevekung.ytc.core;
 
 import java.io.File;
 
-import com.stevekung.stevekungslib.utils.GameProfileUtils;
-import com.stevekung.stevekungslib.utils.LoggerBase;
+import com.stevekung.stevekunglib.utils.GameProfileUtils;
+import com.stevekung.stevekunglib.utils.LoggerBase;
 import com.stevekung.ytc.service.AuthService;
 import dev.architectury.platform.Platform;
 

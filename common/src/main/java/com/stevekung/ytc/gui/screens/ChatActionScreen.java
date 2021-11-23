@@ -17,8 +17,8 @@
 package com.stevekung.ytc.gui.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.stevekung.stevekungslib.utils.LangUtils;
-import com.stevekung.stevekungslib.utils.TextComponentUtils;
+import com.stevekung.stevekunglib.utils.LangUtils;
+import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import net.minecraft.ChatFormatting;

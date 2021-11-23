@@ -16,7 +16,7 @@
 
 package com.stevekung.ytc.utils;
 
-import com.stevekung.stevekungslib.utils.TextComponentUtils;
+import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.service.ChatService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.event.ChatReceivedEvent;
