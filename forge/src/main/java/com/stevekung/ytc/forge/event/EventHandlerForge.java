@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,12 @@
 
 package com.stevekung.ytc.forge.event;
 
-import com.stevekung.ytc.forge.YouTubeChatForge;
 import com.stevekung.ytc.service.YouTubeChatService;
-import com.stevekung.ytc.utils.PlatformConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class EventHandlerForge
 {
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        var mc = Minecraft.getInstance();
-
-        if (mc.player != null)
-        {
-            if (PlatformConfig.getEnableVersionCheck())
-            {
-                if (!YouTubeChatForge.CHECKER.hasChecked())
-                {
-                    YouTubeChatForge.CHECKER.checkFail();
-                    YouTubeChatForge.CHECKER.printInfo();
-                    YouTubeChatForge.CHECKER.setChecked(true);
-                }
-            }
-        }
-    }
-
     //TODO Get current live video id directly
     @SubscribeEvent
     public void onClientSendChat(ClientChatEvent event)

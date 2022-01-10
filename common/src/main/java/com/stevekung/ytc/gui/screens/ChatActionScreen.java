@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@
 package com.stevekung.ytc.gui.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.stevekung.stevekunglib.utils.LangUtils;
-import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 /**
  *
@@ -36,6 +35,15 @@ import net.minecraft.network.chat.TextComponent;
  */
 public class ChatActionScreen extends Screen
 {
+    private static final Component DELETE = new TranslatableComponent("selectServer.delete");
+    private static final Component TEMPORARY_BAN = new TranslatableComponent("menu.temporary_ban");
+    private static final Component BAN = new TranslatableComponent("menu.ban");
+    private static final Component UNBAN = new TranslatableComponent("menu.unban");
+    private static final Component ADD_MODERATOR = new TranslatableComponent("menu.add_moderator");
+    private static final Component REMOVE_MODERATOR = new TranslatableComponent("menu.remove_moderator");
+    private static final Component SELECT_ACTION = new TranslatableComponent("menu.select_action");
+
+    private static final Component MESSAGE_DELETED = new TranslatableComponent("message.deleted");
     private final String messageId;
     private final String channelId;
     private final String moderatorId;
@@ -63,31 +71,30 @@ public class ChatActionScreen extends Screen
         Button addModerator;
         Button removeModerator;
 
-        this.addRenderableWidget(new Button(xChat, yChat - 30, 120, 20, LangUtils.translate("menu.delete"), button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Message deleted!", ChatFormatting.GREEN)))));
-        this.addRenderableWidget(temporaryBanButton = new Button(xChat, yChat - 8, 120, 20, LangUtils.translate("menu.temporary_ban"), button ->
+        this.addRenderableWidget(new Button(xChat, yChat - 30, 120, 20, DELETE, button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printChatMessage(MESSAGE_DELETED))));
+        this.addRenderableWidget(temporaryBanButton = new Button(xChat, yChat - 8, 120, 20, TEMPORARY_BAN, button ->
         {
-            Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was temporary banned!", ChatFormatting.GREEN))));
+            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.temporarily_banned", this.displayName));
             YouTubeChatService.getService().banUser(this.channelId, response, true);
         }));
-        this.addRenderableWidget(banButton = new Button(xChat, yChat + 14, 120, 20, LangUtils.translate("menu.ban"), button ->
+        this.addRenderableWidget(banButton = new Button(xChat, yChat + 14, 120, 20, BAN, button ->
         {
-            Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was banned!", ChatFormatting.GREEN))));
+            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_banned", this.displayName));
             YouTubeChatService.getService().banUser(this.channelId, response, false);
         }));
-        this.addRenderableWidget(unbanButton = new Button(xChat, yChat + 36, 120, 20, LangUtils.translate("menu.unban"), button ->
+        this.addRenderableWidget(unbanButton = new Button(xChat, yChat + 36, 120, 20, UNBAN, button ->
         {
-            Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("has been unbanned!", ChatFormatting.GREEN))));
+            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_unbanned", this.displayName));
             YouTubeChatService.getService().unbanUser(this.channelId, response);
         }));
-
-        this.addRenderableWidget(addModerator = new Button(xMod, yChat - 30, 120, 20, LangUtils.translate("menu.add_moderator"), button ->
+        this.addRenderableWidget(addModerator = new Button(xMod, yChat - 30, 120, 20, ADD_MODERATOR, button ->
         {
-            Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Added ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.BLUE).append(TextComponentUtils.formatted("to moderator!", ChatFormatting.GREEN))));
+            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.add_moderator", this.displayName));
             YouTubeChatService.getService().addModerator(this.channelId, response);
         }));
-        this.addRenderableWidget(removeModerator = new Button(xMod, yChat - 8, 120, 20, LangUtils.translate("menu.remove_moderator"), button ->
+        this.addRenderableWidget(removeModerator = new Button(xMod, yChat - 8, 120, 20, REMOVE_MODERATOR, button ->
         {
-            Runnable response = () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("Removed ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(this.displayName + " ", ChatFormatting.BLUE).append(TextComponentUtils.formatted("from moderator!", ChatFormatting.GREEN))));
+            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.remove_moderator", this.displayName));
             YouTubeChatService.getService().removeModerator(this.moderatorId, response);
         }));
         this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 2 + 60, 200, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));
@@ -111,7 +118,7 @@ public class ChatActionScreen extends Screen
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
         this.renderBackground(poseStack);
-        GuiComponent.drawCenteredString(poseStack, this.font, LangUtils.translate("menu.select_action"), this.width / 2, this.height / 2 - 75, 16777215);
+        GuiComponent.drawCenteredString(poseStack, this.font, SELECT_ACTION, this.width / 2, this.height / 2 - 75, 16777215);
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 }

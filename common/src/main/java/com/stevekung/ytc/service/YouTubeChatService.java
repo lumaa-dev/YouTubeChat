@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.stevekung.stevekunglib.utils.RecordTypeAdapterFactory;
-import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.core.YouTubeChat;
-import com.stevekung.ytc.utils.ChatUtils;
-import com.stevekung.ytc.utils.GoogleJsonException;
-import com.stevekung.ytc.utils.PollingTask;
-import com.stevekung.ytc.utils.YouTubeChatReceiver;
-import net.minecraft.ChatFormatting;
+import com.stevekung.ytc.utils.*;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.StringUtil;
 
 /**
  * Manages connection to the YouTube chat service, posting chat messages, deleting chat messages,
@@ -142,7 +138,7 @@ public class YouTubeChatService implements ChatService
     @Override
     public void deleteMessage(String messageId, Runnable onComplete)
     {
-        if (messageId == null || messageId.isEmpty())
+        if (StringUtil.isNullOrEmpty(messageId))
         {
             onComplete.run();
             return;
@@ -172,7 +168,7 @@ public class YouTubeChatService implements ChatService
     @Override
     public void banUser(String channelId, Runnable onComplete, boolean temporary)
     {
-        if (channelId == null || channelId.isEmpty())
+        if (StringUtil.isNullOrEmpty(channelId))
         {
             onComplete.run();
             return;
@@ -211,7 +207,7 @@ public class YouTubeChatService implements ChatService
     @Override
     public void addModerator(String channelId, Runnable onComplete)
     {
-        if (channelId == null || channelId.isEmpty())
+        if (StringUtil.isNullOrEmpty(channelId))
         {
             onComplete.run();
             return;
@@ -248,7 +244,7 @@ public class YouTubeChatService implements ChatService
     @Override
     public void unbanUser(String id, Runnable onComplete)//TODO Fix this
     {
-        if (id == null || id.isEmpty())
+        if (StringUtil.isNullOrEmpty(id))
         {
             onComplete.run();
             return;
@@ -279,7 +275,7 @@ public class YouTubeChatService implements ChatService
     @Override
     public void removeModerator(String moderatorId, Runnable onComplete)
     {
-        if (moderatorId == null || moderatorId.isEmpty())
+        if (StringUtil.isNullOrEmpty(moderatorId))
         {
             onComplete.run();
             return;
@@ -309,7 +305,7 @@ public class YouTubeChatService implements ChatService
 
     public void start(String clientSecret, String defaultAuthName)
     {
-        ChatUtils.printYTMessage(TextComponentUtils.formatted("Service started", ChatFormatting.GREEN));
+        ChatUtils.printChatMessage(new TranslatableComponent("message.service_start"));
         this.executor = Executors.newCachedThreadPool();
         this.executor.execute(() ->
         {
@@ -322,7 +318,7 @@ public class YouTubeChatService implements ChatService
                 YouTubeChatService.currentLoginProfile = fileName;
 
                 // This object is used to make YouTube Data API requests
-                this.youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.JSON_FACTORY, credential).setApplicationName(YouTubeChat.NAME).build();
+                this.youtube = new YouTube.Builder(AuthService.HTTP_TRANSPORT, AuthService.GSON_FACTORY, credential).setApplicationName(YouTubeChat.NAME).build();
 
                 var broadcastList = this.getYoutube().liveBroadcasts().list(Collections.singletonList("snippet")).setFields("items/snippet/liveChatId,items/snippet/channelId").setBroadcastType("all").setBroadcastStatus("active");
 
@@ -331,14 +327,14 @@ public class YouTubeChatService implements ChatService
                     this.liveChatId = broadcast.getSnippet().getLiveChatId();
                     YouTubeChatService.ownerChannelId = broadcast.getSnippet().getChannelId();
 
-                    if (this.getLiveChatId() != null && !this.getLiveChatId().isEmpty())
+                    if (!StringUtil.isNullOrEmpty(this.getLiveChatId()))
                     {
                         YouTubeChat.LOGGER.info("Live Chat ID: {}", this.getLiveChatId());
                         break;
                     }
                 }
 
-                if (this.getLiveChatId() == null || this.getLiveChatId().isEmpty())
+                if (StringUtil.isNullOrEmpty(this.getLiveChatId()))
                 {
                     ChatUtils.printExceptionMessage("Couldn't find live stream on current channel");
                     this.stop(false);
@@ -386,11 +382,11 @@ public class YouTubeChatService implements ChatService
 
         if (this.failed)
         {
-            ChatUtils.printYTMessage(TextComponentUtils.formatted("Service stopped due to error", ChatFormatting.RED));
+            ChatUtils.printChatMessage(new TranslatableComponent("message.service_stop_fail"));
         }
         else
         {
-            ChatUtils.printYTMessage(TextComponentUtils.formatted(logout ? "Stopped service and logout" : "Service stopped", ChatFormatting.GREEN));
+            ChatUtils.printChatMessage(new TranslatableComponent(logout ? "message.service_stop_logout" : "message.service_stop"));
         }
     }
 
@@ -450,6 +446,15 @@ public class YouTubeChatService implements ChatService
         this.pollTimer.schedule(new PollingTask(), delay);
     }
 
+    private void stopPolling()
+    {
+        if (this.pollTimer != null)
+        {
+            this.pollTimer.cancel();
+            this.pollTimer = null;
+        }
+    }
+
     private void printGoogleJsonException(GoogleJsonResponseException e)
     {
         try
@@ -460,14 +465,5 @@ public class YouTubeChatService implements ChatService
         }
         catch (IOException ignored) {}
         e.printStackTrace();
-    }
-
-    private void stopPolling()
-    {
-        if (this.pollTimer != null)
-        {
-            this.pollTimer.cancel();
-            this.pollTimer = null;
-        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,15 +40,12 @@ public class YouTubeChatConfig
     public static class General
     {
         public final ForgeConfigSpec.ConfigValue<String> clientSecret;
-        public final ForgeConfigSpec.BooleanValue enableVersionChecker;
 
         General(ForgeConfigSpec.Builder builder)
         {
             builder.comment("General settings").push("general");
 
             this.clientSecret = builder.comment("The client secret from Google API console").translation("text.autoconfig.youtube_chat.option.general.clientSecret").define("clientSecret", "");
-
-            this.enableVersionChecker = builder.translation("text.autoconfig.youtube_chat.option.general.enableVersionChecker").define("enableVersionChecker", true);
 
             builder.pop();
         }
@@ -66,14 +63,10 @@ public class YouTubeChatConfig
         {
             builder.comment("Chat settings").push("chat");
 
-            this.ownerIcon = builder.comment("Display unicode in front of Owner").translation("text.autoconfig.youtube_chat.option.chat.ownerIcon").define("ownerIcon", "");
-
-            this.moderatorIcon = builder.comment("Display unicode in front of Moderators").translation("text.autoconfig.youtube_chat.option.chat.moderatorIcon").define("moderatorIcon", "");
-
+            this.ownerIcon = builder.comment("Display unicode in front of Owner name").translation("text.autoconfig.youtube_chat.option.chat.ownerIcon").define("ownerIcon", "");
+            this.moderatorIcon = builder.comment("Display unicode in front of Moderators name").translation("text.autoconfig.youtube_chat.option.chat.moderatorIcon").define("moderatorIcon", "");
             this.rudeWords = builder.comment("List of rude words, this will be automatically do a selected action (delete or timeout) to the users").translation("text.autoconfig.youtube_chat.option.chat.rudeWords").define("rudeWords", Collections.emptyList());
-
             this.bannedRudeWords = builder.comment("List of rude words, this will be automatically ban user when message is received").translation("text.autoconfig.youtube_chat.option.chat.bannedRudeWords").define("bannedRudeWords", Collections.emptyList());
-
             this.rudeWordAction = builder.comment("Select an action to do with rude words").translation("text.autoconfig.youtube_chat.option.chat.rudeWordAction").defineEnum("rudeWordAction", RudeWordAction.DELETE);
 
             builder.pop();

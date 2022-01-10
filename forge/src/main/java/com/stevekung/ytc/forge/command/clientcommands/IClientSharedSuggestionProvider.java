@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.utils.event;
+package com.stevekung.ytc.forge.command.clientcommands;
 
-import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
-import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 
-public record ChatReceivedEvent(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String messageId, String message, String moderatorId) {}
+public interface IClientSharedSuggestionProvider extends SharedSuggestionProvider
+{
+    void youtubeChat$sendFeedback(Component component);
+
+    void youtubeChat$sendErrorMessage(Component component);
+}

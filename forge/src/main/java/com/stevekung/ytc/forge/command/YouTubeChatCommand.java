@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,19 @@
 
 package com.stevekung.ytc.forge.command;
 
-import java.io.IOException;
-
 import com.mojang.brigadier.CommandDispatcher;
-import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
-import com.stevekung.stevekunglib.forge.utils.client.command.IClientCommand;
-import com.stevekung.stevekunglib.forge.utils.client.command.IClientSharedSuggestionProvider;
-import com.stevekung.stevekunglib.utils.TextComponentUtils;
-import com.stevekung.stevekunglib.utils.client.ClientUtils;
 import com.stevekung.ytc.command.arguments.AuthProfileArgumentType;
+import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
+import com.stevekung.ytc.forge.command.clientcommands.IClientCommand;
+import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionProvider;
 import com.stevekung.ytc.service.AuthService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.PlatformConfig;
+import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.StringUtil;
 
 /**
@@ -42,26 +40,26 @@ public class YouTubeChatCommand implements IClientCommand
     public void register(CommandDispatcher<IClientSharedSuggestionProvider> dispatcher)
     {
         dispatcher.register(ClientCommands.literal("ytc")
-                .then(ClientCommands.literal("start").executes(requirement -> startService(null))
-                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(requirement -> startService(AuthProfileArgumentType.getProfile(requirement, "profile")))))
-                .then(ClientCommands.literal("stop").executes(requirement -> stopService()))
-                .then(ClientCommands.literal("list").executes(requirement -> listProfile()))
-                .then(ClientCommands.literal("logout").executes(requirement -> logout(null))
-                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(requirement -> logout(AuthProfileArgumentType.getProfile(requirement, "profile"))))));
+                .then(ClientCommands.literal("start").executes(context -> startService(null))
+                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(context -> startService(AuthProfileArgumentType.getProfile(context, "profile")))))
+                .then(ClientCommands.literal("stop").executes(context -> stopService()))
+                .then(ClientCommands.literal("list").executes(context -> listProfile()))
+                .then(ClientCommands.literal("logout").executes(context -> logout(null))
+                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(context -> logout(AuthProfileArgumentType.getProfile(context, "profile"))))));
     }
 
     private static int startService(String profile)
     {
-        var clientSecret = PlatformConfig.getClientSecret();
+        var clientSecret = PlatformConfig.clientSecret();
         var service = YouTubeChatService.getService();
 
         if (clientSecret.isEmpty())
         {
-            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] No client secret configurated"));
+            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.no_client_secret"));
         }
         if (service.hasExecutor())
         {
-            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] Service is already started"));
+            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_already_start"));
         }
 
         service.start(clientSecret, StringUtil.isNullOrEmpty(profile) ? null : profile);
@@ -76,7 +74,7 @@ public class YouTubeChatCommand implements IClientCommand
 
         if (!service.hasExecutor())
         {
-            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] Service is not started"));
+            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
         }
 
         service.stop(false);
@@ -93,15 +91,15 @@ public class YouTubeChatCommand implements IClientCommand
             return 1;
         }
 
-        ChatUtils.printYTMessage(TextComponentUtils.component("Current login profiles list"));
+        ChatUtils.printChatMessage(new TranslatableComponent("commands.yt.list_login_profiles"));
 
         if (AuthService.USER_DIR.listFiles().length < 1)
         {
-            ClientUtils.printClientMessage(TextComponentUtils.formatted("- Empty login profiles!", ChatFormatting.RED));
+            ChatUtils.printMessage(new TextComponent("- ").withStyle(ChatFormatting.RED).append(new TranslatableComponent("commands.yt.empty_login_profiles")));
         }
         for (var file : AuthService.USER_DIR.listFiles())
         {
-            ClientUtils.printClientMessage(TextComponentUtils.component("- ").append(TextComponentUtils.formatted(file.getName(), ChatFormatting.GOLD)));
+            ChatUtils.printMessage(new TextComponent("- ").append(file.getName()));
         }
         return 1;
     }
@@ -117,24 +115,16 @@ public class YouTubeChatCommand implements IClientCommand
         }
         else
         {
-            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] Service is not started"));
+            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
         }
 
-        try
+        if (StringUtil.isNullOrEmpty(profile))
         {
-            if (StringUtil.isNullOrEmpty(profile))
-            {
-                AuthService.clearCurrentCredentials();
-            }
-            else
-            {
-                AuthService.clearCredentials(profile);
-            }
+            AuthService.clearCurrentCredential();
         }
-        catch (IOException e)
+        else
         {
-            e.printStackTrace();
-            ChatUtils.printExceptionMessage(e.getMessage());
+            AuthService.clearCredential(profile);
         }
         return 1;
     }

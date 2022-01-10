@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package com.stevekung.ytc.utils;
 
-import com.stevekung.stevekunglib.utils.TextComponentUtils;
-import com.stevekung.stevekunglib.utils.client.ClientUtils;
+import com.stevekung.ytc.core.YouTubeChat;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 /**
  *
@@ -30,25 +30,32 @@ import net.minecraft.network.chat.MutableComponent;
  */
 public class ChatUtils
 {
-    public static void print(Component component)
+    public static void print(Component toAppend)
     {
-        MutableComponent message = TextComponentUtils.formatted("[YT] ", ChatFormatting.RED).append(component);
-        ClientUtils.printClientMessage(message);
+        var message = new TextComponent("[YT]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
+        Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 
-    public static void printYTMessage(Component component)
+    public static void printMessage(Component message)
     {
-        MutableComponent message = TextComponentUtils.formatted("[YouTubeChat] ", ChatFormatting.RED).append(component);
-        ClientUtils.printClientMessage(message);
+        Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 
-    public static Component printYTOverlayMessage(Component component)
+    public static void printChatMessage(Component toAppend)
     {
-        return TextComponentUtils.formatted("[YouTubeChat] ", ChatFormatting.RED).append(component);
+        var message = new TextComponent("[" + YouTubeChat.NAME + "]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
+        Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 
-    public static void printExceptionMessage(String message)
+    public static void printOverlayMessage(Component toAppend)
     {
-        ClientUtils.printClientMessage(TextComponentUtils.formatted("[YouTubeChat] ", ChatFormatting.RED).append(TextComponentUtils.formatted(message, ChatFormatting.DARK_RED)));
+        var message = new TextComponent("[YT]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
+        Minecraft.getInstance().gui.setOverlayMessage(message, false);
+    }
+
+    public static void printExceptionMessage(String exception)
+    {
+        var message = new TextComponent("[" + YouTubeChat.NAME + "]").append(" ").withStyle(ChatFormatting.RED).append(new TextComponent(exception).withStyle(ChatFormatting.DARK_RED));
+        Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 }

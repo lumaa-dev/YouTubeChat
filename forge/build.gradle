@@ -1,15 +1,3 @@
-plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.0"
-    id "com.matthewprenger.cursegradle"
-    id "org.cadixdev.licenser"
-}
-
-repositories {
-    flatDir {
-        dirs "libs"
-    }
-}
-
 architectury {
     platformSetupLoomIde()
     forge()
@@ -25,7 +13,7 @@ configurations {
 
 loom {
     forge {
-        mixinConfigs = ["mixins.youtube_chat.json", "mixins.youtube_chat_forge.json"]
+        mixinConfig "mixins.youtube_chat_forge.json"
     }
 
     mixin {
@@ -37,6 +25,13 @@ loom {
             arg "--username", "${username}", "--uuid", "${uuid}"
         }
     }
+
+    runs {
+        client {
+            vmArg("-Dmixin.debug.export=true")
+            vmArg("-Dmixin.hotSwap=true")
+        }
+    }
 }
 
 license {
@@ -46,38 +41,57 @@ license {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.mc_version}-${rootProject.forge_version}"
-    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
-    forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: "v3-rev20210601-1.31.0"))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: rootProject.api_services_youtube))) {
+        exclude(group: "org.apache.httpcomponents")
+        exclude(group: "commons-logging")
+        exclude(group: "commons-codec")
         exclude(group: "com.google.guava")
         exclude(group: "com.google.code.gson")
+        exclude(group: "com.google.code.findbugs")
+        exclude(group: "com.google.errorprone")
+        exclude(group: "com.google.j2objc")
+        exclude(group: "org.checkerframework")
     }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: "1.31.5"))) {
-        exclude(group: "com.google.guava")
-    }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.api-client", name: "google-api-client", version: "1.31.5"))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: rootProject.oauth_client_jetty))) {
+        exclude(group: "org.apache.httpcomponents")
+        exclude(group: "commons-logging")
+        exclude(group: "commons-codec")
         exclude(group: "com.google.guava")
         exclude(group: "com.google.code.gson")
+        exclude(group: "com.google.code.findbugs")
+        exclude(group: "com.google.errorprone")
+        exclude(group: "com.google.j2objc")
+        exclude(group: "org.checkerframework")
     }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client", version: "1.31.0"))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.api-client", name: "google-api-client", version: rootProject.api_client))) {
+        exclude(group: "org.apache.httpcomponents")
+        exclude(group: "commons-logging")
+        exclude(group: "commons-codec")
         exclude(group: "com.google.guava")
+        exclude(group: "com.google.code.gson")
+        exclude(group: "com.google.code.findbugs")
+        exclude(group: "com.google.errorprone")
+        exclude(group: "com.google.j2objc")
+        exclude(group: "org.checkerframework")
     }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.31.0"))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client", version: rootProject.http_client))) {
+        exclude(group: "org.apache.httpcomponents")
+        exclude(group: "commons-logging")
+        exclude(group: "commons-codec")
         exclude(group: "com.google.guava")
+        exclude(group: "com.google.code.gson")
+        exclude(group: "com.google.code.findbugs")
+        exclude(group: "com.google.errorprone")
+        exclude(group: "com.google.j2objc")
+        exclude(group: "org.checkerframework")
     }
+
+    modRuntimeOnly "curse.maven:configured-457570:${rootProject.configured_version}"
+    modRuntimeOnly "curse.maven:catalogue-459701:${rootProject.catalogue_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
-
-    String lib = ":stevekung-lib-forge"
-
-    if (!file("libs/stevekung-lib-forge.jar").exists()) {
-        lib = "curse.maven:stevekungs-lib-296019:${rootProject.stevekung_lib_forge}"
-        println("Use CurseForge artifact")
-    } else {
-        println("Use existing artifact")
-    }
-    modImplementation(lib)
 }
 
 processResources {
@@ -90,57 +104,43 @@ processResources {
 
 String fileName = "${rootProject.archives_base_name}-mc${rootProject.mc_version}"
 
-jar {
-    classifier "dev"
-    version "v${project.version}"
-    baseName fileName
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
 shadowJar {
     configurations = [project.configurations.shadowCommon]
 
-    relocate "com.fasterxml", "com.stevekung.ytc.relocate.com.fasterxml"
+    relocate "blue.endless", "com.stevekung.ytc.relocate.blue.endless"
     relocate "com.google.api", "com.stevekung.ytc.relocate.com.google.api"
     relocate "com.google.j2objc", "com.stevekung.ytc.relocate.com.google.j2objc"
+    relocate "com.moandjiezana", "com.stevekung.ytc.relocate.com.moandjiezana"
     relocate "io", "com.stevekung.ytc.relocate.io"
-    relocate "javax", "com.stevekung.ytc.relocate.javax"
-    relocate "org", "com.stevekung.ytc.relocate.org"
+    relocate "javax.annotation", "com.stevekung.ytc.relocate.javax.annotation"
+    relocate "org.yaml", "com.stevekung.ytc.relocate.org.yaml"
+    relocate "org.apache.commons", "com.stevekung.ytc.relocate.org.apache.commons"
+    relocate "org.apache.http", "com.stevekung.ytc.relocate.org.apache.http"
 
+    exclude "com/google/gson/**"
     exclude "META-INF/maven/**"
     exclude "META-INF/proguard/**"
     exclude "META-INF/DEPENDENCIES"
     exclude "mozilla/**"
-    exclude "module-info.class"
     exclude "youtube.v3.json"
-    exclude "dummyThing"
 
-    classifier "dev-shadow"
-    version "v${project.version}"
-    baseName fileName
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-    classifier "source"
-    version "v${project.version}"
-    baseName fileName
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    archiveClassifier = "dev-shadow"
+    archiveVersion = "v${project.version}"
+    archiveBaseName = fileName
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "forge"
-    version "v${project.version}"
-    baseName fileName
+    archiveClassifier = "forge"
+    archiveVersion = "v${project.version}"
+    archiveBaseName = fileName
 }
 
-artifacts {
-    archives sourcesJar
-    archives shadowJar
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
 }
 
 curseforge {
@@ -152,21 +152,18 @@ curseforge {
             changelogType = "markdown"
             releaseType = "release"
             addGameVersion "Forge"
-            addGameVersion "Java 16"
+            addGameVersion "Java 17"
             addGameVersion rootProject.mc_version
 
             mainArtifact(remapJar.archiveFile) {
                 displayName = "[Forge] " + fileName + "-v${project.version}"
             }
             relations {
-                requiredDependency "stevekungs-lib"
-                requiredDependency "architectury-forge"
+                optionalDependency "configured"
             }
             afterEvaluate {
                 uploadTask.dependsOn(remapJar)
             }
-            addArtifact sourcesJar
-            addArtifact shadowJar
         }
         options {
             forgeGradleIntegration = false

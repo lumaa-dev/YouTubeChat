@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.utils.event;
+package com.stevekung.ytc.utils;
 
-import com.google.api.services.youtube.model.LiveChatMessageAuthorDetails;
-import com.google.api.services.youtube.model.LiveChatSuperChatDetails;
+import com.stevekung.ytc.core.YouTubeChat;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
-public record ChatReceivedEvent(LiveChatMessageAuthorDetails author, LiveChatSuperChatDetails superChatDetails, String messageId, String message, String moderatorId) {}
+public class YouTubeCommandRuntimeException extends CommandRuntimeException
+{
+    public YouTubeCommandRuntimeException(Component component)
+    {
+        super(new TextComponent("[" + YouTubeChat.NAME + "]").append(" ").append(component));
+    }
+}

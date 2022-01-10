@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ package com.stevekung.ytc.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
-import com.stevekung.stevekunglib.forge.utils.client.command.IClientCommand;
-import com.stevekung.stevekunglib.forge.utils.client.command.IClientSharedSuggestionProvider;
-import com.stevekung.stevekunglib.utils.TextComponentUtils;
+import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
+import com.stevekung.ytc.forge.command.clientcommands.IClientCommand;
+import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionProvider;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.PlatformConfig;
+import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class PostMessageCommand implements IClientCommand
 {
@@ -35,23 +35,23 @@ public class PostMessageCommand implements IClientCommand
     {
         dispatcher.register(ClientCommands.literal("yt")
                 .then(ClientCommands.argument("message", StringArgumentType.greedyString())
-                        .executes(requirement -> postMessage(StringArgumentType.getString(requirement, "message")))));
+                        .executes(context -> postMessage(StringArgumentType.getString(context, "message")))));
     }
 
     private static int postMessage(String message)
     {
-        var clientSecret = PlatformConfig.getClientSecret();
+        var clientSecret = PlatformConfig.clientSecret();
         var service = YouTubeChatService.getService();
 
         if (clientSecret.isEmpty())
         {
-            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] No client secret configurated"));
+            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.no_client_secret"));
         }
         if (!service.hasExecutor())
         {
-            throw new CommandRuntimeException(TextComponentUtils.component("[YouTubeChat] Service is not started"));
+            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
         }
-        service.postMessage(message, i -> ChatUtils.printYTOverlayMessage(TextComponentUtils.formatted("Message posted!", ChatFormatting.GREEN)));
+        service.postMessage(message, id -> ChatUtils.printOverlayMessage(new TranslatableComponent("commands.yt.message_posted").withStyle(ChatFormatting.GREEN)));
         return 1;
     }
 }

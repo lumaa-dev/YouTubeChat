@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,11 @@
 
 package com.stevekung.ytc.utils;
 
-import com.stevekung.stevekunglib.utils.TextComponentUtils;
 import com.stevekung.ytc.service.ChatService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.event.ChatReceivedEvent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 
 /**
  *
@@ -50,7 +47,7 @@ public class YouTubeChatReceiver implements ChatService.Listener
 
         if (owner)
         {
-            unicode = PlatformConfig.getOwnerIcon();
+            unicode = PlatformConfig.ownerIcon();
         }
         if (verified)
         {
@@ -58,37 +55,37 @@ public class YouTubeChatReceiver implements ChatService.Listener
 
             if (moderator)
             {
-                unicode = "✓ " + PlatformConfig.getModeratorIcon();
+                unicode = "✓ " + PlatformConfig.moderatorIcon();
             }
         }
         if (moderator)
         {
-            unicode = PlatformConfig.getModeratorIcon();
+            unicode = PlatformConfig.moderatorIcon();
         }
 
-        if (!PlatformConfig.getBannedRudeWords().isEmpty())
+        if (!PlatformConfig.bannedRudeWords().isEmpty())
         {
-            for (var word : PlatformConfig.getBannedRudeWords())
+            for (var word : PlatformConfig.bannedRudeWords())
             {
                 if (message.contains(word) && ignoreCheck)
                 {
-                    YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(userDisplayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was automatically banned!", ChatFormatting.GREEN)))), false);
+                    YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_auto_banned", userDisplayName)), false);
                     return;
                 }
             }
         }
-        if (!PlatformConfig.getRudeWords().isEmpty())
+        if (!PlatformConfig.rudeWords().isEmpty())
         {
-            for (var word : PlatformConfig.getRudeWords())
+            for (var word : PlatformConfig.rudeWords())
             {
                 if (message.contains(word) && ignoreCheck)
                 {
-                    switch (PlatformConfig.getRudeWordAction())
+                    switch (PlatformConfig.rudeWordAction())
                     {
                         case DELETE -> YouTubeChatService.getService().deleteMessage(event.messageId(), () ->
                         {
                         });
-                        case TEMPORARY_BAN -> YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printYTMessage(TextComponentUtils.formatted("User ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(userDisplayName + " ", ChatFormatting.DARK_RED).append(TextComponentUtils.formatted("was automatically temporary banned!", ChatFormatting.DARK_RED)))), false);
+                        case TEMPORARY_BAN -> YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_auto_temporary_banned", userDisplayName)), false);
                     }
                     return;
                 }
@@ -96,13 +93,13 @@ public class YouTubeChatReceiver implements ChatService.Listener
         }
 
         var color = owner ? ChatFormatting.GOLD : moderator ? ChatFormatting.BLUE : ChatFormatting.GRAY;
-        var formatted = TextComponentUtils.formatted(unicode + userDisplayName, color);
-        var runAction = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.messageId() + " " + author.getChannelId() + " " + event.moderatorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponentUtils.formatted("Click to do action this message", ChatFormatting.WHITE)));
-        ChatUtils.print(formatted.append(TextComponentUtils.formatted(": " + message, ChatFormatting.WHITE)).withStyle(runAction));
+        var formatted = new TextComponent(unicode + userDisplayName).withStyle(color);
+        var runAction = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.messageId() + " " + author.getChannelId() + " " + event.moderatorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.select_message_action")));
+        ChatUtils.print(formatted.append(new TextComponent(": " + message).withStyle(ChatFormatting.WHITE)).withStyle(runAction));
 
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {
-            ChatUtils.printYTMessage(TextComponentUtils.formatted("Received ", ChatFormatting.GREEN).append(TextComponentUtils.formatted(superChatDetails.getAmountDisplayString(), ChatFormatting.GOLD).append(TextComponentUtils.formatted(" from ", ChatFormatting.GREEN)).append(TextComponentUtils.formatted(author.getDisplayName(), moderator ? ChatFormatting.BLUE : ChatFormatting.WHITE))));
+            ChatUtils.printChatMessage(new TranslatableComponent("message.superchat_received", superChatDetails.getAmountDisplayString(), userDisplayName));
         }
     }
 }

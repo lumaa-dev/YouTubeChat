@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,44 +23,38 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 public class PlatformConfig
 {
     @ExpectPlatform
-    public static String getClientSecret()
+    public static String clientSecret()
     {
-        throw new Error();
+        throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static boolean getEnableVersionCheck()
+    public static String ownerIcon()
     {
-        throw new Error();
+        throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static String getOwnerIcon()
+    public static String moderatorIcon()
     {
-        throw new Error();
+        throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static String getModeratorIcon()
+    public static List<String> rudeWords()
     {
-        throw new Error();
+        throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static List<String> getRudeWords()
+    public static List<String> bannedRudeWords()
     {
-        throw new Error();
+        throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static List<String> getBannedRudeWords()
+    public static RudeWordAction rudeWordAction()
     {
-        throw new Error();
-    }
-
-    @ExpectPlatform
-    public static RudeWordAction getRudeWordAction()
-    {
-        throw new Error();
+        throw new AssertionError();
     }
 }

@@ -1,6 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.10.0-SNAPSHOT" apply false
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "dev.architectury.loom" version "0.11.0-SNAPSHOT" apply false
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "org.cadixdev.licenser" version "0.6.1"
 }
@@ -11,6 +12,9 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
+    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "com.matthewprenger.cursegradle"
+    apply plugin: "org.cadixdev.licenser"
 
     loom {
         silentMojangMappingsLicense()
@@ -25,11 +29,10 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.mc_version}"
-        /*mappings loom.layered() {
+        mappings loom.layered() {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-${rootProject.mc_version}:${rootProject.parchmentmc_version}@zip")
-        }*/
-        mappings loom.officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${rootProject.parchmentmc_version}@zip")
+        }
     }
 }
 

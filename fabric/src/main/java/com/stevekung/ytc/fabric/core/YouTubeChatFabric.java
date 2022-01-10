@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.stevekung.ytc.fabric.core;
 
-import com.stevekung.stevekunglib.utils.CommonUtils;
 import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.fabric.command.ChatActionCommand;
 import com.stevekung.ytc.fabric.command.PostMessageCommand;
@@ -49,14 +48,14 @@ public class YouTubeChatFabric implements ClientModInitializer
         {
             if (YouTubeChatService.receiveChat)
             {
-                CommonUtils.schedule(YouTubeChatService.getService()::subscribe, 40);
+                YouTubeChat.schedule(YouTubeChatService.getService()::subscribe, 40);
             }
         });
         ClientLoginConnectionEvents.DISCONNECT.register((handler, mc) ->
         {
             if (YouTubeChatService.receiveChat)
             {
-                CommonUtils.schedule(YouTubeChatService.getService()::unsubscribe, 40);
+                YouTubeChat.schedule(YouTubeChatService.getService()::unsubscribe, 40);
             }
         });
     }

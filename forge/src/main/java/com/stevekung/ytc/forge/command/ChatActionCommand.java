@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,9 @@ package com.stevekung.ytc.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
-import com.stevekung.stevekunglib.forge.utils.client.command.IClientCommand;
-import com.stevekung.stevekunglib.forge.utils.client.command.IClientSharedSuggestionProvider;
-import com.stevekung.stevekunglib.utils.CommonUtils;
-import com.stevekung.ytc.gui.screens.ChatActionScreen;
-import net.minecraft.client.Minecraft;
+import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
+import com.stevekung.ytc.forge.command.clientcommands.IClientCommand;
+import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionProvider;
 
 /**
  *
@@ -41,12 +38,12 @@ public class ChatActionCommand implements IClientCommand
                         .then(ClientCommands.argument("channelId", StringArgumentType.word())
                                 .then(ClientCommands.argument("moderatorId", StringArgumentType.word())
                                         .then(ClientCommands.argument("displayName", StringArgumentType.word())
-                                                .executes(requirement -> doChatAction(StringArgumentType.getString(requirement, "messageId"), StringArgumentType.getString(requirement, "channelId"), StringArgumentType.getString(requirement, "moderatorId"), StringArgumentType.getString(requirement, "displayName"))))))));
+                                                .executes(context -> doChatAction(StringArgumentType.getString(context, "messageId"), StringArgumentType.getString(context, "channelId"), StringArgumentType.getString(context, "moderatorId"), StringArgumentType.getString(context, "displayName"))))))));
     }
 
     private static int doChatAction(String messageId, String channelId, String moderatorId, String displayName)
     {
-        CommonUtils.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
+        //YouTubeChat.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
         return 1;
     }
 }

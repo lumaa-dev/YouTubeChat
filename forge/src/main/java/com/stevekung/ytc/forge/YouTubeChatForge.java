@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,58 +16,40 @@
 
 package com.stevekung.ytc.forge;
 
-import com.stevekung.stevekunglib.forge.utils.ForgeCommonUtils;
-import com.stevekung.stevekunglib.forge.utils.ModVersionChecker;
-import com.stevekung.stevekunglib.forge.utils.client.command.ClientCommands;
+import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.forge.command.ChatActionCommand;
 import com.stevekung.ytc.forge.command.PostMessageCommand;
 import com.stevekung.ytc.forge.command.YouTubeChatCommand;
+import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
 import com.stevekung.ytc.forge.config.YouTubeChatConfig;
 import com.stevekung.ytc.forge.event.EventHandlerForge;
-import com.stevekung.ytc.core.YouTubeChat;
-import dev.architectury.platform.forge.EventBuses;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.IExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkConstants;
 
 @Mod(YouTubeChat.MOD_ID)
 public class YouTubeChatForge
 {
-    public static final ModVersionChecker CHECKER = new ModVersionChecker(YouTubeChat.MOD_ID);
-
     public YouTubeChatForge()
     {
-        EventBuses.registerModEventBus(YouTubeChat.MOD_ID, ForgeCommonUtils.getModEventBus());
         YouTubeChat.init();
-        ForgeCommonUtils.registerClientOnly();
-        ForgeCommonUtils.addModListener(this::phaseOne);
-        ForgeCommonUtils.addModListener(this::loadComplete);
-
-        ForgeCommonUtils.registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.SPEC);
-        ForgeCommonUtils.registerConfigScreen((mc, parent) -> ForgeCommonUtils.openConfigFile(parent, YouTubeChat.MOD_ID, ModConfig.Type.CLIENT));
-        ForgeCommonUtils.registerModEventBus(YouTubeChatConfig.class);
-        ForgeCommonUtils.registerEventHandler(new EventHandlerForge());
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().register(YouTubeChatConfig.class);
+        MinecraftForge.EVENT_BUS.register(new EventHandlerForge());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.SPEC);
     }
 
-    private void phaseOne(FMLClientSetupEvent event)
-    {
-        this.registerClientCommands();
-    }
-
-    private void loadComplete(FMLLoadCompleteEvent event)
-    {
-        if (YouTubeChatConfig.GENERAL.enableVersionChecker.get())
-        {
-            YouTubeChatForge.CHECKER.startCheck();
-        }
-    }
-
-    private void registerClientCommands()
+    private void clientSetup(FMLClientSetupEvent event)
     {
         ClientCommands.register(new ChatActionCommand());
         ClientCommands.register(new PostMessageCommand());
         ClientCommands.register(new YouTubeChatCommand());
-        YouTubeChat.LOGGER.info("Registering client side commands");
+        YouTubeChat.LOGGER.info("Register client side commands");
     }
 }

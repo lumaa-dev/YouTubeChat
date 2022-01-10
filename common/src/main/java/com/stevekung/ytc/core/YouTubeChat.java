@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,36 @@
 package com.stevekung.ytc.core;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import com.stevekung.stevekunglib.utils.GameProfileUtils;
-import com.stevekung.stevekunglib.utils.LoggerBase;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.stevekung.ytc.service.AuthService;
-import dev.architectury.platform.Platform;
+import net.minecraft.client.Minecraft;
 
 public class YouTubeChat
 {
     public static final String NAME = "YouTube Chat";
     public static final String MOD_ID = "youtube_chat";
-    public static final LoggerBase LOGGER = new LoggerBase(NAME);
+    public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public static void init()
     {
-        AuthService.CONFIG_DIR = new File(Platform.getConfigFolder().toFile(), AuthService.CREDENTIALS_DIRECTORY);
-        AuthService.USER_DIR = new File(AuthService.CONFIG_DIR, GameProfileUtils.getUUID().toString());
+        AuthService.CONFIG_DIR = new File(new File(Minecraft.getInstance().gameDirectory, "config"), AuthService.CREDENTIALS_DIRECTORY);
+        AuthService.USER_DIR = new File(AuthService.CONFIG_DIR, Minecraft.getInstance().getUser().getUuid());
+    }
+
+    public static void schedule(Runnable runnable, long delay)
+    {
+        var task = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                runnable.run();
+            }
+        };
+        new Timer().schedule(task, delay);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public interface ChatService
      *
      * @param channelId The channel id to ban.
      * @param onComplete Callback when the operation is complete.
-     * @param temporary Temporary ban user from chat (5 min). If not user will permanently banned from channel.
+     * @param temporary Temporary ban user from chat (5 min). If not user will permanently ban from channel.
      */
     void banUser(String channelId, Runnable onComplete, boolean temporary);
 

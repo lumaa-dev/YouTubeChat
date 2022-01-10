@@ -26,15 +26,11 @@
         ]
     },
     "depends": {
-        "fabricloader": ">=0.12",
-        "fabric": "*",
-        "minecraft": ">=1.18",
-        "stevekung_lib": ">=6.0.0",
-        "architectury": ">=3.0"
+        "fabricloader": ">=0.12.12",
+        "fabric-command-api-v1": "*",
+        "fabric-networking-api-v1": "*",
+        "minecraft": ">=1.18.1"
     },
-    "mixins": [
-        "mixins.youtube_chat.json"
-    ],
     "custom": {
         "modmenu": {
             "links": {

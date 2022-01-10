@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@ package com.stevekung.ytc.fabric.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.stevekung.stevekunglib.utils.CommonUtils;
-import com.stevekung.ytc.gui.screens.ChatActionScreen;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.client.Minecraft;
 
 /**
  *
@@ -39,12 +36,12 @@ public class ChatActionCommand
                         .then(ClientCommandManager.argument("channelId", StringArgumentType.word())
                                 .then(ClientCommandManager.argument("moderatorId", StringArgumentType.word())
                                         .then(ClientCommandManager.argument("displayName", StringArgumentType.word())
-                                                .executes(requirement -> doChatAction(StringArgumentType.getString(requirement, "messageId"), StringArgumentType.getString(requirement, "channelId"), StringArgumentType.getString(requirement, "moderatorId"), StringArgumentType.getString(requirement, "displayName"))))))));
+                                                .executes(context -> doChatAction(StringArgumentType.getString(context, "messageId"), StringArgumentType.getString(context, "channelId"), StringArgumentType.getString(context, "moderatorId"), StringArgumentType.getString(context, "displayName"))))))));
     }
 
     private static int doChatAction(String messageId, String channelId, String moderatorId, String displayName)
     {
-        CommonUtils.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
-        return 1;
+        //YouTubeChat.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
+        return 0;
     }
 }

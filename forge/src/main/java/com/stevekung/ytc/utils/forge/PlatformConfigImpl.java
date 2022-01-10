@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Google Inc.
+ * Copyright 2017-2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,37 +23,32 @@ import com.stevekung.ytc.utils.RudeWordAction;
 
 public class PlatformConfigImpl
 {
-    public static String getClientSecret()
+    public static String clientSecret()
     {
         return YouTubeChatConfig.GENERAL.clientSecret.get();
     }
 
-    public static boolean getEnableVersionCheck()
-    {
-        return YouTubeChatConfig.GENERAL.enableVersionChecker.get();
-    }
-
-    public static String getOwnerIcon()
+    public static String ownerIcon()
     {
         return YouTubeChatConfig.CHAT.ownerIcon.get();
     }
 
-    public static String getModeratorIcon()
+    public static String moderatorIcon()
     {
         return YouTubeChatConfig.CHAT.moderatorIcon.get();
     }
 
-    public static List<String> getRudeWords()
+    public static List<String> rudeWords()
     {
         return YouTubeChatConfig.CHAT.rudeWords.get();
     }
 
-    public static List<String> getBannedRudeWords()
+    public static List<String> bannedRudeWords()
     {
         return YouTubeChatConfig.CHAT.bannedRudeWords.get();
     }
 
-    public static RudeWordAction getRudeWordAction()
+    public static RudeWordAction rudeWordAction()
     {
         return YouTubeChatConfig.CHAT.rudeWordAction.get();
     }
