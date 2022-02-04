@@ -60,7 +60,7 @@ public class YouTubeChatCommand
             throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_already_start"));
         }
 
-        service.start(clientSecret, StringUtil.isNullOrEmpty(profile) ? null : profile);
+        service.start(clientSecret, profile);
         YouTubeChatService.receiveChat = true;
         service.subscribe();
         return 1;

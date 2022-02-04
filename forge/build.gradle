@@ -12,24 +12,9 @@ configurations {
 }
 
 loom {
-    forge {
-        mixinConfig "mixins.youtube_chat_forge.json"
-    }
-
-    mixin {
-        defaultRefmapName = "mixins.youtube_chat_forge.refmap.json"
-    }
-
     launches {
         client {
             arg "--username", "${username}", "--uuid", "${uuid}"
-        }
-    }
-
-    runs {
-        client {
-            vmArg("-Dmixin.debug.export=true")
-            vmArg("-Dmixin.hotSwap=true")
         }
     }
 }

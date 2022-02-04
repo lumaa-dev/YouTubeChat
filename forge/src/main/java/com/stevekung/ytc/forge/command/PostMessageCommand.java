@@ -18,23 +18,21 @@ package com.stevekung.ytc.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
-import com.stevekung.ytc.forge.command.clientcommands.IClientCommand;
-import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionProvider;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.PlatformConfig;
 import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TranslatableComponent;
 
-public class PostMessageCommand implements IClientCommand
+public class PostMessageCommand
 {
-    @Override
-    public void register(CommandDispatcher<IClientSharedSuggestionProvider> dispatcher)
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        dispatcher.register(ClientCommands.literal("yt")
-                .then(ClientCommands.argument("message", StringArgumentType.greedyString())
+        dispatcher.register(Commands.literal("yt")
+                .then(Commands.argument("message", StringArgumentType.greedyString())
                         .executes(context -> postMessage(StringArgumentType.getString(context, "message")))));
     }
 

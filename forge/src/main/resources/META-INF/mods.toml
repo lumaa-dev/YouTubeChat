@@ -17,7 +17,7 @@ credits = "Thanks to PeregrineZ for implement example features"
 [[dependencies.youtube_chat]]
 modId = "forge"
 mandatory = true
-versionRange = "[39.0.0,)"
+versionRange = "[39.0.46,)"
 ordering = "NONE"
 side = "CLIENT"
 

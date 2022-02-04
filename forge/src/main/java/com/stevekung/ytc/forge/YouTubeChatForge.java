@@ -20,15 +20,15 @@ import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.forge.command.ChatActionCommand;
 import com.stevekung.ytc.forge.command.PostMessageCommand;
 import com.stevekung.ytc.forge.command.YouTubeChatCommand;
-import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
 import com.stevekung.ytc.forge.config.YouTubeChatConfig;
 import com.stevekung.ytc.forge.event.EventHandlerForge;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkConstants;
 
@@ -39,17 +39,17 @@ public class YouTubeChatForge
     {
         YouTubeChat.init();
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().register(YouTubeChatConfig.class);
         MinecraftForge.EVENT_BUS.register(new EventHandlerForge());
+        MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, YouTubeChatConfig.SPEC);
     }
 
-    private void clientSetup(FMLClientSetupEvent event)
+    @SubscribeEvent
+    public void registerClientCommands(RegisterClientCommandsEvent event)
     {
-        ClientCommands.register(new ChatActionCommand());
-        ClientCommands.register(new PostMessageCommand());
-        ClientCommands.register(new YouTubeChatCommand());
-        YouTubeChat.LOGGER.info("Register client side commands");
+        ChatActionCommand.register(event.getDispatcher());
+        PostMessageCommand.register(event.getDispatcher());
+        YouTubeChatCommand.register(event.getDispatcher());
     }
 }

@@ -18,9 +18,8 @@ package com.stevekung.ytc.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
-import com.stevekung.ytc.forge.command.clientcommands.IClientCommand;
-import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionProvider;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 /**
  *
@@ -28,16 +27,15 @@ import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionPro
  * @author SteveKunG
  *
  */
-public class ChatActionCommand implements IClientCommand
+public class ChatActionCommand
 {
-    @Override
-    public void register(CommandDispatcher<IClientSharedSuggestionProvider> dispatcher)
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        dispatcher.register(ClientCommands.literal("ytcaction")
-                .then(ClientCommands.argument("messageId", StringArgumentType.word())
-                        .then(ClientCommands.argument("channelId", StringArgumentType.word())
-                                .then(ClientCommands.argument("moderatorId", StringArgumentType.word())
-                                        .then(ClientCommands.argument("displayName", StringArgumentType.word())
+        dispatcher.register(Commands.literal("ytcaction")
+                .then(Commands.argument("messageId", StringArgumentType.word())
+                        .then(Commands.argument("channelId", StringArgumentType.word())
+                                .then(Commands.argument("moderatorId", StringArgumentType.word())
+                                        .then(Commands.argument("displayName", StringArgumentType.word())
                                                 .executes(context -> doChatAction(StringArgumentType.getString(context, "messageId"), StringArgumentType.getString(context, "channelId"), StringArgumentType.getString(context, "moderatorId"), StringArgumentType.getString(context, "displayName"))))))));
     }
 

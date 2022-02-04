@@ -18,15 +18,14 @@ package com.stevekung.ytc.forge.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.stevekung.ytc.command.arguments.AuthProfileArgumentType;
-import com.stevekung.ytc.forge.command.clientcommands.ClientCommands;
-import com.stevekung.ytc.forge.command.clientcommands.IClientCommand;
-import com.stevekung.ytc.forge.command.clientcommands.IClientSharedSuggestionProvider;
 import com.stevekung.ytc.service.AuthService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.PlatformConfig;
 import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.StringUtil;
@@ -34,18 +33,17 @@ import net.minecraft.util.StringUtil;
 /**
  * An in-game command for managing the YouTube Chat service
  */
-public class YouTubeChatCommand implements IClientCommand
+public class YouTubeChatCommand
 {
-    @Override
-    public void register(CommandDispatcher<IClientSharedSuggestionProvider> dispatcher)
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        dispatcher.register(ClientCommands.literal("ytc")
-                .then(ClientCommands.literal("start").executes(context -> startService(null))
-                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(context -> startService(AuthProfileArgumentType.getProfile(context, "profile")))))
-                .then(ClientCommands.literal("stop").executes(context -> stopService()))
-                .then(ClientCommands.literal("list").executes(context -> listProfile()))
-                .then(ClientCommands.literal("logout").executes(context -> logout(null))
-                        .then(ClientCommands.argument("profile", AuthProfileArgumentType.create()).executes(context -> logout(AuthProfileArgumentType.getProfile(context, "profile"))))));
+        dispatcher.register(Commands.literal("ytc")
+                .then(Commands.literal("start").executes(context -> startService(null))
+                        .then(Commands.argument("profile", AuthProfileArgumentType.create()).executes(context -> startService(AuthProfileArgumentType.getProfile(context, "profile")))))
+                .then(Commands.literal("stop").executes(context -> stopService()))
+                .then(Commands.literal("list").executes(context -> listProfile()))
+                .then(Commands.literal("logout").executes(context -> logout(null))
+                        .then(Commands.argument("profile", AuthProfileArgumentType.create()).executes(context -> logout(AuthProfileArgumentType.getProfile(context, "profile"))))));
     }
 
     private static int startService(String profile)
@@ -62,7 +60,7 @@ public class YouTubeChatCommand implements IClientCommand
             throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_already_start"));
         }
 
-        service.start(clientSecret, StringUtil.isNullOrEmpty(profile) ? null : profile);
+        service.start(clientSecret, profile);
         YouTubeChatService.receiveChat = true;
         service.subscribe();
         return 1;
