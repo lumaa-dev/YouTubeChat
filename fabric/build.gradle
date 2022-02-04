@@ -85,9 +85,6 @@ dependencies {
         exclude(group: "org.checkerframework")
     }
 
-    include fabricApi.module("fabric-command-api-v1", project.fabric_api_version)
-    include fabricApi.module("fabric-networking-api-v1", project.fabric_api_version)
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
@@ -159,6 +156,7 @@ curseforge {
             }
             relations {
                 requiredDependency "cloth-config"
+                requiredDependency "fabric-api"
                 optionalDependency "modmenu"
             }
             afterEvaluate {
