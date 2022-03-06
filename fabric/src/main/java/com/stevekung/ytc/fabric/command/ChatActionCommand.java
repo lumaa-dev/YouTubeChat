@@ -41,7 +41,7 @@ public class ChatActionCommand
 
     private static int doChatAction(String messageId, String channelId, String moderatorId, String displayName)
     {
-        //YouTubeChat.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
+        //TODO YouTubeChat.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
         return 0;
     }
 }
