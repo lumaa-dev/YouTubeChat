@@ -16,12 +16,26 @@
 
 package com.stevekung.ytc.forge.event;
 
+import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.service.YouTubeChatService;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class EventHandlerForge
 {
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if (--YouTubeChat.openTick > 0)
+        {
+            Minecraft.getInstance().setScreen(YouTubeChat.actionScreen);
+            YouTubeChat.openTick = -1;
+            YouTubeChat.actionScreen = null;
+        }
+    }
+
     //TODO Get current live video id directly
     @SubscribeEvent
     public void onClientSendChat(ClientChatEvent event)

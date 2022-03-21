@@ -26,7 +26,9 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
+import net.minecraft.client.Minecraft;
 
 public class YouTubeChatFabric implements ClientModInitializer
 {
@@ -44,6 +46,15 @@ public class YouTubeChatFabric implements ClientModInitializer
         new PostMessageCommand(ClientCommandManager.DISPATCHER);
         new YouTubeChatCommand(ClientCommandManager.DISPATCHER);
 
+        ClientTickEvents.START_CLIENT_TICK.register(mc ->
+        {
+            if (--YouTubeChat.openTick > 0)
+            {
+                Minecraft.getInstance().setScreen(YouTubeChat.actionScreen);
+                YouTubeChat.openTick = -1;
+                YouTubeChat.actionScreen = null;
+            }
+        });
         ClientLoginConnectionEvents.INIT.register((handler, mc) ->
         {
             if (YouTubeChatService.receiveChat)

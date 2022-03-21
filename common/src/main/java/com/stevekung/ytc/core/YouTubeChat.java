@@ -22,6 +22,7 @@ import java.util.TimerTask;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.stevekung.ytc.gui.screens.ChatActionScreen;
 import com.stevekung.ytc.service.AuthService;
 import net.minecraft.client.Minecraft;
 
@@ -30,6 +31,9 @@ public class YouTubeChat
     public static final String NAME = "YouTube Chat";
     public static final String MOD_ID = "youtube_chat";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
+
+    public static int openTick;
+    public static ChatActionScreen actionScreen;
 
     public static void init()
     {

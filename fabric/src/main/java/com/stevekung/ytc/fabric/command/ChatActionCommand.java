@@ -18,6 +18,8 @@ package com.stevekung.ytc.fabric.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.stevekung.ytc.core.YouTubeChat;
+import com.stevekung.ytc.gui.screens.ChatActionScreen;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
@@ -41,7 +43,8 @@ public class ChatActionCommand
 
     private static int doChatAction(String messageId, String channelId, String moderatorId, String displayName)
     {
-        //TODO YouTubeChat.schedule(() -> Minecraft.getInstance().setScreen(new ChatActionScreen(messageId, channelId, moderatorId, displayName)), 2);
-        return 0;
+        YouTubeChat.openTick = 2;
+        YouTubeChat.actionScreen = new ChatActionScreen(messageId, channelId, moderatorId, displayName);
+        return 1;
     }
 }
