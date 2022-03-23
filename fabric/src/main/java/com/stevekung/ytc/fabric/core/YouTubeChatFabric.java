@@ -46,15 +46,7 @@ public class YouTubeChatFabric implements ClientModInitializer
         new PostMessageCommand(ClientCommandManager.DISPATCHER);
         new YouTubeChatCommand(ClientCommandManager.DISPATCHER);
 
-        ClientTickEvents.START_CLIENT_TICK.register(mc ->
-        {
-            if (--YouTubeChat.openTick > 0)
-            {
-                Minecraft.getInstance().setScreen(YouTubeChat.actionScreen);
-                YouTubeChat.openTick = -1;
-                YouTubeChat.actionScreen = null;
-            }
-        });
+        ClientTickEvents.START_CLIENT_TICK.register(YouTubeChat::clientTick);
         ClientLoginConnectionEvents.INIT.register((handler, mc) ->
         {
             if (YouTubeChatService.receiveChat)

@@ -41,6 +41,16 @@ public class YouTubeChat
         AuthService.USER_DIR = new File(AuthService.CONFIG_DIR, Minecraft.getInstance().getUser().getUuid());
     }
 
+    public static void clientTick(Minecraft mc)
+    {
+        if (--YouTubeChat.openTick > 0)
+        {
+            mc.setScreen(YouTubeChat.actionScreen);
+            YouTubeChat.openTick = -1;
+            YouTubeChat.actionScreen = null;
+        }
+    }
+
     public static void schedule(Runnable runnable, long delay)
     {
         var task = new TimerTask()

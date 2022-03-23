@@ -28,12 +28,7 @@ public class EventHandlerForge
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
-        if (--YouTubeChat.openTick > 0)
-        {
-            Minecraft.getInstance().setScreen(YouTubeChat.actionScreen);
-            YouTubeChat.openTick = -1;
-            YouTubeChat.actionScreen = null;
-        }
+        YouTubeChat.clientTick(Minecraft.getInstance());
     }
 
     //TODO Get current live video id directly
