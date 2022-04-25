@@ -1,17 +1,17 @@
-dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+architectury {
+    common(project.enabled_platforms.split(","))
+}
 
-    implementation(group: "com.google.apis", name: "google-api-services-youtube", version: rootProject.api_services_youtube)
-    implementation(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: rootProject.oauth_client_jetty)
-    implementation(group: "com.google.api-client", name: "google-api-client", version: rootProject.api_client)
-    implementation(group: "com.google.http-client", name: "google-http-client", version: rootProject.http_client)
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+
+    implementation(group: "com.google.apis", name: "google-api-services-youtube", version: project.api_services_youtube)
+    implementation(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: project.oauth_client_jetty)
+    implementation(group: "com.google.api-client", name: "google-api-client", version: project.api_client)
+    implementation(group: "com.google.http-client", name: "google-http-client", version: project.http_client)
 }
 
 license {
     header = rootProject.file("LICENSE-header.txt")
     include "**/*.java"
-}
-
-architectury {
-    common()
 }

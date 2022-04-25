@@ -3,6 +3,21 @@ architectury {
     forge()
 }
 
+loom {
+    launches {
+        if (project.hasProperty("username") && project.hasProperty("uuid")) {
+            client {
+                arg "--username", "${username}", "--uuid", "${uuid}"
+            }
+        }
+    }
+    runConfigs {
+        server {
+            ideConfigGenerated false
+        }
+    }
+}
+
 configurations {
     common
     shadowCommon
@@ -11,23 +26,10 @@ configurations {
     developmentForge.extendsFrom common
 }
 
-loom {
-    launches {
-        client {
-            arg "--username", "${username}", "--uuid", "${uuid}"
-        }
-    }
-}
-
-license {
-    header = rootProject.file("LICENSE-header.txt")
-    include "**/*.java"
-}
-
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.mc_version}-${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
 
-    forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: rootProject.api_services_youtube))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: project.api_services_youtube))) {
         exclude(group: "org.apache.httpcomponents")
         exclude(group: "commons-logging")
         exclude(group: "commons-codec")
@@ -38,7 +40,7 @@ dependencies {
         exclude(group: "com.google.j2objc")
         exclude(group: "org.checkerframework")
     }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: rootProject.oauth_client_jetty))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: project.oauth_client_jetty))) {
         exclude(group: "org.apache.httpcomponents")
         exclude(group: "commons-logging")
         exclude(group: "commons-codec")
@@ -49,7 +51,7 @@ dependencies {
         exclude(group: "com.google.j2objc")
         exclude(group: "org.checkerframework")
     }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.api-client", name: "google-api-client", version: rootProject.api_client))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.api-client", name: "google-api-client", version: project.api_client))) {
         exclude(group: "org.apache.httpcomponents")
         exclude(group: "commons-logging")
         exclude(group: "commons-codec")
@@ -60,7 +62,7 @@ dependencies {
         exclude(group: "com.google.j2objc")
         exclude(group: "org.checkerframework")
     }
-    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client", version: rootProject.http_client))) {
+    forgeDependencies(implementation(shadowCommon(group: "com.google.http-client", name: "google-http-client", version: project.http_client))) {
         exclude(group: "org.apache.httpcomponents")
         exclude(group: "commons-logging")
         exclude(group: "commons-codec")
@@ -72,8 +74,8 @@ dependencies {
         exclude(group: "org.checkerframework")
     }
 
-    modRuntimeOnly "curse.maven:configured-457570:${rootProject.configured_version}"
-    modRuntimeOnly "curse.maven:catalogue-459701:${rootProject.catalogue_version}"
+    modRuntimeOnly "curse.maven:configured-457570:${project.configured_version}"
+    modRuntimeOnly "curse.maven:catalogue-459701:${project.catalogue_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
@@ -87,7 +89,12 @@ processResources {
     }
 }
 
-String fileName = "${rootProject.archives_base_name}-mc${rootProject.mc_version}"
+license {
+    header = rootProject.file("LICENSE-header.txt")
+    include "**/*.java"
+}
+
+String fileName = "${project.archives_base_name}-mc${project.mc_version}"
 
 shadowJar {
     configurations = [project.configurations.shadowCommon]
@@ -138,7 +145,7 @@ curseforge {
             releaseType = "release"
             addGameVersion "Forge"
             addGameVersion "Java 17"
-            addGameVersion rootProject.mc_version
+            addGameVersion project.mc_version
 
             mainArtifact(remapJar.archiveFile) {
                 displayName = "[Forge] " + fileName + "-v${project.version}"
