@@ -1,40 +1,40 @@
 {
-    "schemaVersion": 1,
-    "id": "youtube_chat",
-    "version": "${version}",
-    "name": "YouTube Chat",
-    "description": "Enables interaction with YouTube Live Stream Chat!",
-    "authors": [
-        "SteveKunG",
-        "PeregrineZ",
-        "jimrogers"
+  "schemaVersion": 1,
+  "id": "youtube_chat",
+  "version": "${version}",
+  "name": "YouTube Chat",
+  "description": "Enables interaction with YouTube Live Stream Chat!",
+  "authors": [
+    "SteveKunG",
+    "PeregrineZ",
+    "jimrogers"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/youtube-chat",
+    "sources": "https://github.com/SteveKunG/YouTubeChat",
+    "issues": "https://github.com/SteveKunG/YouTubeChat/issues"
+  },
+  "license": "Apache 2.0",
+  "icon": "logo.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.stevekung.ytc.fabric.core.YouTubeChatFabric"
     ],
-    "contact": {
-        "homepage": "https://www.curseforge.com/minecraft/mc-mods/youtube-chat",
-        "sources": "https://github.com/SteveKunG/YouTubeChat",
-        "issues": "https://github.com/SteveKunG/YouTubeChat/issues"
-    },
-    "license": "Apache 2.0",
-    "icon": "logo.png",
-    "environment": "client",
-    "entrypoints": {
-        "client": [
-            "com.stevekung.ytc.fabric.core.YouTubeChatFabric"
-        ],
-        "modmenu": [
-            "com.stevekung.ytc.fabric.modmenu.ModMenuIntegrationYT"
-        ]
-    },
-    "depends": {
-        "fabricloader": ">=0.12.12",
-        "fabric": "*",
-        "minecraft": ">=1.18.1"
-    },
-    "custom": {
-        "modmenu": {
-            "links": {
-                "modmenu.discord": "https://discord.gg/6JhEjeY"
-            }
-        }
+    "modmenu": [
+      "com.stevekung.ytc.fabric.modmenu.ModMenuIntegrationYT"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "minecraft": ">=1.18.1"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/6JhEjeY"
+      }
     }
+  }
 }
