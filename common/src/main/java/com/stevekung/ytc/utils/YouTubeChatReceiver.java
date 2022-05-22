@@ -16,6 +16,7 @@
 
 package com.stevekung.ytc.utils;
 
+import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.service.ChatService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.event.ChatReceivedEvent;
@@ -47,7 +48,7 @@ public class YouTubeChatReceiver implements ChatService.Listener
 
         if (owner)
         {
-            unicode = PlatformConfig.ownerIcon();
+            unicode = YouTubeChat.CONFIG.chat.ownerIcon;
         }
         if (verified)
         {
@@ -55,17 +56,17 @@ public class YouTubeChatReceiver implements ChatService.Listener
 
             if (moderator)
             {
-                unicode = "✓ " + PlatformConfig.moderatorIcon();
+                unicode = "✓ " + YouTubeChat.CONFIG.chat.moderatorIcon;
             }
         }
         if (moderator)
         {
-            unicode = PlatformConfig.moderatorIcon();
+            unicode = YouTubeChat.CONFIG.chat.moderatorIcon;
         }
 
-        if (!PlatformConfig.bannedRudeWords().isEmpty())
+        if (!YouTubeChat.CONFIG.chat.bannedRudeWords.isEmpty())
         {
-            for (var word : PlatformConfig.bannedRudeWords())
+            for (var word : YouTubeChat.CONFIG.chat.bannedRudeWords)
             {
                 if (message.contains(word) && ignoreCheck)
                 {
@@ -74,13 +75,13 @@ public class YouTubeChatReceiver implements ChatService.Listener
                 }
             }
         }
-        if (!PlatformConfig.rudeWords().isEmpty())
+        if (!YouTubeChat.CONFIG.chat.rudeWords.isEmpty())
         {
-            for (var word : PlatformConfig.rudeWords())
+            for (var word : YouTubeChat.CONFIG.chat.rudeWords)
             {
                 if (message.contains(word) && ignoreCheck)
                 {
-                    switch (PlatformConfig.rudeWordAction())
+                    switch (YouTubeChat.CONFIG.chat.rudeWordAction)
                     {
                         case DELETE -> YouTubeChatService.getService().deleteMessage(event.messageId(), () ->
                         {

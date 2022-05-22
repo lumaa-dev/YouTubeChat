@@ -18,9 +18,9 @@ package com.stevekung.ytc.fabric.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
-import com.stevekung.ytc.utils.PlatformConfig;
 import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
@@ -38,7 +38,7 @@ public class PostMessageCommand
 
     private static int postMessage(String message)
     {
-        var clientSecret = PlatformConfig.clientSecret();
+        var clientSecret = YouTubeChat.CONFIG.general.clientSecret;
         var service = YouTubeChatService.getService();
 
         if (clientSecret.isEmpty())

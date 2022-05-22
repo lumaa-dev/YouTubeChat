@@ -4,16 +4,13 @@ architectury {
 }
 
 loom {
+    clientOnlyMinecraftJar()
+
     launches {
         if (project.hasProperty("username") && project.hasProperty("uuid")) {
             client {
                 arg "--username", "${username}", "--uuid", "${uuid}"
             }
-        }
-    }
-    runConfigs {
-        server {
-            ideConfigGenerated false
         }
     }
 }
@@ -28,6 +25,8 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
+
+    modImplementation "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
 
     forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: project.api_services_youtube))) {
         exclude(group: "org.apache.httpcomponents")

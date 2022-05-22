@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.stevekung.ytc.fabric.config;
+package com.stevekung.ytc.config;
 
 import java.util.Collections;
 import java.util.List;

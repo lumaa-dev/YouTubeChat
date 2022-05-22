@@ -5,6 +5,10 @@ architectury {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
     implementation(group: "com.google.apis", name: "google-api-services-youtube", version: project.api_services_youtube)
     implementation(group: "com.google.oauth-client", name: "google-oauth-client-jetty", version: project.oauth_client_jetty)
     implementation(group: "com.google.api-client", name: "google-api-client", version: project.api_client)

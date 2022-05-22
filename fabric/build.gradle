@@ -4,16 +4,13 @@ architectury {
 }
 
 loom {
+    clientOnlyMinecraftJar()
+
     launches {
         if (project.hasProperty("username") && project.hasProperty("uuid")) {
             client {
                 arg "--username", "${username}", "--uuid", "${uuid}"
             }
-        }
-    }
-    runConfigs {
-        server {
-            ideConfigGenerated false
         }
     }
 }
