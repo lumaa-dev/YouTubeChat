@@ -2,4 +2,4 @@
 
 ### Please report if you found the issues!
 
-* Better mod dependencies detection
+* Update to 1.19

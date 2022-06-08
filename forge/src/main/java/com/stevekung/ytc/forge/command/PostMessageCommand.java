@@ -25,7 +25,7 @@ import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class PostMessageCommand
 {
@@ -43,13 +43,13 @@ public class PostMessageCommand
 
         if (clientSecret.isEmpty())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.no_client_secret"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.no_client_secret"));
         }
         if (!service.hasExecutor())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.service_not_start"));
         }
-        service.postMessage(message, id -> ChatUtils.printOverlayMessage(new TranslatableComponent("commands.yt.message_posted").withStyle(ChatFormatting.GREEN)));
+        service.postMessage(message, id -> ChatUtils.printOverlayMessage(Component.translatable("commands.yt.message_posted").withStyle(ChatFormatting.GREEN)));
         return 1;
     }
 }

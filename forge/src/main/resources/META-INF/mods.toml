@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[40,)"
+loaderVersion = "[41,)"
 license = "Apache 2.0"
 issueTrackerURL = "https://github.com/SteveKunG/YouTubeChat/issues"
 
@@ -17,20 +17,20 @@ credits = "Thanks to PeregrineZ for implement example features"
 [[dependencies.youtube_chat]]
 modId = "forge"
 mandatory = true
-versionRange = "[40.0.0,)"
+versionRange = "[41.0.0,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.youtube_chat]]
 modId = "cloth_config"
 mandatory = true
-versionRange = "[6.2,)"
+versionRange = "[7.0,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.youtube_chat]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.2,)"
+versionRange = "[1.19,)"
 ordering = "NONE"
 side = "CLIENT"
