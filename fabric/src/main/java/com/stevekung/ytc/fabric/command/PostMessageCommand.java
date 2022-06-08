@@ -22,10 +22,10 @@ import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class PostMessageCommand
 {
@@ -43,13 +43,13 @@ public class PostMessageCommand
 
         if (clientSecret.isEmpty())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.no_client_secret"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.no_client_secret"));
         }
         if (!service.hasExecutor())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.service_not_start"));
         }
-        service.postMessage(message, id -> ChatUtils.printOverlayMessage(new TranslatableComponent("commands.yt.message_posted").withStyle(ChatFormatting.GREEN)));
+        service.postMessage(message, id -> ChatUtils.printOverlayMessage(Component.translatable("commands.yt.message_posted").withStyle(ChatFormatting.GREEN)));
         return 1;
     }
 }

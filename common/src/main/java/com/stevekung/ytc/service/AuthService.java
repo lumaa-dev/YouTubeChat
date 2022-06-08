@@ -34,7 +34,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.ChatUtils;
 import net.minecraft.Util;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 /**
  * Contains methods for authorizing a user and caching credentials.
@@ -99,7 +99,7 @@ public class AuthService
 
         if (file.delete())
         {
-            ChatUtils.printChatMessage(new TranslatableComponent("message.profile_delete", file.getName()));
+            ChatUtils.printChatMessage(Component.translatable("message.profile_delete", file.getName()));
         }
         else
         {

@@ -24,8 +24,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 /**
  *
@@ -35,15 +33,15 @@ import net.minecraft.network.chat.TranslatableComponent;
  */
 public class ChatActionScreen extends Screen
 {
-    private static final Component DELETE = new TranslatableComponent("selectServer.delete");
-    private static final Component TEMPORARY_BAN = new TranslatableComponent("menu.temporary_ban");
-    private static final Component BAN = new TranslatableComponent("menu.ban");
-    private static final Component UNBAN = new TranslatableComponent("menu.unban");
-    private static final Component ADD_MODERATOR = new TranslatableComponent("menu.add_moderator");
-    private static final Component REMOVE_MODERATOR = new TranslatableComponent("menu.remove_moderator");
-    private static final Component SELECT_ACTION = new TranslatableComponent("menu.select_action");
+    private static final Component DELETE = Component.translatable("selectServer.delete");
+    private static final Component TEMPORARY_BAN = Component.translatable("menu.temporary_ban");
+    private static final Component BAN = Component.translatable("menu.ban");
+    private static final Component UNBAN = Component.translatable("menu.unban");
+    private static final Component ADD_MODERATOR = Component.translatable("menu.add_moderator");
+    private static final Component REMOVE_MODERATOR = Component.translatable("menu.remove_moderator");
+    private static final Component SELECT_ACTION = Component.translatable("menu.select_action");
 
-    private static final Component MESSAGE_DELETED = new TranslatableComponent("message.deleted");
+    private static final Component MESSAGE_DELETED = Component.translatable("message.deleted");
     private final String messageId;
     private final String channelId;
     private final String moderatorId;
@@ -51,7 +49,7 @@ public class ChatActionScreen extends Screen
 
     public ChatActionScreen(String messageId, String channelId, String moderatorId, String displayName)
     {
-        super(TextComponent.EMPTY);
+        super(Component.empty());
         this.messageId = messageId;
         this.channelId = channelId;
         this.moderatorId = moderatorId;
@@ -74,27 +72,27 @@ public class ChatActionScreen extends Screen
         this.addRenderableWidget(new Button(xChat, yChat - 30, 120, 20, DELETE, button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printChatMessage(MESSAGE_DELETED))));
         this.addRenderableWidget(temporaryBanButton = new Button(xChat, yChat - 8, 120, 20, TEMPORARY_BAN, button ->
         {
-            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.temporarily_banned", this.displayName));
+            Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.temporarily_banned", this.displayName));
             YouTubeChatService.getService().banUser(this.channelId, response, true);
         }));
         this.addRenderableWidget(banButton = new Button(xChat, yChat + 14, 120, 20, BAN, button ->
         {
-            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_banned", this.displayName));
+            Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.user_banned", this.displayName));
             YouTubeChatService.getService().banUser(this.channelId, response, false);
         }));
         this.addRenderableWidget(unbanButton = new Button(xChat, yChat + 36, 120, 20, UNBAN, button ->
         {
-            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_unbanned", this.displayName));
+            Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.user_unbanned", this.displayName));
             YouTubeChatService.getService().unbanUser(this.channelId, response);
         }));
         this.addRenderableWidget(addModerator = new Button(xMod, yChat - 30, 120, 20, ADD_MODERATOR, button ->
         {
-            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.add_moderator", this.displayName));
+            Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.add_moderator", this.displayName));
             YouTubeChatService.getService().addModerator(this.channelId, response);
         }));
         this.addRenderableWidget(removeModerator = new Button(xMod, yChat - 8, 120, 20, REMOVE_MODERATOR, button ->
         {
-            Runnable response = () -> ChatUtils.printChatMessage(new TranslatableComponent("message.remove_moderator", this.displayName));
+            Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.remove_moderator", this.displayName));
             YouTubeChatService.getService().removeModerator(this.moderatorId, response);
         }));
         this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 2 + 60, 200, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));

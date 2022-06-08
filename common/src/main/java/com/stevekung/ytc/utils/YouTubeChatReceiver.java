@@ -21,7 +21,10 @@ import com.stevekung.ytc.service.ChatService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.event.ChatReceivedEvent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 
 /**
  *
@@ -70,7 +73,7 @@ public class YouTubeChatReceiver implements ChatService.Listener
             {
                 if (message.contains(word) && ignoreCheck)
                 {
-                    YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_auto_banned", userDisplayName)), false);
+                    YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printChatMessage(Component.translatable("message.user_auto_banned", userDisplayName)), false);
                     return;
                 }
             }
@@ -86,7 +89,7 @@ public class YouTubeChatReceiver implements ChatService.Listener
                         case DELETE -> YouTubeChatService.getService().deleteMessage(event.messageId(), () ->
                         {
                         });
-                        case TEMPORARY_BAN -> YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printChatMessage(new TranslatableComponent("message.user_auto_temporary_banned", userDisplayName)), false);
+                        case TEMPORARY_BAN -> YouTubeChatService.getService().banUser(author.getChannelId(), () -> ChatUtils.printChatMessage(Component.translatable("message.user_auto_temporary_banned", userDisplayName)), false);
                     }
                     return;
                 }
@@ -94,13 +97,13 @@ public class YouTubeChatReceiver implements ChatService.Listener
         }
 
         var color = owner ? ChatFormatting.GOLD : moderator ? ChatFormatting.BLUE : ChatFormatting.GRAY;
-        var formatted = new TextComponent(unicode + userDisplayName).withStyle(color);
-        var runAction = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.messageId() + " " + author.getChannelId() + " " + event.moderatorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.select_message_action")));
-        ChatUtils.print(formatted.append(new TextComponent(": " + message).withStyle(ChatFormatting.WHITE)).withStyle(runAction));
+        var formatted = Component.literal(unicode + userDisplayName).withStyle(color);
+        var runAction = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ytcaction " + event.messageId() + " " + author.getChannelId() + " " + event.moderatorId() + " " + userDisplayName)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.select_message_action")));
+        ChatUtils.print(formatted.append(Component.literal(": " + message).withStyle(ChatFormatting.WHITE)).withStyle(runAction));
 
         if (superChatDetails != null && superChatDetails.getAmountMicros() != null && superChatDetails.getAmountMicros().longValue() > 0)
         {
-            ChatUtils.printChatMessage(new TranslatableComponent("message.superchat_received", superChatDetails.getAmountDisplayString(), userDisplayName));
+            ChatUtils.printChatMessage(Component.translatable("message.superchat_received", superChatDetails.getAmountDisplayString(), userDisplayName));
         }
     }
 }

@@ -20,7 +20,6 @@ import com.stevekung.ytc.core.YouTubeChat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 /**
  *
@@ -32,7 +31,7 @@ public class ChatUtils
 {
     public static void print(Component toAppend)
     {
-        var message = new TextComponent("[YT]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
+        var message = Component.literal("[YT]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
         Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 
@@ -43,19 +42,19 @@ public class ChatUtils
 
     public static void printChatMessage(Component toAppend)
     {
-        var message = new TextComponent("[" + YouTubeChat.NAME + "]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
+        var message = Component.literal("[" + YouTubeChat.NAME + "]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
         Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 
     public static void printOverlayMessage(Component toAppend)
     {
-        var message = new TextComponent("[YT]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
+        var message = Component.literal("[YT]").append(" ").withStyle(ChatFormatting.RED).append(toAppend);
         Minecraft.getInstance().gui.setOverlayMessage(message, false);
     }
 
     public static void printExceptionMessage(String exception)
     {
-        var message = new TextComponent("[" + YouTubeChat.NAME + "]").append(" ").withStyle(ChatFormatting.RED).append(new TextComponent(exception).withStyle(ChatFormatting.DARK_RED));
+        var message = Component.literal("[" + YouTubeChat.NAME + "]").append(" ").withStyle(ChatFormatting.RED).append(Component.literal(exception).withStyle(ChatFormatting.DARK_RED));
         Minecraft.getInstance().gui.getChat().addMessage(message);
     }
 }

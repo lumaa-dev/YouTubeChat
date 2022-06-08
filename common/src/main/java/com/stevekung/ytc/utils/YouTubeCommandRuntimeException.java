@@ -19,12 +19,11 @@ package com.stevekung.ytc.utils;
 import com.stevekung.ytc.core.YouTubeChat;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 public class YouTubeCommandRuntimeException extends CommandRuntimeException
 {
     public YouTubeCommandRuntimeException(Component component)
     {
-        super(new TextComponent("[" + YouTubeChat.NAME + "]").append(" ").append(component));
+        super(Component.literal("[" + YouTubeChat.NAME + "]").append(" ").append(component));
     }
 }

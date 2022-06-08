@@ -22,7 +22,7 @@ import com.stevekung.ytc.fabric.command.PostMessageCommand;
 import com.stevekung.ytc.fabric.command.YouTubeChatCommand;
 import com.stevekung.ytc.service.YouTubeChatService;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 
@@ -33,10 +33,12 @@ public class YouTubeChatFabric implements ClientModInitializer
     {
         YouTubeChat.init();
 
-        new ChatActionCommand(ClientCommandManager.DISPATCHER);
-        new PostMessageCommand(ClientCommandManager.DISPATCHER);
-        new YouTubeChatCommand(ClientCommandManager.DISPATCHER);
-
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+        {
+            new ChatActionCommand(dispatcher);
+            new PostMessageCommand(dispatcher);
+            new YouTubeChatCommand(dispatcher);
+        });
         ClientTickEvents.START_CLIENT_TICK.register(YouTubeChat::clientTick);
         ClientLoginConnectionEvents.INIT.register((handler, mc) ->
         {

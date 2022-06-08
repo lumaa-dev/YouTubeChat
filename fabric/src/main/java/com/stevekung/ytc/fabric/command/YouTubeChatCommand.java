@@ -23,11 +23,10 @@ import com.stevekung.ytc.service.AuthService;
 import com.stevekung.ytc.service.YouTubeChatService;
 import com.stevekung.ytc.utils.ChatUtils;
 import com.stevekung.ytc.utils.YouTubeCommandRuntimeException;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
 
 /**
@@ -53,11 +52,11 @@ public class YouTubeChatCommand
 
         if (clientSecret.isEmpty())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.no_client_secret"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.no_client_secret"));
         }
         if (service.hasExecutor())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_already_start"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.service_already_start"));
         }
 
         service.start(clientSecret, profile);
@@ -72,7 +71,7 @@ public class YouTubeChatCommand
 
         if (!service.hasExecutor())
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.service_not_start"));
         }
 
         service.stop(false);
@@ -89,15 +88,15 @@ public class YouTubeChatCommand
             return 1;
         }
 
-        ChatUtils.printChatMessage(new TranslatableComponent("commands.yt.list_login_profiles"));
+        ChatUtils.printChatMessage(Component.translatable("commands.yt.list_login_profiles"));
 
         if (AuthService.USER_DIR.listFiles().length < 1)
         {
-            ChatUtils.printMessage(new TextComponent("- ").withStyle(ChatFormatting.RED).append(new TranslatableComponent("commands.yt.empty_login_profiles")));
+            ChatUtils.printMessage(Component.literal("- ").withStyle(ChatFormatting.RED).append(Component.translatable("commands.yt.empty_login_profiles")));
         }
         for (var file : AuthService.USER_DIR.listFiles())
         {
-            ChatUtils.printMessage(new TextComponent("- ").append(file.getName()));
+            ChatUtils.printMessage(Component.literal("- ").append(file.getName()));
         }
         return 1;
     }
@@ -113,7 +112,7 @@ public class YouTubeChatCommand
         }
         else
         {
-            throw new YouTubeCommandRuntimeException(new TranslatableComponent("commands.yt.service_not_start"));
+            throw new YouTubeCommandRuntimeException(Component.translatable("commands.yt.service_not_start"));
         }
 
         if (StringUtil.isNullOrEmpty(profile))

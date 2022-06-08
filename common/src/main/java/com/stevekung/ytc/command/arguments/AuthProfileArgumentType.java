@@ -35,12 +35,12 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.stevekung.ytc.service.AuthService;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class AuthProfileArgumentType implements ArgumentType<String>
 {
-    private static final SimpleCommandExceptionType INVALID_ARGS = new SimpleCommandExceptionType(new TranslatableComponent("argument.id.invalid"));
+    private static final SimpleCommandExceptionType INVALID_ARGS = new SimpleCommandExceptionType(Component.translatable("argument.id.invalid"));
 
     private AuthProfileArgumentType() {}
 

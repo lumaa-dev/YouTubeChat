@@ -37,7 +37,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stevekung.ytc.core.YouTubeChat;
 import com.stevekung.ytc.utils.*;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
 
 /**
@@ -305,7 +305,7 @@ public class YouTubeChatService implements ChatService
 
     public void start(String clientSecret, String defaultAuthName)
     {
-        ChatUtils.printChatMessage(new TranslatableComponent("message.service_start"));
+        ChatUtils.printChatMessage(Component.translatable("message.service_start"));
         this.executor = Executors.newCachedThreadPool();
         this.executor.execute(() ->
         {
@@ -382,11 +382,11 @@ public class YouTubeChatService implements ChatService
 
         if (this.failed)
         {
-            ChatUtils.printChatMessage(new TranslatableComponent("message.service_stop_fail"));
+            ChatUtils.printChatMessage(Component.translatable("message.service_stop_fail"));
         }
         else
         {
-            ChatUtils.printChatMessage(new TranslatableComponent(logout ? "message.service_stop_logout" : "message.service_stop"));
+            ChatUtils.printChatMessage(Component.translatable(logout ? "message.service_stop_logout" : "message.service_stop"));
         }
     }
 
