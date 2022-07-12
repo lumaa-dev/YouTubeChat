@@ -24,9 +24,9 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${project.mc_version}-${project.forge_version}"
+    forge "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    modImplementation "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
+    modImplementation "me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}"
 
     forgeDependencies(implementation(shadowCommon(group: "com.google.apis", name: "google-api-services-youtube", version: project.api_services_youtube))) {
         exclude(group: "org.apache.httpcomponents")
@@ -73,18 +73,18 @@ dependencies {
         exclude(group: "org.checkerframework")
     }
 
-    modRuntimeOnly "curse.maven:configured-457570:${project.configured_version}"
-    modRuntimeOnly "curse.maven:catalogue-459701:${project.catalogue_version}"
+    modRuntimeOnly "curse.maven:configured-457570:${configured_version}"
+    modRuntimeOnly "curse.maven:catalogue-459701:${catalogue_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
 }
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", rootProject.mod_version
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand "version": rootProject.mod_version
     }
 }
 
@@ -93,7 +93,7 @@ license {
     include "**/*.java"
 }
 
-String fileName = "${project.archives_base_name}-mc${project.mc_version}"
+String fileName = "${archives_base_name}-mc${mc_version}"
 
 shadowJar {
     configurations = [project.configurations.shadowCommon]
@@ -115,8 +115,20 @@ shadowJar {
     exclude "mozilla/**"
     exclude "youtube.v3.json"
 
-    archiveClassifier = "dev-shadow"
-    archiveVersion = "v${project.version}"
+    archiveClassifier = "dev"
+    archiveVersion = "v${mod_version}"
+    archiveBaseName = fileName
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+remapSourcesJar {
+    archiveVersion = "v${mod_version}"
     archiveBaseName = fileName
 }
 
@@ -124,7 +136,7 @@ remapJar {
     inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = "forge"
-    archiveVersion = "v${project.version}"
+    archiveVersion = "v${mod_version}"
     archiveBaseName = fileName
 }
 
@@ -134,51 +146,52 @@ components.java {
     }
 }
 
-curseforge {
-    if (project.hasProperty("upload_api_key")) {
-        apiKey = project.upload_api_key
-        project {
-            id = "302916"
-            changelog = file("../CHANGE_LOG.md")
-            changelogType = "markdown"
-            releaseType = "release"
-            addGameVersion "Forge"
-            addGameVersion "Java 17"
-            addGameVersion project.mc_version
+def uploadDebug = true
 
-            mainArtifact(remapJar.archiveFile) {
-                displayName = "[Forge] " + fileName + "-v${project.version}"
-            }
-            relations {
-                requiredDependency "cloth-config"
-                optionalDependency "configured"
-            }
-            afterEvaluate {
-                uploadTask.dependsOn(remapJar)
-            }
+curseforge {
+    apiKey = project.hasProperty("curseforge_api_token") ? project.curseforge_api_token : ""
+    project {
+        id = "302916"
+        changelog = rootProject.file("CHANGE_LOG.md")
+        changelogType = "markdown"
+        releaseType = "release"
+        addGameVersion "Forge"
+        addGameVersion "Java 17"
+        addGameVersion project.mc_version
+
+        mainArtifact(remapJar.archiveFile) {
+            displayName = "[Forge] " + fileName + "-v${mod_version}"
         }
-        options {
-            forgeGradleIntegration = false
+        relations {
+            requiredDependency "cloth-config"
+            optionalDependency "configured"
         }
+        afterEvaluate {
+            uploadTask.dependsOn(remapJar)
+        }
+        addArtifact shadowJar
+        addArtifact remapSourcesJar
+    }
+    options {
+        debug uploadDebug
+        forgeGradleIntegration = false
     }
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-import com.modrinth.minotaur.dependencies.DependencyType
-
 modrinth {
-    if (project.hasProperty("modrinth_api_token")) {
-        token = project.modrinth_api_token
-        projectId = "yo2w7hPw"
-        changelog = file("../CHANGE_LOG.md").text
-        versionName = "[Forge] YouTube Chat " + "v${project.version}" + " for Minecraft " + project.mc_version
-        versionNumber = project.mod_version + "-forge"
-        versionType = "release"
-        uploadFile = remapJar
-        gameVersions = ["${project.mc_version}"]
-        loaders = ["forge"]
-        dependencies = [
-                new ModDependency("9s6osm5g", DependencyType.REQUIRED) // Cloth Config
-        ]
+    debugMode = uploadDebug
+    token = project.hasProperty("modrinth_api_token") ? project.modrinth_api_token : ""
+    projectId = "youtube-chat"
+    changelog = rootProject.file("CHANGE_LOG.md").text
+    versionName = "[Forge] YouTube Chat " + "v${mod_version}" + " for Minecraft " + project.mc_version
+    versionNumber = project.mod_version + "-forge"
+    versionType = "release"
+    uploadFile = remapJar
+    additionalFiles = [shadowJar, remapSourcesJar]
+    gameVersions = ["${mc_version}"]
+    loaders = ["forge"]
+    dependencies {
+        required.project "cloth-config"
+        // optional.project "configured" TODO Enable when "Configured" mod is on Modrinth, Thank you Emmaffle!
     }
 }
