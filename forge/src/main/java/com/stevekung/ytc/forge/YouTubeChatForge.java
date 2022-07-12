@@ -23,7 +23,7 @@ import com.stevekung.ytc.forge.command.PostMessageCommand;
 import com.stevekung.ytc.forge.command.YouTubeChatCommand;
 import com.stevekung.ytc.forge.event.EventHandlerForge;
 import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,7 +41,7 @@ public class YouTubeChatForge
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
         MinecraftForge.EVENT_BUS.register(new EventHandlerForge());
         MinecraftForge.EVENT_BUS.register(this);
-        ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory((mc, screen) -> AutoConfig.getConfigScreen(YouTubeChatConfig.class, screen).get()));
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> AutoConfig.getConfigScreen(YouTubeChatConfig.class, screen).get()));
     }
 
     @SubscribeEvent

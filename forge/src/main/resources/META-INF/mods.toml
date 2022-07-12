@@ -17,14 +17,14 @@ credits = "Thanks to PeregrineZ for implement example features"
 [[dependencies.youtube_chat]]
 modId = "forge"
 mandatory = true
-versionRange = "[41.0.0,)"
+versionRange = "[41.0.94,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.youtube_chat]]
 modId = "cloth_config"
 mandatory = true
-versionRange = "[7.0,)"
+versionRange = "[7.0.73,)"
 ordering = "NONE"
 side = "CLIENT"
 
