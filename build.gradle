@@ -4,6 +4,7 @@ plugins {
     id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "org.cadixdev.licenser" version "0.6.1"
+    id "com.modrinth.minotaur" version "2.+" apply false
 }
 
 architectury {
@@ -14,7 +15,7 @@ subprojects {
     apply plugin: "dev.architectury.loom"
     apply plugin: "com.github.johnrengelman.shadow"
     apply plugin: "com.matthewprenger.cursegradle"
-    apply plugin: "org.cadixdev.licenser"
+    apply plugin: "com.modrinth.minotaur"
 
     loom {
         silentMojangMappingsLicense()
@@ -28,10 +29,10 @@ subprojects {
     }
 
     dependencies {
-        minecraft "com.mojang:minecraft:${project.mc_version}"
+        minecraft "com.mojang:minecraft:${mc_version}"
         mappings loom.layered() {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-${project.parchmentmc_version}@zip")
+            parchment("org.parchmentmc.data:parchment-${parchmentmc_version}@zip")
         }
     }
 }
@@ -63,3 +64,10 @@ allprojects {
         withSourcesJar()
     }
 }
+
+task curseforgeModrinth(dependsOn: [
+        ":fabric:modrinth",
+        ":fabric:curseforge",
+        ":forge:modrinth",
+        ":forge:curseforge"
+], group: "upload")
