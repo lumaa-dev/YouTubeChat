@@ -69,33 +69,33 @@ public class ChatActionScreen extends Screen
         Button addModerator;
         Button removeModerator;
 
-        this.addRenderableWidget(new Button(xChat, yChat - 30, 120, 20, DELETE, button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printChatMessage(MESSAGE_DELETED))));
-        this.addRenderableWidget(temporaryBanButton = new Button(xChat, yChat - 8, 120, 20, TEMPORARY_BAN, button ->
+        this.addRenderableWidget(Button.builder(DELETE, button -> YouTubeChatService.getService().deleteMessage(this.messageId, () -> ChatUtils.printChatMessage(MESSAGE_DELETED))).bounds(xChat, yChat - 30, 120, 20).build());
+        this.addRenderableWidget(temporaryBanButton = Button.builder(TEMPORARY_BAN, button ->
         {
             Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.temporarily_banned", this.displayName));
             YouTubeChatService.getService().banUser(this.channelId, response, true);
-        }));
-        this.addRenderableWidget(banButton = new Button(xChat, yChat + 14, 120, 20, BAN, button ->
+        }).bounds(xChat, yChat - 8, 120, 20).build());
+        this.addRenderableWidget(banButton = Button.builder(BAN, button ->
         {
             Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.user_banned", this.displayName));
             YouTubeChatService.getService().banUser(this.channelId, response, false);
-        }));
-        this.addRenderableWidget(unbanButton = new Button(xChat, yChat + 36, 120, 20, UNBAN, button ->
+        }).bounds(xChat, yChat + 14, 120, 20).build());
+        this.addRenderableWidget(unbanButton = Button.builder(UNBAN, button ->
         {
             Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.user_unbanned", this.displayName));
             YouTubeChatService.getService().unbanUser(this.channelId, response);
-        }));
-        this.addRenderableWidget(addModerator = new Button(xMod, yChat - 30, 120, 20, ADD_MODERATOR, button ->
+        }).bounds(xChat, yChat + 36, 120, 20).build());
+        this.addRenderableWidget(addModerator = Button.builder(ADD_MODERATOR, button ->
         {
             Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.add_moderator", this.displayName));
             YouTubeChatService.getService().addModerator(this.channelId, response);
-        }));
-        this.addRenderableWidget(removeModerator = new Button(xMod, yChat - 8, 120, 20, REMOVE_MODERATOR, button ->
+        }).bounds(xMod, yChat - 30, 120, 20).build());
+        this.addRenderableWidget(removeModerator = Button.builder(REMOVE_MODERATOR, button ->
         {
             Runnable response = () -> ChatUtils.printChatMessage(Component.translatable("message.remove_moderator", this.displayName));
             YouTubeChatService.getService().removeModerator(this.moderatorId, response);
-        }));
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 2 + 60, 200, 20, CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)));
+        }).bounds(xMod, yChat - 8, 120, 20).build());
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, button -> this.minecraft.setScreen(null)).bounds(this.width / 2 - 100, this.height / 2 + 60, 200, 20).build());
 
         if (YouTubeChatService.ownerChannelId.equals(this.channelId))
         {
